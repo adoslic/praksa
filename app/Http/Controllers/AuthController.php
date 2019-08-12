@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Faculty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,13 +31,22 @@ class AuthController extends Controller
         $response = app()->handle($req);
         return $response;       
     }
+    
     public function register(Request $request){
-
-        $request->validate( [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        if($request->role == 'Student'){
+            $request->validate( [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8'],
+            ]);
+        }
+        else{
+            $request->validate( [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
+        }
         
         return User::create([
             'name' => $request->name,
@@ -44,7 +54,25 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        //if($request->role == 'Fakultet'){
+            // $facultyProfile = User::where('email', $request->email)->get();
+            
+
+            // $faculty = new Faculty;
+            
+            // $faculty->name = $request->name;
+            // $faculty->email = $request->email;
+            // $faculty->user_id = $facultyProfile->id;
+            // $faculty->university = '';
+            // $faculty->address = '';
+            // $faculty->phone = '';
+            // $faculty->OIB = '';
+            // $faculty->save();
+        //}
+        //return $user;
     }
+
     public function logout(){
         //kad je korisnik odjavi želimo obrisat njegov access token
         auth()->user()->tokens->each(function ($token, $key) {

@@ -10,7 +10,8 @@ class Main extends Component {
         super(props);
         this.state = {
             user: [],
-            accessToken: localStorage.getItem('access_token') || null
+            accessToken: localStorage.getItem('access_token') || null,
+            //showNav: false
         };
     }
     componentDidMount(){
@@ -19,9 +20,16 @@ class Main extends Component {
         axios.get('/api/user')
             .then(response =>{
             //console.log(response.data);
+            const role = response.data.role;
             this.setState({
-                user: response.data
+                user: response.data,
+                //showNav: true
             })
+            localStorage.setItem('role', role);
+            if(this.state.user.role == 'Fakultet')
+                this.props.history.push('/students')
+            else
+                this.props.history.push('/practice')
         })
         // .then(response =>{
         //     console.log(this.state.user);
@@ -33,12 +41,14 @@ class Main extends Component {
 
     render() {
         
-            return (
-                <div>
-                    <MainNavigation role={this.state.user.role}/>
-                    <h1>{this.state.user.id}</h1>
-                </div>
-            );
+             return null;
+            //(
+            //     <div>
+            //         {this.state.showNav?
+            //             <MainNavigation role={this.state.user.role}/>
+            //         : null}
+            //     </div>
+            // );
     }
 }
 export default Main;

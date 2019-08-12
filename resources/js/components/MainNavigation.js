@@ -8,25 +8,14 @@ class MainNavigation extends Component {
     }
 
     checkRole(){
-        if(this.props.role === 'Tvrtka'){
-            return (
-                <div>
-                    <NavLink to='/practice'>Prakse</NavLink>
-                    <NavLink to='/profile' >Profil</NavLink>
-                    <NavLink to='/logout' >Logout</NavLink>
-
-                    <h1>Tvrtka</h1>
-                </div>
-            )
-        }
-        else if(this.props.role === 'Fakultet'){
+        if(this.props.role === 'Fakultet'){
             return (
                 <div>
                     <NavLink to='/students'>Studenti</NavLink>
                     <NavLink to='/practice'>Prakse</NavLink>
                     <NavLink to='/profile' >Profil</NavLink>
                     <NavLink to='/logout' >Logout</NavLink>
-
+                    
                     <h1>Fakultet</h1>
                 </div>
             )
@@ -38,23 +27,14 @@ class MainNavigation extends Component {
                     <NavLink to='/profile' >Profil</NavLink>
                     <NavLink to='/logout' >Logout</NavLink>
 
-                    <h1>Student</h1>
+                    <h1>firma ili student</h1>
                 </div>
-                
             )
         }
     }
     render() {
         return(
-            <div>
-                {this.checkRole()}
-
-                {/* <NavLink to='/studenti'>Studenti</NavLink>
-                <NavLink to='/praksa'>Prakse</NavLink>
-                <NavLink to='/profil' >Profil</NavLink>
-                <NavLink to='/logout' >Logout</NavLink> */}
-
-            </div>
+                this.checkRole()
         )
     }
 }

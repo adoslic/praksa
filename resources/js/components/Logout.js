@@ -19,14 +19,15 @@ class Logout extends Component {
                 axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.state.accessToken;
                 axios.post('/api/logout')
                     .then(response =>{
-                    localStorage.removeItem('access_token');
+                    localStorage.clear();
+                    //localStorage.removeItem('access_token');
                     this.setState({
                         accessToken: null
                     })
                     this.props.history.push('/');
                     //console.log(response);
                 }).catch(error =>{
-                    localStorage.removeItem('access_token');
+                    localStorage.clear();
                     this.setState({
                         accessToken: null
                     })

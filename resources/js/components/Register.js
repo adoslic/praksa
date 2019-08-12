@@ -30,10 +30,11 @@ class Register extends Component {
                 password: this.state.password,
                 password_confirmation: this.state.password_confirmation
             }).then(response =>{
+                console.log(response);
                 this.props.history.push('/login');
                 //console.log(response);
             }).catch(error =>{
-                //console.log(error);
+                console.log(error);
             })
         }
         else{
