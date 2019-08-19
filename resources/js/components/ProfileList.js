@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import MainNavigation from './MainNavigation';
 
-class Practice extends Component {
+class ProfileList extends Component {
     constructor(props){
         super(props);
         
     }
     render() {
-        switch(this.props.role){
+        switch(this.props.profile.user.role){
             case 'Tvrtka': 
             return (
                 <table >
@@ -16,7 +16,7 @@ class Practice extends Component {
                     <tbody>
                         <tr>
                             <td>Naziv firme: </td>
-                            <td>{this.props.profile.name}</td>
+                            <td>{this.props.profile.user.name}</td>
                         </tr>
                         <tr>
                             <td>Adresa: </td>
@@ -28,7 +28,7 @@ class Practice extends Component {
                         </tr>
                         <tr>
                             <td>Email adresa</td>
-                            <td>{this.props.profile.email}</td>
+                            <td>{this.props.profile.user.email}</td>
                         </tr>
                         <tr>
                             <td>OIB</td>
@@ -44,7 +44,7 @@ class Practice extends Component {
                         <tbody>
                             <tr>
                                 <td>Naziv fakultet: </td>
-                                <td>{this.props.profile.name}</td>
+                                <td>{this.props.profile.user.name}</td>
                             </tr>
                             <tr>
                                 <td>Naziv sveučilišta: </td>
@@ -60,7 +60,7 @@ class Practice extends Component {
                             </tr>
                             <tr>
                                 <td>Email adresa</td>
-                                <td>{this.props.profile.email}</td>
+                                <td>{this.props.profile.user.email}</td>
                             </tr>
                             <tr>
                                 <td>OIB</td>
@@ -76,15 +76,11 @@ class Practice extends Component {
                         <tbody>
                             <tr>
                                 <td>ime studenta</td>
-                                <td>{this.props.profile.name}</td>
-                            </tr>
-                            <tr>
-                                <td>prezime studenta</td>
-                                <td>{this.props.profile.lastName}</td>
+                                <td>{this.props.profile.user.name}</td>
                             </tr>
                             <tr>
                                 <td>email studenta</td>
-                                <td>{this.props.profile.email}</td>
+                                <td>{this.props.profile.user.email}</td>
                             </tr>
                             <tr>
                                 <td>broj indeksa</td>
@@ -118,4 +114,4 @@ class Practice extends Component {
         
     }
 }
-export default Practice;
+export default ProfileList;

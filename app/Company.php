@@ -11,7 +11,7 @@ class Company extends Model
         'name', 'email', 'address', 'phone', 'OIB', 'user_id'
     ];
 
-    // public function user(){
-    //     return $this->hasOne(User::class,'user_id');
-    // }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

@@ -26,10 +26,9 @@ class Main extends Component {
                 //showNav: true
             })
             localStorage.setItem('role', role);
-            if(this.state.user.role == 'Fakultet')
-                this.props.history.push('/students')
-            else
-                this.props.history.push('/practice')
+            
+            this.props.history.push('/profile')
+            
         })
         // .then(response =>{
         //     console.log(this.state.user);

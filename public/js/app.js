@@ -65859,7 +65859,8 @@ function (_Component) {
     _this.state = {
       username: '',
       password: '',
-      accessToken: localStorage.getItem('access_token') || null
+      accessToken: localStorage.getItem('access_token') || null,
+      errorMessage: ''
     };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
@@ -65871,24 +65872,39 @@ function (_Component) {
     value: function handleSubmit(e) {
       var _this2 = this;
 
-      e.preventDefault(); //console.log(this.state);
+      e.preventDefault();
+      this.setState({
+        errorMessage: ''
+      }); //console.log(this.state);
 
-      axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/login', {
-        username: this.state.username,
-        password: this.state.password
-      }).then(function (response) {
-        var token = response.data.access_token;
-        localStorage.setItem('access_token', token);
-
-        _this2.setState({
-          accessToken: token
+      if (this.state.username == '' || this.state.password == '') {
+        this.setState({
+          errorMessage: 'popunite sva polja'
         });
+      } else {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/api/login', {
+          username: this.state.username,
+          password: this.state.password
+        }).then(function (response) {
+          var token = response.data.access_token;
+          localStorage.setItem('access_token', token);
 
-        _this2.props.history.push('/main'); //console.log(response);
+          _this2.setState({
+            accessToken: token,
+            errorMessage: ''
+          });
 
-      })["catch"](function (error) {
-        console.log(error);
-      }); //this.props.history.push('/main');
+          _this2.props.history.push('/main'); //console.log(response);
+
+        })["catch"](function (error) {
+          console.log(error);
+
+          _this2.setState({
+            errorMessage: 'neispravni podaci'
+          });
+        });
+      } //this.props.history.push('/main');
+
     }
   }, {
     key: "handleChange",
@@ -65909,12 +65925,13 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "password",
         name: "password",
+        autoComplete: "on",
         placeholder: "enter password",
         value: this.state.password,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit"
-      }, "Login")));
+      }, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)));
     }
   }]);
 
@@ -66100,7 +66117,8 @@ function (_Component) {
         });
 
         localStorage.setItem('role', role);
-        if (_this2.state.user.role == 'Fakultet') _this2.props.history.push('/students');else _this2.props.history.push('/practice');
+
+        _this2.props.history.push('/profile');
       }) // .then(response =>{
       //     console.log(this.state.user);
       // })
@@ -66365,6 +66383,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _ProfileList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ProfileList */ "./resources/js/components/ProfileList.js");
+/* harmony import */ var _ProfileInput__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ProfileInput */ "./resources/js/components/ProfileInput.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -66391,6 +66410,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+
 var Profile =
 /*#__PURE__*/
 function (_Component) {
@@ -66405,10 +66425,12 @@ function (_Component) {
     _this.state = {
       userRole: localStorage.getItem('role'),
       profile: [],
+      userInfo: [],
       role: '',
       createProfile: [],
       profileValue: [],
       editProfile: [],
+      userEdit: [],
       showProfile: false,
       showCreate: false,
       showEdit: false,
@@ -66419,20 +66441,21 @@ function (_Component) {
       phone: '',
       email: '',
       OIB: '',
-      lastName: '',
+      //lastName: '',
       indexNumber: '',
       faculty: '',
       study: '',
       course: '',
-      yearsOfStudy: ''
+      yearsOfStudy: '',
+      errorMessage: ''
     };
     _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
-    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     _this.handleCreate = _this.handleCreate.bind(_assertThisInitialized(_this));
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     _this.handleUpdate = _this.handleUpdate.bind(_assertThisInitialized(_this));
     _this.reloadProfile = _this.reloadProfile.bind(_assertThisInitialized(_this));
+    _this.changeState = _this.changeState.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -66442,15 +66465,17 @@ function (_Component) {
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_3___default.a.get('/api/profile').then(function (response) {
-        //console.log(response);
+        //console.log(response.data);
         _this2.setState({
           profile: response.data[0],
+          //userInfo: response.data[1],
           showProfile: true
         });
 
         if (_this2.state.profile != undefined) _this2.setState({
           id: _this2.state.profile.id
         }); //console.log(this.state.profile);
+        //console.log(this.state.userInfo);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -66464,12 +66489,14 @@ function (_Component) {
         //console.log(response);
         _this3.setState({
           profile: response.data[0],
+          //userInfo: response.data[1],
           showProfile: true
         });
 
         if (_this3.state.profile != undefined) _this3.setState({
           id: _this3.state.profile.id
-        }); //console.log(this.state.profile);
+        }); //console.log(this.state.id);
+        //console.log(this.state.userInfo);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -66485,59 +66512,56 @@ function (_Component) {
         showProfile: false
       });
       axios__WEBPACK_IMPORTED_MODULE_3___default.a.get('/api/profile/' + this.state.id + '/edit').then(function (response) {
-        //console.log(response);
+        //console.log(response.data);
         _this4.setState({
-          editProfile: response.data,
+          //userEdit: response.data[0],
+          editProfile: response.data[0],
           showEdit: true //id: editProfile.id,
 
-        }); //console.log(this.state.editProfile);
+        }); // this.setState({
+        //     name: this.state.userEdit.name,
+        //     email: this.state.userEdit.email,
+        // })
+        //console.log(this.state.editProfile);
+        //console.log(this.state.userEdit);
 
 
-        switch (_this4.state.userRole) {
-          case 'Fakultet':
-            _this4.setState({
-              id: _this4.state.editProfile.id,
-              name: _this4.state.editProfile.name,
-              university: _this4.state.editProfile.university,
-              address: _this4.state.editProfile.address,
-              phone: _this4.state.editProfile.phone,
-              email: _this4.state.editProfile.email,
-              OIB: _this4.state.editProfile.OIB
-            });
-
-          case 'Student':
-            _this4.setState({
-              id: _this4.state.editProfile.id,
-              name: _this4.state.editProfile.name,
-              lastName: _this4.state.editProfile.lastName,
-              email: _this4.state.editProfile.email,
-              indexNumber: _this4.state.editProfile.indexNumber,
-              faculty: _this4.state.editProfile.faculty,
-              study: _this4.state.editProfile.study,
-              course: _this4.state.editProfile.course,
-              yearsOfStudy: _this4.state.editProfile.yearsOfStudy,
-              OIB: _this4.state.editProfile.OIB
-            });
-
-          case 'Tvrtka':
-            _this4.setState({
-              id: _this4.state.editProfile.id,
-              name: _this4.state.editProfile.name,
-              address: _this4.state.editProfile.address,
-              phone: _this4.state.editProfile.phone,
-              email: _this4.state.editProfile.email,
-              OIB: _this4.state.editProfile.OIB
-            });
-
+        if (_this4.state.userRole == 'Fakultet') {
+          _this4.setState({
+            id: _this4.state.editProfile.id,
+            name: _this4.state.editProfile.user.name,
+            university: _this4.state.editProfile.university,
+            address: _this4.state.editProfile.address,
+            phone: _this4.state.editProfile.phone,
+            email: _this4.state.editProfile.user.email,
+            OIB: _this4.state.editProfile.OIB
+          });
+        } else if (_this4.state.userRole == 'Student') {
+          _this4.setState({
+            id: _this4.state.editProfile.id,
+            name: _this4.state.editProfile.user.name,
+            //lastName: this.state.editProfile.lastName,
+            email: _this4.state.editProfile.user.email,
+            indexNumber: _this4.state.editProfile.indexNumber,
+            faculty: _this4.state.editProfile.faculty,
+            study: _this4.state.editProfile.study,
+            course: _this4.state.editProfile.course,
+            yearsOfStudy: _this4.state.editProfile.yearsOfStudy,
+            OIB: _this4.state.editProfile.OIB
+          });
+        } else if (_this4.state.userRole == 'Tvrtka') {
+          _this4.setState({
+            id: _this4.state.editProfile.id,
+            name: _this4.state.editProfile.user.name,
+            address: _this4.state.editProfile.address,
+            phone: _this4.state.editProfile.phone,
+            email: _this4.state.editProfile.user.email,
+            OIB: _this4.state.editProfile.OIB
+          });
         }
       })["catch"](function (error) {
         console.log(error);
       });
-    }
-  }, {
-    key: "handleDelete",
-    value: function handleDelete() {
-      console.log('delete');
     }
   }, {
     key: "handleCreate",
@@ -66553,9 +66577,8 @@ function (_Component) {
         _this5.setState({
           createProfile: response.data,
           showCreate: true
-        });
+        }); //console.log(this.state.createProfile);
 
-        console.log(_this5.state.createProfile);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -66565,76 +66588,113 @@ function (_Component) {
     value: function handleSubmit(e) {
       var _this6 = this;
 
-      e.preventDefault(); //console.log('submit');
+      e.preventDefault();
+      this.setState({
+        errorMessage: ''
+      }); //console.log('submit');
 
-      switch (this.state.userRole) {
-        case 'Fakultet':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
-            name: this.state.name,
-            university: this.state.university,
-            address: this.state.address,
-            phone: this.state.phone,
-            email: this.state.email,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this6.setState({
-              showCreate: false,
-              showProfile: true
+      if (this.state.userRole == 'Fakultet') {
+        if (this.state.university == '' || this.state.address == '' || this.state.phone == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
+          }); //console.log(this.state.university);
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
             });
+          } else {
+            //console.log(this.state);
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
+              //name: this.state.name,
+              university: this.state.university,
+              address: this.state.address,
+              phone: this.state.phone,
+              //email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response.data);
+              _this6.setState({
+                showCreate: false,
+                showProfile: true
+              });
 
-            _this6.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
+              _this6.reloadProfile(); //this.props.history.push('/profile');
+              //console.log(response);
 
-          })["catch"](function (error) {
-            console.log(error);
-          });
-
-        case 'Student':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
-            name: this.state.name,
-            lastName: this.state.lastName,
-            email: this.state.email,
-            indexNumber: this.state.indexNumber,
-            faculty: this.state.faculty,
-            study: this.state.study,
-            course: this.state.course,
-            yearsOfStudy: this.state.yearsOfStudy,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this6.setState({
-              showCreate: false,
-              showProfile: true
+            })["catch"](function (error) {
+              console.log(error);
             });
-
-            _this6.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
-
-          })["catch"](function (error) {
-            console.log(error);
+          }
+        }
+      } else if (this.state.userRole == 'Student') {
+        if (this.state.indexNumber == '' || this.state.faculty == '' || this.state.study == '' || this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
           });
-
-        case 'Tvrtka':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
-            name: this.state.name,
-            address: this.state.address,
-            phone: this.state.phone,
-            email: this.state.email,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this6.setState({
-              showCreate: false,
-              showProfile: true
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
             });
+          } else {
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
+              //name: this.state.name,
+              //lastName: this.state.lastName,
+              //email: this.state.email,
+              indexNumber: this.state.indexNumber,
+              faculty: this.state.faculty,
+              study: this.state.study,
+              course: this.state.course,
+              yearsOfStudy: this.state.yearsOfStudy,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this6.setState({
+                showCreate: false,
+                showProfile: true
+              });
 
-            _this6.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
+              _this6.reloadProfile(); //this.props.history.push('/profile');
+              //console.log(response);
 
-          })["catch"](function (error) {
-            console.log(error);
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
+      } else if (this.state.userRole == 'Tvrtka') {
+        if (this.state.address == '' || this.state.phone == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
           });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile', {
+              //name: this.state.name,
+              address: this.state.address,
+              phone: this.state.phone,
+              //email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this6.setState({
+                showCreate: false,
+                showProfile: true
+              });
+
+              _this6.reloadProfile(); //this.props.history.push('/profile');
+              //console.log(response);
+
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
       }
     }
   }, {
@@ -66643,84 +66703,130 @@ function (_Component) {
       var _this7 = this;
 
       e.preventDefault();
+      this.setState({
+        errorMessage: ''
+      });
 
-      switch (this.state.userRole) {
-        case 'Fakultet':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
-            _method: 'PUT',
-            name: this.state.name,
-            university: this.state.university,
-            address: this.state.address,
-            phone: this.state.phone,
-            email: this.state.email,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this7.setState({
-              showEdit: false,
-              showProfile: true
-            });
-
-            _this7.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
-
-          })["catch"](function (error) {
-            console.log(error);
+      if (this.state.userRole == 'Fakultet') {
+        if (this.state.name == '' || this.state.university == '' || this.state.address == '' || this.state.phone == '' || this.state.email == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
           });
-
-        case 'Student':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
-            _method: 'PUT',
-            name: this.state.name,
-            lastName: this.state.lastName,
-            email: this.state.email,
-            indexNumber: this.state.indexNumber,
-            faculty: this.state.faculty,
-            study: this.state.study,
-            course: this.state.course,
-            yearsOfStudy: this.state.yearsOfStudy,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this7.setState({
-              showEdit: false,
-              showProfile: true
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
             });
+          } else {
+            //console.log('updated');
+            //console.log(this.state);
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              university: this.state.university,
+              address: this.state.address,
+              phone: this.state.phone,
+              email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this7.setState({
+                showEdit: false,
+                showProfile: true
+              });
 
-            _this7.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
-
-          })["catch"](function (error) {
-            console.log(error);
-          });
-
-        case 'Tvrtka':
-          axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
-            _method: 'PUT',
-            name: this.state.name,
-            address: this.state.address,
-            phone: this.state.phone,
-            email: this.state.email,
-            OIB: this.state.OIB
-          }).then(function (response) {
-            //console.log(response);
-            _this7.setState({
-              showEdit: false,
-              showProfile: true
+              _this7.reloadProfile();
+            })["catch"](function (error) {
+              console.log(error);
             });
-
-            _this7.reloadProfile(); //this.props.history.push('/profile');
-            //console.log(response);
-
-          })["catch"](function (error) {
-            console.log(error);
+          }
+        }
+      } else if (this.state.userRole == 'Student') {
+        if (this.state.name == '' || this.state.email == '' || this.state.indexNumber == '' || this.state.faculty == '' || this.state.study == '' || this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
           });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              //lastName: this.state.lastName,
+              email: this.state.email,
+              indexNumber: this.state.indexNumber,
+              faculty: this.state.faculty,
+              study: this.state.study,
+              course: this.state.course,
+              yearsOfStudy: this.state.yearsOfStudy,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this7.setState({
+                showEdit: false,
+                showProfile: true
+              });
+
+              _this7.reloadProfile(); //this.props.history.push('/profile');
+              //console.log(response);
+
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
+      } else if (this.state.userRole == 'Tvrtka') {
+        if (this.state.name == '' || this.state.address == '' || this.state.phone == '' || this.state.email == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
+          });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              address: this.state.address,
+              phone: this.state.phone,
+              email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this7.setState({
+                showEdit: false,
+                showProfile: true
+              });
+
+              _this7.reloadProfile(); //this.props.history.push('/profile');
+              //console.log(response);
+
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
       }
     }
   }, {
+    key: "changeState",
+    value: function changeState() {
+      this.setState({
+        showEdit: false,
+        showProfile: true
+      });
+      this.reloadProfile();
+    }
+  }, {
     key: "handleChange",
-    value: function handleChange(e) {
-      this.setState(_defineProperty({}, e.target.name, e.target.value)); //console.log(this.state);
+    value: function handleChange(event) {
+      this.setState(_defineProperty({}, event.target.name, event.target.value)); //console.log(this.state);
+      //this.setState({value: event.target.value});
     }
   }, {
     key: "render",
@@ -66730,8 +66836,7 @@ function (_Component) {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Profile", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_2__["default"], {
         role: this.state.userRole
       }) : null, this.state.showProfile ? this.state.profile != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ProfileList__WEBPACK_IMPORTED_MODULE_4__["default"], {
-        profile: this.state.profile,
-        role: this.state.userRole
+        profile: this.state.profile
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleEdit
       }, "Uredi")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -66747,129 +66852,10 @@ function (_Component) {
         }) : null;
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleSubmit
-      }, "Submit")) : null : null, this.state.showEdit ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, this.state.userRole == 'Fakultet' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "name",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.name,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv sveu\u010Dili\u0161ta: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "university",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.university,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "address",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.address,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "phone",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.phone,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "email",
-        type: "email" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.email,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "OIB",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.OIB,
-        onChange: this.handleChange
-      }))) : this.state.userRole == 'Student' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Ime studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "name",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.name,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Prezime studenta: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "lastName",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.lastName,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "email",
-        type: "email" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.email,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Broj indeksa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "indexNumber",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.indexNumber,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "faculty",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.faculty,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Studij: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "study",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.study,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Smjer: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "course",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.course,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Godina studija:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "yearsOfStudy",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.yearsOfStudy,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "OIB",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.OIB,
-        onChange: this.handleChange
-      }))) : this.state.userRole == 'Tvrtka' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv firme:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "name",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.name,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "address",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.address,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "phone",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.phone,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "email",
-        type: "email" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.email,
-        onChange: this.handleChange
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        name: "OIB",
-        type: "text" // value={this.state.profileValue[index]}
-        ,
-        value: this.state.OIB,
-        onChange: this.handleChange
-      }))) : null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-        onClick: this.handleUpdate
-      }, "Update")) : null);
+      }, "Po\u0161alji"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : null : null, this.state.showEdit ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ProfileInput__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        profile: this.state.editProfile,
+        changeState: this.changeState
+      }) : null);
     }
   }]);
 
@@ -66877,6 +66863,301 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Profile);
+
+/***/ }),
+
+/***/ "./resources/js/components/ProfileInput.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/ProfileInput.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+var ProfileInput =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ProfileInput, _Component);
+
+  function ProfileInput(props) {
+    var _this;
+
+    _classCallCheck(this, ProfileInput);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ProfileInput).call(this, props));
+    _this.state = {
+      userRole: localStorage.getItem('role'),
+      id: _this.props.profile.id,
+      name: _this.props.profile.user.name,
+      university: _this.props.profile.university,
+      address: _this.props.profile.address,
+      phone: _this.props.profile.phone,
+      email: _this.props.profile.user.email,
+      OIB: _this.props.profile.OIB,
+      indexNumber: _this.props.profile.indexNumber,
+      faculty: _this.props.profile.faculty,
+      study: _this.props.profile.study,
+      course: _this.props.profile.course,
+      yearsOfStudy: _this.props.profile.yearsOfStudy,
+      errorMessage: ''
+    };
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.handleUpdate = _this.handleUpdate.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(ProfileInput, [{
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState(_defineProperty({}, event.target.name, event.target.value)); //console.log(this.state);
+      //this.setState({value: event.target.value});
+    }
+  }, {
+    key: "handleUpdate",
+    value: function handleUpdate(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+      this.setState({
+        errorMessage: ''
+      });
+
+      if (this.state.userRole == 'Fakultet') {
+        if (this.state.name == '' || this.state.university == '' || this.state.address == '' || this.state.phone == '' || this.state.email == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
+          });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            //console.log('updated');
+            //console.log(this.state);
+            axios.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              university: this.state.university,
+              address: this.state.address,
+              phone: this.state.phone,
+              email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response.data);
+              _this2.props.changeState();
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
+      } else if (this.state.userRole == 'Student') {
+        if (this.state.name == '' || this.state.email == '' || this.state.indexNumber == '' || this.state.faculty == '' || this.state.study == '' || this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
+          });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            axios.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              //lastName: this.state.lastName,
+              email: this.state.email,
+              indexNumber: this.state.indexNumber,
+              faculty: this.state.faculty,
+              study: this.state.study,
+              course: this.state.course,
+              yearsOfStudy: this.state.yearsOfStudy,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this2.props.changeState();
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
+      } else if (this.state.userRole == 'Tvrtka') {
+        if (this.state.name == '' || this.state.address == '' || this.state.phone == '' || this.state.email == '' || this.state.OIB == '') {
+          this.setState({
+            errorMessage: 'popunite sva polja'
+          });
+        } else {
+          if (this.state.OIB.length < 11) {
+            this.setState({
+              errorMessage: 'OIB mora sadržavati 11 znakova'
+            });
+          } else {
+            axios.post('/api/profile/' + this.state.id, {
+              _method: 'PUT',
+              name: this.state.name,
+              address: this.state.address,
+              phone: this.state.phone,
+              email: this.state.email,
+              OIB: this.state.OIB
+            }).then(function (response) {
+              //console.log(response);
+              _this2.props.changeState();
+            })["catch"](function (error) {
+              console.log(error);
+            });
+          }
+        }
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      switch (this.props.profile.user.role) {
+        case 'Tvrtka':
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+            onSubmit: this.handleUpdate
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv firme:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "name",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.name,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "address",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.address,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "phone",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.phone,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "email",
+            type: "email" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.email,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "OIB",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.OIB,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            type: "submit"
+          }, "Spremi"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage));
+
+        case 'Fakultet':
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+            onSubmit: this.handleUpdate
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv sveu\u010Dili\u0161ta: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "university",
+            type: "text",
+            value: this.state.university,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "name",
+            type: "text",
+            value: this.state.name,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "address",
+            type: "text",
+            value: this.state.address,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "phone",
+            type: "text",
+            value: this.state.phone,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "email",
+            type: "email",
+            value: this.state.email,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "OIB",
+            type: "text",
+            value: this.state.OIB,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            type: "submit"
+          }, "Spremi"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage));
+
+        case 'Student':
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+            onSubmit: this.handleUpdate
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Ime studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "name",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.name,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Email adresa:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "email",
+            type: "email" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.email,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Broj indeksa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "indexNumber",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.indexNumber,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta: ", this.state.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Studij: ", this.state.study)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Smjer: ", this.state.course)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Godina studija: ", this.state.yearsOfStudy)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            name: "OIB",
+            type: "text" // value={this.state.profileValue[index]}
+            ,
+            value: this.state.OIB,
+            onChange: this.handleChange
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+            type: "submit"
+          }, "Spremi"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage));
+
+        default:
+          return null;
+      }
+    }
+  }]);
+
+  return ProfileInput;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (ProfileInput);
 
 /***/ }),
 
@@ -66916,29 +67197,29 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var Practice =
+var ProfileList =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Practice, _Component);
+  _inherits(ProfileList, _Component);
 
-  function Practice(props) {
-    _classCallCheck(this, Practice);
+  function ProfileList(props) {
+    _classCallCheck(this, ProfileList);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Practice).call(this, props));
+    return _possibleConstructorReturn(this, _getPrototypeOf(ProfileList).call(this, props));
   }
 
-  _createClass(Practice, [{
+  _createClass(ProfileList, [{
     key: "render",
     value: function render() {
-      switch (this.props.role) {
+      switch (this.props.profile.user.role) {
         case 'Tvrtka':
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv firme: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Adresa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.address)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.phone)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Email adresa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv firme: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Adresa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.address)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.phone)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Email adresa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
 
         case 'Fakultet':
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv fakultet: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv sveu\u010Dili\u0161ta: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.university)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Adresa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.address)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.phone)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Email adresa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv fakultet: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Naziv sveu\u010Dili\u0161ta: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.university)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Adresa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.address)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Kontakt: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.phone)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Email adresa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
 
         case 'Student':
-          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "ime studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "prezime studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.lastName)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "email studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "broj indeksa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.indexNumber)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "fakultet"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "studij"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.study)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "smjer"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.course)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "godina studija"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.yearsOfStudy)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "ime studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "email studenta"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.user.email)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "broj indeksa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.indexNumber)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "fakultet"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "studij"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.study)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "smjer"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.course)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "godina studija"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.yearsOfStudy)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "OIB"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.profile.OIB))));
 
         default:
           return null;
@@ -66946,10 +67227,10 @@ function (_Component) {
     }
   }]);
 
-  return Practice;
+  return ProfileList;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-/* harmony default export */ __webpack_exports__["default"] = (Practice);
+/* harmony default export */ __webpack_exports__["default"] = (ProfileList);
 
 /***/ }),
 
@@ -67008,7 +67289,8 @@ function (_Component) {
       role: 'Fakultet',
       number: 1,
       password: '',
-      password_confirmation: ''
+      password_confirmation: '',
+      errorMessage: ''
     };
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
@@ -67022,30 +67304,58 @@ function (_Component) {
 
       e.preventDefault(); //console.log(this.state);
 
-      if (this.state.role == 'Tvrtka' && this.state.number == 2 || this.state.role == 'Fakultet' && this.state.number == 1) {
-        //console.log('Good number');
-        axios.post('/api/register', {
-          name: this.state.name,
-          email: this.state.email,
-          role: this.state.role,
-          password: this.state.password,
-          password_confirmation: this.state.password_confirmation
-        }).then(function (response) {
-          console.log(response);
+      this.setState({
+        errorMessage: ''
+      });
 
-          _this2.props.history.push('/login'); //console.log(response);
-
-        })["catch"](function (error) {
-          console.log(error);
+      if (this.state.name == '' || this.state.email == '' || this.state.password == '' || this.state.password_confirmation == '' || this.state.number == '') {
+        this.setState({
+          errorMessage: 'popunite sva polja'
         });
       } else {
-        console.log('Wrong number');
+        if (this.state.password.length > 7 && this.state.password_confirmation == this.state.password) {
+          if (this.state.role == 'Tvrtka' && this.state.number == 2 || this.state.role == 'Fakultet' && this.state.number == 1) {
+            //console.log('Good number');
+            axios.post('/api/register', {
+              name: this.state.name,
+              email: this.state.email,
+              role: this.state.role,
+              password: this.state.password,
+              password_confirmation: this.state.password_confirmation
+            }).then(function (response) {
+              //console.log(response);
+              _this2.setState({
+                errorMessage: ''
+              });
+
+              _this2.props.history.push('/login'); //console.log(response);
+
+            })["catch"](function (error) {
+              //console.log(error.message);
+              _this2.setState({
+                errorMessage: 'postoji korisnik s tom email adresom'
+              });
+            });
+          } else {
+            //console.log('Wrong number');
+            this.setState({
+              errorMessage: 'pogrešan broj unesen'
+            });
+          }
+        } else {
+          this.setState({
+            errorMessage: 'lozinka mora sadržavati barem 8 znakova te podudrati se'
+          });
+        }
       }
     }
   }, {
     key: "handleChange",
     value: function handleChange(e) {
       this.setState(_defineProperty({}, e.target.name, e.target.value)); //console.log(this.state);
+      // this.setState({
+      //     errorMessage: ''
+      // })
     }
   }, {
     key: "render",
@@ -67085,18 +67395,20 @@ function (_Component) {
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "password",
         name: "password",
+        autoComplete: "on",
         placeholder: "enter password",
         value: this.state.password,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "password",
         name: "password_confirmation",
+        autoComplete: "on",
         placeholder: "enter password again",
         value: this.state.password_confirmation,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit"
-      }, "Register")));
+      }, "Register"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)));
     }
   }]);
 
@@ -67107,9 +67419,9 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/components/StudentList.js":
+/***/ "./resources/js/components/StudentInfo.js":
 /*!************************************************!*\
-  !*** ./resources/js/components/StudentList.js ***!
+  !*** ./resources/js/components/StudentInfo.js ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -67141,21 +67453,300 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
+var StudentInfo =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(StudentInfo, _Component);
+
+  function StudentInfo(props) {
+    _classCallCheck(this, StudentInfo);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(StudentInfo).call(this, props));
+  }
+
+  _createClass(StudentInfo, [{
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, this.props.index), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.lastName), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.indxNumber), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.faculty), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.study), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.yearsOfStudy));
+    }
+  }]);
+
+  return StudentInfo;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (StudentInfo);
+
+/***/ }),
+
+/***/ "./resources/js/components/StudentList.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/StudentList.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _StudentInfo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./StudentInfo */ "./resources/js/components/StudentInfo.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
 var StudentList =
 /*#__PURE__*/
 function (_Component) {
   _inherits(StudentList, _Component);
 
-  function StudentList() {
+  function StudentList(props) {
+    var _this;
+
     _classCallCheck(this, StudentList);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(StudentList).apply(this, arguments));
-  }
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(StudentList).call(this, props));
+    _this.state = {
+      users: [],
+      id: _this.props.student.id,
+      name: _this.props.student.user.name,
+      email: _this.props.student.user.email,
+      indexNumber: _this.props.student.indexNumber,
+      faculty: _this.props.student.faculty,
+      study: _this.props.student.study,
+      course: _this.props.student.course,
+      yearsOfStudy: _this.props.student.yearsOfStudy,
+      OIB: _this.props.student.OIB,
+      user_id: _this.props.student.user_id,
+      studentInfo: [],
+      userInfo: [],
+      showRow: true,
+      showInfo: false,
+      showEdit: false,
+      errorMessage: '' //this.handleDelete = this.handleDelete.bind(this);
+
+    };
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleShow = _this.handleShow.bind(_assertThisInitialized(_this));
+    _this.handleBack = _this.handleBack.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.handleUpdate = _this.handleUpdate.bind(_assertThisInitialized(_this));
+    return _this;
+  } // reloadComponent(){
+  //     axios.get('/api/students/'+this.state.id)
+  //         .then(response =>{
+  //             //console.log(response);
+  //             this.setState({
+  //                 studentInfo: response.data[1],
+  //                 userInfo: response.data[0][0],
+  //                 showInfo: true
+  //             })
+  //             //console.log(this.state.studentInfo);
+  //             //console.log(this.state.userInfo);
+  //             this.setState({
+  //                 name: this.state.userInfo.name,
+  //                 //lastName: this.state.studentInfo.lastName,
+  //                 indexNumber: this.state.studentInfo.indexNumber,
+  //                 faculty: this.state.studentInfo.faculty,
+  //                 study: this.state.studentInfo.study,
+  //                 course: this.state.studentInfo.course,
+  //                 yearsOfStudy: this.state.studentInfo.yearsOfStudy
+  //             })
+  //             //console.log(this.state.studentInfo);
+  //         }).catch(error =>{
+  //             console.log(error);
+  //         })
+  // }
+
 
   _createClass(StudentList, [{
+    key: "handleEdit",
+    value: function handleEdit() {
+      var _this2 = this;
+
+      //console.log('edit');
+      this.setState({
+        showRow: false,
+        showInfo: false
+      });
+      axios__WEBPACK_IMPORTED_MODULE_3___default.a.get('/api/students/' + this.state.id + '/edit').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          studentInfo: response.data[0],
+          //userInfo: response.data[0][0],
+          showEdit: true
+        }); //console.log(this.state.studentInfo);
+        //console.log(this.state.userInfo);
+
+
+        _this2.setState({
+          name: _this2.state.studentInfo.user.name,
+          //lastName: this.state.studentInfo.lastName,
+          user_id: _this2.state.studentInfo.user_id,
+          indexNumber: _this2.state.studentInfo.indexNumber,
+          faculty: _this2.state.studentInfo.faculty,
+          study: _this2.state.studentInfo.study,
+          course: _this2.state.studentInfo.course,
+          yearsOfStudy: _this2.state.studentInfo.yearsOfStudy
+        }); //console.log(this.state.user_id);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleShow",
+    value: function handleShow() {
+      var _this3 = this;
+
+      //console.log('show');
+      //console.log(this.state.id);
+      this.setState({
+        showRow: false,
+        showEdit: false
+      });
+      axios__WEBPACK_IMPORTED_MODULE_3___default.a.get('/api/students/' + this.state.id).then(function (response) {
+        //console.log(response.data);
+        _this3.setState({
+          studentInfo: response.data[0],
+          //userInfo: response.data[0][0],
+          showInfo: true
+        }); //console.log('student',this.state.studentInfo);
+        // console.log('user',this.state.userInfo);
+
+
+        _this3.setState({
+          name: _this3.state.studentInfo.user.name,
+          //lastName: this.state.studentInfo.lastName,
+          indexNumber: _this3.state.studentInfo.indexNumber,
+          faculty: _this3.state.studentInfo.faculty,
+          study: _this3.state.studentInfo.study,
+          course: _this3.state.studentInfo.course,
+          yearsOfStudy: _this3.state.studentInfo.yearsOfStudy
+        }); //console.log(this.state.studentInfo);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleBack",
+    value: function handleBack() {
+      //console.log('back');
+      this.setState({
+        showRow: true,
+        showInfo: false,
+        showEdit: false
+      });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(e) {
+      this.setState(_defineProperty({}, e.target.name, e.target.value)); //console.log(this.state);
+    }
+  }, {
+    key: "handleUpdate",
+    value: function handleUpdate() {
+      var _this4 = this;
+
+      //console.log('update');
+      this.setState({
+        errorMessage: ''
+      });
+
+      if (this.state.name == '' || this.state.indexNumber == '' || this.state.study == '' || this.state.faculty == '' || this.state.course == '' || this.state.yearsOfStudy == '') {
+        this.setState({
+          errorMessage: 'popunite sva polja'
+        });
+      } else {
+        axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/students/' + this.state.id, {
+          _method: 'PUT',
+          name: this.state.name,
+          user_id: this.state.user_id,
+          //lastName: this.state.lastName,
+          //email: this.state.email,
+          indexNumber: this.state.indexNumber,
+          faculty: this.state.faculty,
+          course: this.state.course,
+          study: this.state.study,
+          yearsOfStudy: this.state.yearsOfStudy //OIB: this.state.OIB
+
+        }).then(function (response) {
+          _this4.handleBack();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "lista studenata"));
+      return this.state.showRow ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.indexNumber), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.faculty), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.study), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.course), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.yearsOfStudy), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleShow
+      }, "Detaljnije")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleEdit
+      }, "Uredi"))) : this.state.showInfo ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, this.props.index + 1)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Ime i prezime:"), " ", this.state.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Email: ", this.state.email))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "OIB: ", this.state.OIB))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Br. indeksa: ", this.state.indexNumber))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Fakultet: ", this.state.faculty))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Studij: ", this.state.study))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Smjer: ", this.state.course))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Godina studija: ", this.state.yearsOfStudy))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleBack
+      }, "Back"))) : this.state.showEdit ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "name",
+        type: "text",
+        value: this.state.name || '',
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "indexNumber",
+        type: "text",
+        value: this.state.indexNumber || '',
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.faculty), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "study",
+        type: "text",
+        value: this.state.study || '',
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "course",
+        type: "text",
+        value: this.state.course || '',
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "yearsOfStudy",
+        type: "text",
+        value: this.state.yearsOfStudy || '',
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleUpdate
+      }, "Spremi")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage))) : null;
     }
   }]);
 
@@ -67220,15 +67811,26 @@ function (_Component) {
     _this.state = {
       showForm: false,
       name: '',
+      //lastName: '',
+      indexNumber: '',
       email: '',
       role: 'Student',
       password: '',
-      userRole: localStorage.getItem('role') //showNav: false
+      course: '',
+      study: '',
+      yearsOfStudy: '',
+      userRole: localStorage.getItem('role'),
+      students: [],
+      //users: [],
+      id: '',
+      show: true,
+      errorMessage: '' //showNav: false
 
     };
     _this.handleButton = _this.handleButton.bind(_assertThisInitialized(_this));
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.refreshStudents = _this.refreshStudents.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -67253,60 +67855,202 @@ function (_Component) {
 
       e.preventDefault(); //console.log(this.state);
 
-      axios.post('/api/register', {
-        name: this.state.name,
-        email: this.state.email,
-        role: this.state.role,
-        password: this.state.password
-      }).then(function (response) {
-        _this2.setState({
-          showForm: false,
-          name: '',
-          email: '',
-          password: ''
-        }); //console.log(response);
-        //this.props.history.push('/main');
+      this.setState({
+        errorMessage: ''
+      });
+
+      if (this.state.name == '' || this.state.indexNumber == '' || this.state.study == '' || this.state.course == '' || this.state.yearsOfStudy == '' || this.state.email == '' || this.state.password == '') {
+        this.setState({
+          errorMessage: 'popunite sva polja'
+        });
+      } else {
+        if (this.state.password.length < 8) {
+          this.setState({
+            errorMessage: 'lozinka mora sadržavati barem 8 znakova'
+          });
+        } else {
+          axios.post('/api/register', {
+            name: this.state.name,
+            email: this.state.email,
+            role: this.state.role,
+            password: this.state.password
+          }).then(function (response) {
+            //console.log(response.data);
+            _this2.setState({
+              showForm: false,
+              id: response.data.id
+            }); //console.log(this.state.id);
+            //this.props.history.push('/main');
+
+          }).then(function (response) {
+            return axios.post('/api/students', {
+              //name: this.state.name,
+              //lastName: this.state.lastName,
+              indexNumber: _this2.state.indexNumber,
+              study: _this2.state.study,
+              course: _this2.state.course,
+              yearsOfStudy: _this2.state.yearsOfStudy,
+              //email: this.state.email,
+              user_id: _this2.state.id
+            });
+          }).then(function (response) {
+            //console.log('Response', response);
+            _this2.setState({
+              name: '',
+              //indexNumber: '',
+              email: '',
+              yearsOfStudy: '',
+              course: '',
+              study: '',
+              indexNumber: '',
+              password: ''
+            });
+
+            _this2.refreshStudents();
+          })["catch"](function (error) {
+            console.log(error);
+
+            _this2.setState({
+              errorMessage: 'postoji korisnik s tom email adresom'
+            });
+          });
+        }
+      } //console.log(this.state.id);
+      // axios.post('/api/students',{
+      //     name: this.state.name,
+      //     lastName: this.state.lastName,
+      //     indexNumber: this.state.indexNumber,
+      //     email: this.state.email,
+      //     user_id: this.state.id
+      // })
+      // .then(response =>{
+      //     console.log(response);
+      // }).catch(error =>{
+      //     console.log(error);
+      // })
+
+    }
+  }, {
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      var _this3 = this;
+
+      axios.get('/api/students').then(function (response) {
+        //console.log(response);
+        _this3.setState({
+          //users: response.data[0],
+          students: response.data //showProfile: true
+
+        }); //console.log(this.state.students);
+        //console.log(this.state.users[0]);
+        // if(this.state.students != undefined)
+        //     this.setState({
+        //         id: this.state.students.id
+        //     })
+        //console.log(this.state.students);
 
       })["catch"](function (error) {
         console.log(error);
       });
-    } // componentDidMount(){
-    //     this.setState({
-    //         role: localStorage.getItem('role'),
-    //         showNav: true
-    //     })
-    // }
+    }
+  }, {
+    key: "refreshStudents",
+    value: function refreshStudents() {
+      var _this4 = this;
 
+      axios.get('/api/students').then(function (response) {
+        //console.log(response);
+        _this4.setState({
+          students: response.data
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "students", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_3__["default"], {
         role: this.state.userRole
-      }) : null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      }) : null, !this.state.showForm ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleButton
-      }, "Dodaj studenta"), this.state.showForm ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+      }, "Dodaj studenta") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleButton
+      }, "Nazad"), this.state.showForm ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
         onSubmit: this.handleSubmit
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Add student"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "name",
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         name: "name",
+        type: "text",
         placeholder: "enter student name",
         value: this.state.name,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "email",
+        name: "indexNumber",
+        type: "text",
+        placeholder: "enter index number",
+        value: this.state.indexNumber,
+        onChange: this.handleChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         name: "email",
+        type: "email",
         placeholder: "enter student email",
         value: this.state.email,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "password",
+        name: "study",
+        type: "text",
+        placeholder: "enter student study",
+        value: this.state.study,
+        onChange: this.handleChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "course",
+        type: "text",
+        placeholder: "enter student course",
+        value: this.state.course,
+        onChange: this.handleChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "yearsOfStudy",
+        type: "text",
+        placeholder: "enter yearsOfStudy",
+        value: this.state.yearsOfStudy,
+        onChange: this.handleChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         name: "password",
+        type: "password",
+        autoComplete: "on",
         placeholder: "enter password",
         value: this.state.password,
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit"
-      }, "Register")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_StudentList__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+      }, "Registriraj"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "#"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Ime"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Broj indeksa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Fakultet"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Studij"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Smjer"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Godina studija"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.students.map(function (key, index) {
+        return (//this.state.users
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_StudentList__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            key: index,
+            student: key,
+            index: index
+          })
+        );
+      } //console.log(key[index])
+      ))));
     }
   }]);
 

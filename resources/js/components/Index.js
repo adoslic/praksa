@@ -39,6 +39,7 @@ class Index extends Component {
                 <Route path='/students' component={Students}/>
                 <Route path='/practice' component={Practice}/>
                 <Route path='/profile' component={Profile}/>
+                {/* <Route render={() => <Redirect to="/" />} /> */}
             </Router>
         );
     }

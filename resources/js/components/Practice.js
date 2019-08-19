@@ -19,6 +19,7 @@ class Practice extends Component {
                     <MainNavigation role={this.state.userRole}/>
                     :null
                 }
+                {/*  */}
 
             </div>
         );

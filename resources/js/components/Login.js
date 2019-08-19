@@ -10,7 +10,8 @@ class Login extends Component {
         this.state = {
             username : '',
             password : '',
-            accessToken: localStorage.getItem('access_token') || null
+            accessToken: localStorage.getItem('access_token') || null,
+            errorMessage: ''
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -18,21 +19,37 @@ class Login extends Component {
     }
     handleSubmit(e){
         e.preventDefault();
-        //console.log(this.state);
-        axios.post('/api/login',{
-            username: this.state.username,
-            password: this.state.password,
-        }).then(response =>{
-            const token = response.data.access_token;
-            localStorage.setItem('access_token', token);
-            this.setState({
-                accessToken: token
-            })
-            this.props.history.push('/main');
-            //console.log(response);
-        }).catch(error =>{
-            console.log(error);
+        this.setState({
+            errorMessage: ''
         })
+        //console.log(this.state);
+        if(this.state.username == '' || this.state.password == '' ){
+            this.setState({
+                errorMessage: 'popunite sva polja'
+            })
+        }
+        else{
+            
+                axios.post('/api/login',{
+                    username: this.state.username,
+                    password: this.state.password,
+                }).then(response =>{
+                    const token = response.data.access_token;
+                    localStorage.setItem('access_token', token);
+                    this.setState({
+                        accessToken: token,
+                        errorMessage: ''
+                    })
+                    this.props.history.push('/main');
+                    //console.log(response);
+                }).catch(error =>{
+                    console.log(error);
+                    this.setState({
+                        errorMessage: 'neispravni podaci'
+                    })
+                })
+            
+        }    
         //this.props.history.push('/main');
     }
     handleChange(e){
@@ -55,12 +72,15 @@ class Login extends Component {
 
                     <input 
                         type="password" 
-                        name="password" 
+                        name="password"
+                        autoComplete="on"
                         placeholder="enter password" 
                         value={this.state.password}
                         onChange={this.handleChange}/>
 
                     <button type="submit">Login</button>
+
+                    <div>{this.state.errorMessage}</div>
                 </form>
             </div>
         );

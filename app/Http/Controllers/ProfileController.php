@@ -24,18 +24,22 @@ class ProfileController extends Controller
         
 
         //DOHVATI ID KORISNIKA KOJI JE LOGIRAN
-        $id = auth()->user()->id;
-        $role = auth()->user()->role;
+        //$id = auth()->user()->id;
+        //$role = auth()->user()->role;
+        $user = auth()->user();
 
         //$profiles = [];
-        if($role == 'Student'){
-            $profiles = Student::where('user_id', $id)->get();
+        if($user->role == 'Student'){
+            //$profiles = Student::where('user_id', $user->id)->get();
+            $profiles = Student::with('user')->where('user_id', $user->id)->get();
         }
-        elseif($role == 'Tvrtka'){
-            $profiles = Company::where('user_id', $id)->get();
+        else if($user->role == 'Tvrtka'){
+            //$profiles = Company::where('user_id', $user->id)->get();
+            $profiles = Company::with('user')->where('user_id', $user->id)->get();
         }
-        elseif($role == 'Fakultet'){
-            $profiles = Faculty::where('user_id', $id)->get();
+        else if($user->role == 'Fakultet'){
+            //$profiles = Faculty::where('user_id', $user->id)->get();
+            $profiles = Faculty::with('user')->where('user_id', $user->id)->get();
         }
 
         //$profiles = User::where('id', $id)->get();
@@ -57,11 +61,11 @@ class ProfileController extends Controller
             $table = 'companies';
             $columns = Schema::getColumnListing($table);
         }
-        elseif($role == 'Fakultet'){
+        else if($role == 'Fakultet'){
             $table = 'faculties';
             $columns = Schema::getColumnListing($table);
         }
-        elseif($role == 'Student'){
+        else if($role == 'Student'){
             $table = 'students';
             $columns = Schema::getColumnListing($table);
         }
@@ -77,47 +81,57 @@ class ProfileController extends Controller
     public function store(Request $request)     
     {
         //radi
-        $user_id = auth()->user()->id;
+        $user = auth()->user();
 
-        $role = auth()->user()->role;
+        //$user_id = auth()->user()->id;
+
+        //$role = auth()->user()->role;
         // $profile = $request->isMethod('put')?
         // Faculty::findOrFail($request->id): new Faculty;
-        if($role == 'Student'){
+        if($user->role == 'Student'){
             $profile = new Student;
 
             //ovdje dodaj koja polja treba ispunit za studente
-            $profile->name = $request->input('name');
-            $profile->lastName = $request->input('lastName');
-            $profile->email = $request->input('email');
+            //$profile->name = $request->input('name');
+            //$profile->lastName = $request->input('lastName');
+            //$profile->email = $request->input('email');
             $profile->indexNumber = $request->input('indexNumber');
             $profile->faculty = $request->input('faculty');
             $profile->study = $request->input('study');
             $profile->course = $request->input('course');
             $profile->yearsOfStudy = $request->input('yearsOfStudy');
             $profile->OIB = $request->input('OIB');
-            $profile->user_id = $user_id;
+            $profile->user_id = $user->id;
         }
-        else if($role == 'Tvrtka'){
+        else if($user->role == 'Tvrtka'){
             $profile = new Company;
 
             //ovdje dodaj koja polja treba ispunit za tvrtku
-            $profile->name = $request->input('name');
-            $profile->email = $request->input('email');
+            //$profile->name = $request->input('name');
+            //$profile->email = $request->input('email');
             $profile->address = $request->input('address');
             $profile->phone = $request->input('phone');
             $profile->OIB = $request->input('OIB');
-            $profile->user_id = $user_id;
+            $profile->user_id = $user->id;
         }
-        else if($role == 'Fakultet'){
+        else if($user->role == 'Fakultet'){
             $profile = new Faculty;
             //$profile->id = $request->input('id');
-            $profile->name = $request->input('name');
+            //$profile->name = $request->input('name');
+
+            //if ($request->has('university')) {
             $profile->university = $request->input('university');
+            //}
+            //$test = $request->input('university');
+            
+
             $profile->address = $request->input('address');
             $profile->phone = $request->input('phone');
-            $profile->email = $request->input('email');
+            //$profile->email = $request->input('email');
             $profile->OIB = $request->input('OIB');
-            $profile->user_id = $user_id;
+            $profile->user_id = $user->id;
+            //return $profile;
+            //return $profile;
         }
         
         //$profile->user_id = $user_id;
@@ -140,10 +154,10 @@ class ProfileController extends Controller
         if($role == 'Tvrtka'){
             $profile = Company::findOrFail($id);
         }
-        elseif($role == 'Fakultet'){
+        else if($role == 'Fakultet'){
             $profile = Faculty::findOrFail($id);
         }
-        elseif($role =='Student'){
+        else if($role =='Student'){
             $profile = Student::findOrFail($id);
         }
         
@@ -160,15 +174,26 @@ class ProfileController extends Controller
     public function edit($id)
     {
         //radi
-        $role = auth()->user()->role;
-        if($role == 'Tvrtka'){
-            $profile = Company::findOrFail($id);
+        //$role = auth()->user()->role;
+        $user = auth()->user();
+
+        if($user->role == 'Tvrtka'){
+            //$profile = Company::findOrFail($id);
+            $profile = Company::with('user')->where('user_id', $user->id)->get();
+            //$user = User::findOrFail($userID);  //NAPRAVI I ZA OSTALE ULOGE
+
+            //return [$profile, $user];
         }
-        elseif($role == 'Fakultet'){
-            $profile = Faculty::findOrFail($id);
+        else if($user->role == 'Fakultet'){
+            //$profile = Faculty::findOrFail($id);
+            $profile = Faculty::with('user')->where('user_id', $user->id)->get();
+            //$profile 
+            //return 1;
         }
-        elseif($role =='Student'){
-            $profile = Student::findOrFail($id);
+        else if($user->role =='Student'){
+            //$profile = Student::findOrFail($id);
+            $profile = Student::with('user')->where('user_id', $user->id)->get();
+            
         }
 
         //$profile = Faculty::findOrFail($id);
@@ -186,38 +211,62 @@ class ProfileController extends Controller
     {
         //radi
         //pazi da napraviš POST request, ali postaviš _method=PUT
-        $role = auth()->user()->role;
-        if($role == 'Tvrtka'){
+        //$role = auth()->user()->role;
+        $user = auth()->user();
+
+        if($user->role == 'Tvrtka'){
             $profile = Company::findOrFail($id);
-            $profile->name = $request->input('name');
+            //$profile->name = $request->input('name');
             $profile->address = $request->input('address');
             $profile->phone = $request->input('phone');
-            $profile->email = $request->input('email');
+            //$profile->email = $request->input('email');
             $profile->OIB = $request->input('OIB');
+
+            // $companyId = auth()->user()->id;
+            // //$company = Company::findOrFail($companyId);
+            // $company = User::where('id', $companyId);
+            // $company->update(array('email' => $request->input('email')));
         }
-        elseif($role == 'Fakultet'){
+        else if($user->role == 'Fakultet'){
             $profile = Faculty::findOrFail($id);
-            $profile->name = $request->input('name');
+            //$profile->name = $request->input('name');
             $profile->university = $request->input('university');
             $profile->address = $request->input('address');
             $profile->phone = $request->input('phone');
-            $profile->email = $request->input('email');
+            //$profile->email = $request->input('email');
             $profile->OIB = $request->input('OIB');
 
+            // $facultyId = auth()->user()->id;
+            // //$faculty = Faculty::findOrFail($facultyId);
+            // $faculty = User::where('id', $facultyId);
+            // $faculty->update(array('email' => $request->input('email')));
+
+            //return $faculty;
+
         }
-        elseif($role =='Student'){
+        else if($user->role =='Student'){
             $profile = Student::findOrFail($id);
-            $profile->lastName = $request->input('lastName');
-            $profile->email = $request->input('email');
+            //$profile->name = $request->input('name');
+            //$profile->lastName = $request->input('lastName');
+            //$profile->email = $request->input('email');
             $profile->indexNumber = $request->input('indexNumber');
             $profile->faculty = $request->input('faculty');
             $profile->study = $request->input('study');
             $profile->course = $request->input('course');
             $profile->yearsOfStudy = $request->input('yearsOfStudy');
             $profile->OIB = $request->input('OIB');
+
+            // $studentId = auth()->user()->id;
+            // //$student = Student::findOrFail($studentId);
+            // $student = User::where('id', $studentId);
+            // $student->update(array('email' => $request->input('email')));
         }
 
 
+        //$Id = auth()->user()->id;
+        $Name = User::where('id', $user->id)->update(array('name' => $request->input('name')));
+        $Email = User::where('id', $user->id)->update(array('email' => $request->input('email')));
+        
         if($profile->save()){
             return $profile;
         }
@@ -241,10 +290,10 @@ class ProfileController extends Controller
         if($role == 'Tvrtka'){
             $profile = Company::findOrFail($id);
         }
-        elseif($role == 'Fakultet'){
+        else if($role == 'Fakultet'){
             $profile = Faculty::findOrFail($id);
         }
-        elseif($role =='Student'){
+        else if($role =='Student'){
             $profile = Student::findOrFail($id);
         }
         //$profile = Faculty::findOrFail($id);

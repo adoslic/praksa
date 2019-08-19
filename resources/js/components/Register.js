@@ -11,7 +11,8 @@ class Register extends Component {
             role : 'Fakultet',
             number: 1,
             password : '',
-            password_confirmation: ''
+            password_confirmation: '',
+            errorMessage: ''
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,36 +21,69 @@ class Register extends Component {
     handleSubmit(e){
         e.preventDefault();
         //console.log(this.state);
-        if((this.state.role == 'Tvrtka' && this.state.number == 2) ||
-            (this.state.role == 'Fakultet' && this.state.number == 1)){
-                //console.log('Good number');
-            axios.post('/api/register',{
-                name: this.state.name,
-                email: this.state.email,
-                role: this.state.role,
-                password: this.state.password,
-                password_confirmation: this.state.password_confirmation
-            }).then(response =>{
-                console.log(response);
-                this.props.history.push('/login');
-                //console.log(response);
-            }).catch(error =>{
-                console.log(error);
-            })
+        this.setState({
+            errorMessage: ''
+        })
+        if(this.state.name == '' || this.state.email == '' || this.state.password == '' ||
+            this.state.password_confirmation == '' || this.state.number == ''){
+                this.setState({
+                    errorMessage: 'popunite sva polja'
+                })
         }
         else{
-            console.log('Wrong number');
+            if(this.state.password.length > 7 && this.state.password_confirmation == this.state.password){
+
+                if((this.state.role == 'Tvrtka' && this.state.number == 2) ||
+                    (this.state.role == 'Fakultet' && this.state.number == 1)){
+                        //console.log('Good number');
+                    axios.post('/api/register',{
+                        name: this.state.name,
+                        email: this.state.email,
+                        role: this.state.role,
+                        password: this.state.password,
+                        password_confirmation: this.state.password_confirmation
+                    }).then(response =>{
+                        //console.log(response);
+                        this.setState({
+                            errorMessage: ''
+                        })
+                        this.props.history.push('/login');
+                        //console.log(response);
+                    }).catch(error =>{
+                        
+                        //console.log(error.message);
+                        this.setState({
+                            errorMessage: 'postoji korisnik s tom email adresom'
+                        })
+                    })
+                }
+                else{
+                    //console.log('Wrong number');
+                    this.setState({
+                        errorMessage: 'pogrešan broj unesen'
+                    })
+                }
+            }
+            else{
+                this.setState({
+                    errorMessage: 'lozinka mora sadržavati barem 8 znakova te podudrati se'
+                })
+            }
+
         }
-        
     }
     handleChange(e){
         this.setState({ [e.target.name]: e.target.value });
         //console.log(this.state);
+        // this.setState({
+        //     errorMessage: ''
+        // })
     }
     render() {
         return (
             <div>
                 <Navigation/>
+                
                 <form onSubmit={this.handleSubmit}>
                     
                     <h3>Sign in</h3>
@@ -88,18 +122,22 @@ class Register extends Component {
                         
                     <input 
                         type="password" 
-                        name="password" 
+                        name="password"
+                        autoComplete="on"
                         placeholder="enter password" 
                         value={this.state.password}
                         onChange={this.handleChange}/>
                     <input 
                         type="password" 
-                        name="password_confirmation" 
+                        name="password_confirmation"
+                        autoComplete="on"
                         placeholder="enter password again" 
                         value={this.state.password_confirmation}
                         onChange={this.handleChange}/>    
 
                     <button type="submit">Register</button>
+
+                    <div>{this.state.errorMessage}</div>
                 </form>
             </div>
         );

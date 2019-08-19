@@ -6,7 +6,9 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Student;
 use App\Faculty;
+use App\Company;
 
 class User extends Authenticatable
 {
@@ -39,7 +41,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function student(){
+        return $this->hasOne(Student::class);
+    }
+    
     public function faculty(){
         return $this->hasOne(Faculty::class);
+    }
+
+    public function company(){
+        return $this->hasOne(Company::class);
     }
 }
