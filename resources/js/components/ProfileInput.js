@@ -274,13 +274,13 @@ class ProfileInput extends Component {
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Broj indeksa: </label> 
-                            <input 
+                            <label>Broj indeksa: {this.state.faculty}</label> 
+                            {/* <input 
                                 name='indexNumber'
                                 type='text'
                                 // value={this.state.profileValue[index]}
                                 value={this.state.indexNumber}
-                                onChange={this.handleChange}/>
+                                onChange={this.handleChange}/> */}
                         </div>
                         <div>
                             <label>Naziv fakulteta: {this.state.faculty}</label> 

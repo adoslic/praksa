@@ -150,16 +150,17 @@ class ProfileController extends Controller
     public function show($id)
     {
         //radi
-        $role = auth()->user()->role;
-        if($role == 'Tvrtka'){
-            $profile = Company::findOrFail($id);
-        }
-        else if($role == 'Fakultet'){
-            $profile = Faculty::findOrFail($id);
-        }
-        else if($role =='Student'){
-            $profile = Student::findOrFail($id);
-        }
+        //$role = auth()->user()->role;
+        // if($role == 'Tvrtka'){
+        //     $profile = Company::findOrFail($id);
+        // }
+        // else if($role == 'Fakultet'){
+        //     $profile = Faculty::findOrFail($id);
+        // }
+        // else if($role =='Student'){
+        //     $profile = Student::findOrFail($id);
+        // }
+        $profile = Student::with('user')->where('user_id', $id)->get();
         
 
         return $profile;

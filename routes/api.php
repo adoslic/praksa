@@ -23,4 +23,5 @@ Route::middleware('auth:api')->post('/logout', 'AuthController@logout');
 
 Route::middleware('auth:api')->resource('profile', 'ProfileController');
 Route::middleware('auth:api')->resource('students', 'StudentController');
-Route::middleware('auth:api')->resource('practice', 'PracticeController');
+Route::middleware('auth:api')->resource('practise', 'PractiseController');
+Route::middleware('auth:api')->resource('reports', 'ReportController');

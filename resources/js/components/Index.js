@@ -8,9 +8,11 @@ import Navigation from './Navigation';
 import Main from './Main';
 import Logout from './Logout';
 import Students from './Students';
-import Practice from './Practice';
+import Practise from './Practise';
 import Profile from './Profile';
-//import history from '../history';
+import MyPractise from './MyPractise';
+import ReportList from './ReportList';
+import Grades from './Grades';
 
 class Index extends Component {
     constructor(props){
@@ -37,9 +39,12 @@ class Index extends Component {
                 <Route path='/main' component={Main}/>
                 <Route path='/logout' component={Logout}/>
                 <Route path='/students' component={Students}/>
-                <Route path='/practice' component={Practice}/>
+                <Route path='/practise' component={Practise}/>
+                <Route path='/mypractise' component={MyPractise}/>
                 <Route path='/profile' component={Profile}/>
-                {/* <Route render={() => <Redirect to="/" />} /> */}
+                <Route path='/reports' component={ReportList}/>
+                <Route path='/grades' component={Grades}/>
+                
             </Router>
         );
     }

@@ -29,7 +29,7 @@ class Students extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.refreshStudents = this.refreshStudents.bind(this);
-        
+        this.checkTableRow = this.checkTableRow.bind(this);
     }
     handleButton(){
         this.setState(prevState => ({
@@ -123,25 +123,8 @@ class Students extends Component {
             //     console.log(error);
             // })
     }
-    componentWillMount(){
-        axios.get('/api/students')
-            .then(response =>{
-                //console.log(response);
-                this.setState({
-                    //users: response.data[0],
-                    students: response.data
-                    //showProfile: true
-                })
-                //console.log(this.state.students);
-                //console.log(this.state.users[0]);
-                // if(this.state.students != undefined)
-                //     this.setState({
-                //         id: this.state.students.id
-                //     })
-                //console.log(this.state.students);
-            }).catch(error =>{
-                console.log(error);
-            })
+    componentDidMount(){
+       this.refreshStudents();
     }
     refreshStudents() {
         axios.get('/api/students')
@@ -150,12 +133,20 @@ class Students extends Component {
                 this.setState({
                     students: response.data
                 })
-                
+                this.checkTableRow();
             }).catch(error =>{
                 console.log(error);
             })
-      }
+    }
+    checkTableRow(){
+        if($("#myTableId > tbody > tr").length<1){
+            this.setState({
+                students: undefined
+            })
+        }
+        //console.log($("#myTableId > tbody > tr").length);
 
+    }
 
     render() {
         return (
@@ -220,8 +211,9 @@ class Students extends Component {
 
                         <button type='submit'>Registriraj</button>
                         <div>{this.state.errorMessage}</div>
-                    </form>:
-                    <table>
+                    </form>
+                    :this.state.students != undefined?
+                    <table id='myTableId'>
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -246,7 +238,7 @@ class Students extends Component {
                         )}
                         </tbody>
                     </table>
-                       
+                    :null 
                     
                     
                 }

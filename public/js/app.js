@@ -65618,6 +65618,388 @@ if (token) {
 
 /***/ }),
 
+/***/ "./resources/js/components/Candidate.js":
+/*!**********************************************!*\
+  !*** ./resources/js/components/Candidate.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ProfileList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ProfileList */ "./resources/js/components/ProfileList.js");
+/* harmony import */ var _ProfileInput__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ProfileInput */ "./resources/js/components/ProfileInput.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+
+var Candidate =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Candidate, _Component);
+
+  function Candidate(props) {
+    var _this;
+
+    _classCallCheck(this, Candidate);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Candidate).call(this, props));
+    _this.state = {
+      profile: [],
+      showProfile: false,
+      candidate: []
+    };
+    _this.hideProfile = _this.hideProfile.bind(_assertThisInitialized(_this)); //this.acceptApplication = this.acceptApplication.bind(this);
+
+    return _this;
+  }
+
+  _createClass(Candidate, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {//console.log(this.props);
+    }
+  }, {
+    key: "showProfile",
+    value: function showProfile(id) {
+      var _this2 = this;
+
+      //console.log(id);
+      axios__WEBPACK_IMPORTED_MODULE_3___default.a.get('/api/profile/' + id).then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          profile: response.data[0],
+          showProfile: true
+        }); //console.log(this.state.profile);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "hideProfile",
+    value: function hideProfile() {
+      //console.log('hide');
+      this.setState({
+        showProfile: false
+      });
+    }
+  }, {
+    key: "acceptApplication",
+    value: function acceptApplication(id) {
+      var _this3 = this;
+
+      //console.log(id);
+      var array = [];
+      var obj = {
+        id: this.props.candidate.id,
+        name: this.props.candidate.name,
+        email: this.props.candidate.email
+      };
+      array.push(obj);
+      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post('/api/practise/' + id, {
+        _method: 'PUT',
+        candidates: array
+      }).then(function (response) {
+        console.log(response);
+
+        _this3.props.handleBack(); //this.acceptApplication.bind(this)
+        //this.handleBack();
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", null, this.props.candidate.name, !this.state.showProfile ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.showProfile.bind(this, this.props.candidate.id)
+      }, "Show profile") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_ProfileList__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        profile: this.state.profile
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.hideProfile
+      }, "Hide profile")), this.props.status != 'free' ? null : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.acceptApplication.bind(this, this.props.id)
+      }, "Accept application"));
+    }
+  }]);
+
+  return Candidate;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Candidate);
+
+/***/ }),
+
+/***/ "./resources/js/components/Grade.js":
+/*!******************************************!*\
+  !*** ./resources/js/components/Grade.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+var Grade =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Grade, _Component);
+
+  function Grade(props) {
+    var _this;
+
+    _classCallCheck(this, Grade);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Grade).call(this, props));
+    _this.state = {
+      report: []
+    };
+    _this.reloadPractise = _this.reloadPractise.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Grade, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.reloadPractise(); //console.log(this.props.grade.id);
+    }
+  }, {
+    key: "reloadPractise",
+    value: function reloadPractise() {
+      var _this2 = this;
+
+      axios.get('/api/reports/' + this.props.grade.id).then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          report: response.data
+        }); //console.log(this.state.faculties);
+        // this.state.faculties.forEach(element => {
+        //     //console.log(element.user_id);
+        //     if(element.user_id == this.state.report.student_id){
+        //         this.setState({
+        //             faculty: true
+        //         }) 
+        //     }
+        // });
+
+      })["catch"](function (error) {
+        console.log(error);
+      }); //console.log('radi');
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Name: ", this.props.grade.candidates[0].name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Grade: ", this.state.report.facultyGrade));
+    }
+  }]);
+
+  return Grade;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Grade);
+
+/***/ }),
+
+/***/ "./resources/js/components/Grades.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Grades.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _Grade__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Grade */ "./resources/js/components/Grade.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+var Grades =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Grades, _Component);
+
+  function Grades(props) {
+    var _this;
+
+    _classCallCheck(this, Grades);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Grades).call(this, props));
+    _this.state = {
+      userRole: localStorage.getItem('role'),
+      practises: [],
+      grades: [],
+      students: []
+    };
+    _this.reloadPractise = _this.reloadPractise.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Grades, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.reloadPractise();
+    }
+  }, {
+    key: "reloadPractise",
+    value: function reloadPractise() {
+      var _this2 = this;
+
+      axios.get('/api/students').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          students: response.data
+        }); //console.log(this.state.students);
+        // this.state.faculties.forEach(element => {
+        //     //console.log(element.user_id);
+        //     if(element.user_id == this.state.report.student_id){
+        //         this.setState({
+        //             faculty: true
+        //         }) 
+        //     }
+        // });
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      axios.get('/api/practise/').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          user: response.data[1][0],
+          practises: response.data[0] //showPractise: true
+
+        });
+
+        _this2.state.practises.forEach(function (practise) {
+          _this2.state.students.forEach(function (student) {
+            //console.log(practise.candidates[0]);
+            //console.log(student.user_id);
+            //console.log(practise);
+            if (practise.status == 'locked' && practise.candidates[0].id == student.user_id) {
+              //console.log(practise.candidates[0].id);
+              var array = _this2.state.grades;
+              array.push(practise);
+
+              _this2.setState({
+                grades: array
+              });
+            }
+          });
+        }); //console.log(this.state.grades);
+        //console.log(this.state.practices);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Grades", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        role: this.state.userRole
+      }) : null, this.state.grades != [] ? this.state.grades.map(function (key, index) {
+        return (// <div>
+          //     <label>Name: {element.candidates[0].name}</label>
+          //     <label>Grade: {element.candidates[0].name}</label>
+          // </div>
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Grade__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            key: index,
+            grade: key
+          })
+        );
+      } //console.log(this.state.grades)
+      ) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "No results"));
+    }
+  }]);
+
+  return Grades;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Grades);
+
+/***/ }),
+
 /***/ "./resources/js/components/Home.js":
 /*!*****************************************!*\
   !*** ./resources/js/components/Home.js ***!
@@ -65700,8 +66082,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Main */ "./resources/js/components/Main.js");
 /* harmony import */ var _Logout__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Logout */ "./resources/js/components/Logout.js");
 /* harmony import */ var _Students__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Students */ "./resources/js/components/Students.js");
-/* harmony import */ var _Practice__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Practice */ "./resources/js/components/Practice.js");
+/* harmony import */ var _Practise__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Practise */ "./resources/js/components/Practise.js");
 /* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
+/* harmony import */ var _MyPractise__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./MyPractise */ "./resources/js/components/MyPractise.js");
+/* harmony import */ var _ReportList__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ReportList */ "./resources/js/components/ReportList.js");
+/* harmony import */ var _Grades__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Grades */ "./resources/js/components/Grades.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -65731,7 +66116,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
- //import history from '../history';
+
+
+
+
 
 var Index =
 /*#__PURE__*/
@@ -65782,11 +66170,20 @@ function (_Component) {
         path: "/students",
         component: _Students__WEBPACK_IMPORTED_MODULE_9__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-        path: "/practice",
-        component: _Practice__WEBPACK_IMPORTED_MODULE_10__["default"]
+        path: "/practise",
+        component: _Practise__WEBPACK_IMPORTED_MODULE_10__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        path: "/mypractise",
+        component: _MyPractise__WEBPACK_IMPORTED_MODULE_12__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/profile",
         component: _Profile__WEBPACK_IMPORTED_MODULE_11__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        path: "/reports",
+        component: _ReportList__WEBPACK_IMPORTED_MODULE_13__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        path: "/grades",
+        component: _Grades__WEBPACK_IMPORTED_MODULE_14__["default"]
       }));
     }
   }]);
@@ -66200,16 +66597,32 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
           to: "/students"
         }, "Studenti"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
-          to: "/practice"
+          to: "/practise"
         }, "Prakse"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/reports"
+        }, "Izvje\u0161taji"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/grades"
+        }, "Ocjene"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
           to: "/profile"
         }, "Profil"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
           to: "/logout"
         }, "Logout"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Fakultet"));
+      } else if (this.props.role === 'Student') {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/practise"
+        }, "Prakse"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/mypractise"
+        }, "Moja praksa"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/profile"
+        }, "Profil"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/logout"
+        }, "Logout"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "firma ili student"));
       } else {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
-          to: "/practice"
+          to: "/practise"
         }, "Prakse"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
+          to: "/reports"
+        }, "Izvje\u0161taji"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
           to: "/profile"
         }, "Profil"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["NavLink"], {
           to: "/logout"
@@ -66227,6 +66640,412 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (MainNavigation);
+
+/***/ }),
+
+/***/ "./resources/js/components/MyPractise.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/MyPractise.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _Home__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Home */ "./resources/js/components/Home.js");
+/* harmony import */ var _Login__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Login */ "./resources/js/components/Login.js");
+/* harmony import */ var _Register__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Register */ "./resources/js/components/Register.js");
+/* harmony import */ var _Navigation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Navigation */ "./resources/js/components/Navigation.js");
+/* harmony import */ var _Main__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Main */ "./resources/js/components/Main.js");
+/* harmony import */ var _Logout__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Logout */ "./resources/js/components/Logout.js");
+/* harmony import */ var _Students__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Students */ "./resources/js/components/Students.js");
+/* harmony import */ var _Practise__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Practise */ "./resources/js/components/Practise.js");
+/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _PractiseList__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./PractiseList */ "./resources/js/components/PractiseList.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var MyPractise =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(MyPractise, _Component);
+
+  function MyPractise(props) {
+    var _this;
+
+    _classCallCheck(this, MyPractise);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MyPractise).call(this, props));
+    _this.state = {
+      userRole: localStorage.getItem('role'),
+      id: '',
+      file: '',
+      user: [],
+      practices: [],
+      practice: [],
+      //report: [],
+      showPractise: false,
+      hasPractise: false,
+      errorMessage: '',
+      reports: [],
+      href: '',
+      practise_id: '',
+      message: ''
+    };
+    _this.checkPractise = _this.checkPractise.bind(_assertThisInitialized(_this));
+    _this.showPractise = _this.showPractise.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.onChangeHandler = _this.onChangeHandler.bind(_assertThisInitialized(_this));
+    _this.download = _this.download.bind(_assertThisInitialized(_this));
+    _this.showReport = _this.showReport.bind(_assertThisInitialized(_this));
+    _this.reloadPractise = _this.reloadPractise.bind(_assertThisInitialized(_this));
+    _this.accept = _this.accept.bind(_assertThisInitialized(_this));
+    _this.decline = _this.decline.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(MyPractise, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.reloadPractise();
+    }
+  }, {
+    key: "reloadPractise",
+    value: function reloadPractise() {
+      var _this2 = this;
+
+      axios.get('/api/practise/').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          user: response.data[1][0],
+          practices: response.data[0],
+          showPractise: true
+        }); //console.log(this.state.user);
+        //console.log(this.state.practices);
+
+
+        _this2.checkPractise();
+
+        _this2.showPractise();
+
+        _this2.showReport();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "checkPractise",
+    value: function checkPractise() {
+      var _this3 = this;
+
+      this.state.practices.forEach(function (element) {
+        if (element.status != 'free') {
+          element.faculties.forEach(function (key) {
+            if (_this3.state.user.faculty == key) {
+              element.candidates.forEach(function (candidate) {
+                if (_this3.state.user.user.id == candidate.id) {
+                  //console.log(element.id);
+                  _this3.setState({
+                    hasPractise: true,
+                    id: element.id
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  }, {
+    key: "showPractise",
+    value: function showPractise() {
+      var _this4 = this;
+
+      //console.log('radi');
+      axios.get('/api/practise/' + this.state.id).then(function (response) {
+        //console.log(response.data);
+        _this4.setState({
+          practice: response.data[0]
+        });
+
+        if (_this4.state.practice.status == 'locked') {
+          _this4.setState({
+            message: 'practise locked'
+          });
+        } //console.log(this.state.practices);
+
+      })["catch"](function (error) {
+        console.log(error);
+      }); //console.log(this.state.report);
+    }
+  }, {
+    key: "showReport",
+    value: function showReport() {
+      var _this5 = this;
+
+      axios.get('/api/reports').then(function (response) {
+        //console.log(response);
+        _this5.setState({
+          //practises: response.data[0],
+          reports: response.data[1]
+        }); //console.log(this.state.practises);
+        //console.log(this.state.reports);
+
+
+        if (_this5.state.reports != null) {
+          _this5.setState({
+            file: _this5.state.reports.file,
+            practise_id: _this5.state.reports.practise_id
+          });
+        } //console.log(this.state.file);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this6 = this;
+
+      e.preventDefault();
+      this.setState({
+        message: '',
+        errorMessage: ''
+      }); //console.log(this.state.file);
+      // if(this.state.report != ''){
+      //     let ext = this.state.report.name.split('.').pop();
+      //     if(ext == 'doc' || ext == 'docx'){
+      //          //CHECK FILE SIZE this.state.report.size
+      //         axios.post('/api/report',{
+      //                 practise_id: this.state.id,
+      //                 report: this.state.report
+      //             }).then(response =>{
+      //                 console.log(response);
+      //             }).catch(error =>{
+      //                 console.log(error);
+      //             })
+      //     }
+      //     else{
+      //         this.setState({
+      //         errorMessage: 'invalid file format'
+      //         })
+      //     }
+      // }
+      // else{
+      //     this.setState({
+      //         errorMessage: 'you did not select file'
+      //     })
+      // }
+      //let file =  this.state.file;
+      //const formData = {file: this.state.file}
+      //formData.append('file', file);
+      //var options = { content: formData };
+
+      if (this.state.file != '') {
+        // if(this.state.reports != undefined){
+        //     var fileName = this.state.reports.file;
+        // }
+        var formData = new FormData(); //var file = this.state.file;
+        //var id = this.state.id;
+
+        formData.append('file', this.state.file);
+        formData.append('practise_id', this.state.id);
+
+        if (this.state.reports != undefined) {
+          formData.append('fileName', this.state.reports.file);
+        }
+
+        axios.post('/api/reports', // {
+        //     _method : 'PUT',
+        formData // }
+        , {
+          headers: {
+            processData: false,
+            contentType: false
+          }
+        }).then(function (response) {
+          //console.log(response);
+          _this6.setState({
+            reports: response.data
+          });
+
+          _this6.reloadPractise();
+
+          _this6.setState({
+            file: _this6.state.reports.file,
+            message: 'uspješno slanje dokumenta'
+          }); //console.log(this.state.report);
+
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        this.setState({
+          errorMessage: 'niste odabrali dokument'
+        });
+      } // formData.forEach((value, key) => {
+      //     console.log("key %s: value %s", key, value);
+      // }) 
+
+    }
+  }, {
+    key: "onChangeHandler",
+    value: function onChangeHandler(event) {
+      var file = event.target.files[0];
+      this.setState({
+        file: file
+      });
+    }
+  }, {
+    key: "download",
+    value: function download() {
+      //console.log('download');
+      //setTimeout(() => {
+      var response = {
+        file: '/storage/report/' + this.state.reports.file
+      }; // server sent the url to the file!
+      // now, let's download:
+      //window.open(response.file);
+      // you could also do:
+      //window.location.href = response.file;
+
+      this.setState({
+        href: response.file
+      }); //}, 100);
+    }
+  }, {
+    key: "accept",
+    value: function accept() {
+      var _this7 = this;
+
+      //console.log('accept');
+      //console.log(this.state.reports.facultyGrade);
+      //const facultyGrade = this.state.facultyGrade;
+      axios.post('/api/practise/' + this.state.practise_id, {
+        _method: 'PUT',
+        facultyGrade: this.state.reports.facultyGrade
+      }).then(function (response) {
+        //console.log(response);
+        _this7.setState({
+          message: 'practise locked'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "decline",
+    value: function decline() {
+      var _this8 = this;
+
+      //console.log('decline');
+      var id = this.state.id;
+      axios.post('/api/reports/' + id, {
+        _method: 'PUT'
+      }).then(function (response) {
+        console.log(response);
+
+        _this8.reloadPractise(); // this.setState({
+        //     reports: response.data
+        // })
+        // this.reloadPractise();
+        // this.setState({
+        //     file: this.state.reports.file
+        // })
+        //console.log(this.state.report);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return this.state.showPractise ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "MyPractise", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_12__["default"], {
+        role: this.state.userRole
+      }) : null, this.state.message != '' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.message) : !this.state.hasPractise ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Nemate odabranu praksu") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "#"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Start"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Status"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.practice.id != undefined ? //console.log(this.state.practice)
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PractiseList__WEBPACK_IMPORTED_MODULE_13__["default"], {
+        practice: this.state.practice,
+        user: this.state.user
+      }) : null)), this.state.practice.status == 'finished' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, this.state.reports != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.reports.file != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: this.state.href,
+        download: true,
+        onClick: this.download
+      }, this.state.reports.file) : null, this.state.reports.comment != '' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Company comment: ", this.state.reports.comment)) : null, this.state.reports.facultyComment != '' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Faculty comment: ", this.state.reports.facultyComment)) : null, this.state.reports.facultyGrade != '' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Grade: ", this.state.reports.facultyGrade), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        onClick: this.accept
+      }, "Accept"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        onClick: this.decline
+      }, "Decline")) : null) : null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Upload practise report:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        name: "file",
+        onChange: this.onChangeHandler,
+        accept: ".doc,.docx"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit"
+      }, "Upload"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : null) : null;
+    }
+  }]);
+
+  return MyPractise;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (MyPractise);
 
 /***/ }),
 
@@ -66297,9 +67116,9 @@ function (_Component) {
 
 /***/ }),
 
-/***/ "./resources/js/components/Practice.js":
+/***/ "./resources/js/components/Practise.js":
 /*!*********************************************!*\
-  !*** ./resources/js/components/Practice.js ***!
+  !*** ./resources/js/components/Practise.js ***!
   \*********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -66311,7 +67130,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _PractiseList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PractiseList */ "./resources/js/components/PractiseList.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -66321,13 +67143,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -66345,17 +67168,328 @@ function (_Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Practice).call(this));
     _this.state = {
-      userRole: localStorage.getItem('role')
+      userRole: localStorage.getItem('role'),
+      id: '',
+      name: '',
+      description: '',
+      company_id: '',
+      //faculties: '',
+      start: '',
+      status: 'free',
+      candidates: '',
+      practices: [],
+      createPractice: [],
+      showForm: false,
+      showCreate: false,
+      showEdit: false,
+      showPractises: true,
+      errorMessage: '',
+      faculty: [],
+      faculties: [],
+      user: [],
+      hasPractise: false
     };
+    _this.handleCreate = _this.handleCreate.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.reloadPractises = _this.reloadPractises.bind(_assertThisInitialized(_this));
+    _this.handleButton = _this.handleButton.bind(_assertThisInitialized(_this));
+    _this.changeState = _this.changeState.bind(_assertThisInitialized(_this));
+    _this.onClickChange = _this.onClickChange.bind(_assertThisInitialized(_this));
+    _this.checkTableRow = _this.checkTableRow.bind(_assertThisInitialized(_this)); //this.showStudentPractise = this.showStudentPractise.bind(this);
+
     return _this;
   }
 
   _createClass(Practice, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.reloadPractises();
+    }
+  }, {
+    key: "handleCreate",
+    value: function handleCreate() {
+      var _this2 = this;
+
+      this.setState({
+        showPractises: false,
+        showEdit: false
+      });
+      axios.get('/api/practise/create').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          createPractice: response.data[0],
+          faculties: response.data[1],
+          showCreate: true
+        }); //console.log(this.state.faculties);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this3 = this;
+
+      e.preventDefault();
+      var dateReg = /^\d{2}([.])\d{2}\1\d{4}$/; // if(this.state.begin.match(dateReg)) console.log('valja');
+      // else console.log('ne valja');
+
+      this.setState({
+        errorMessage: ''
+      }); //console.log('submit');
+      //console.log(this.state.faculty);  
+
+      var obj = this.state.faculty;
+      var facultyList = Object.keys(obj).filter(function (key) {
+        return obj[key] === true;
+      });
+
+      if (this.state.name == '' || this.state.description == '' || facultyList == '' || this.state.start == '' || this.state.status == '') {
+        this.setState({
+          errorMessage: 'empty field'
+        }); //console.log(this.state.university);
+      } else {
+        if (!this.state.start.match(dateReg)) {
+          this.setState({
+            errorMessage: 'invalid date format'
+          });
+        } else {
+          //console.log(facultyList);
+          //console.log(this.state);
+          axios.post('/api/practise', {
+            name: this.state.name,
+            description: this.state.description,
+            faculties: facultyList,
+            start: this.state.start,
+            status: this.state.status
+          }).then(function (response) {
+            //console.log(response.data);
+            _this3.setState({
+              showCreate: false,
+              showPractises: true,
+              faculty: []
+            });
+
+            _this3.reloadPractises(); //this.props.history.push('/profile');
+            //console.log(response);
+
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      } //console.log(this.state.faculty);
+
+    }
+  }, {
+    key: "handleButton",
+    value: function handleButton() {
+      this.setState({
+        showCreate: false,
+        showPractises: true
+      }); //this.reloadPractises();
+    }
+  }, {
+    key: "reloadPractises",
+    value: function reloadPractises() {
+      var _this4 = this;
+
+      axios.get('/api/practise').then(function (response) {
+        //console.log(response.data);
+        // if(response.data[1][0] == undefined){
+        //     this.setState({
+        //         practices: response.data[0],
+        //         user: ''
+        //     })
+        // }
+        // else{
+        _this4.setState({
+          user: response.data[1][0],
+          practices: response.data[0] //showProfile: true
+
+        }); //}
+        //console.log(this.state.user);
+
+
+        if (_this4.state.userRole == 'Student') {
+          _this4.state.practices.forEach(function (element) {
+            if (element.status != 'free') {
+              element.faculties.forEach(function (key) {
+                if (_this4.state.user.faculty == key) {
+                  element.candidates.forEach(function (candidate) {
+                    if (_this4.state.user.user.id == candidate.id) {
+                      //console.log(candidate.name);
+                      _this4.setState({
+                        hasPractise: true
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        } // if(this.state.userRole == 'Fakultet'){
+        // }
+
+
+        _this4.checkTableRow(); //console.log(this.state.user);
+        // if(this.state.students != undefined)
+        //     this.setState({
+        //         id: this.state.students.id
+        //     })
+        //console.log(this.state.students);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState(_defineProperty({}, event.target.name, event.target.value));
+    }
+  }, {
+    key: "changeState",
+    value: function changeState() {
+      // this.setState({
+      //     showEdit: false,
+      //     showProfile: true
+      // });
+      this.reloadPractises();
+    }
+  }, {
+    key: "onClickChange",
+    value: function onClickChange(e) {
+      var val = e.target.checked;
+      var name = e.target.name;
+      var updateFaculty = Object.assign({}, this.state.faculty, _defineProperty({}, name, val));
+      this.setState({
+        faculty: updateFaculty
+      });
+    } //showStudentPractise(key, index){
+    //     // key.faculties.forEach(function(element) {
+    //     //     if(this.state.user != undefined){
+    //     //         let faculty = this.state.user.faculty;
+    //     //         if(element == this.state.user.faculty){
+    //     //             console.log(this.state.user.faculty)
+    //     //         }
+    //     //     }
+    //     // }).bind(this)
+    //     key.faculties.forEach((element) => {
+    //         console.log(element);
+    //     });
+    //return <PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
+    // }
+
+  }, {
+    key: "checkTableRow",
+    value: function checkTableRow() {
+      if ($("#myTableId > tbody > tr").length < 1) {
+        this.setState({
+          practices: undefined
+        });
+      } //console.log($("#myTableId > tbody > tr").length);
+
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this5 = this;
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Practice", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_2__["default"], {
         role: this.state.userRole
-      }) : null);
+      }) : null, this.state.userRole == 'Tvrtka' ? !this.state.showCreate ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleCreate
+      }, "Kreiraj praksu") : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleButton
+      }, "Nazad") : null, this.state.showCreate ? this.state.createPractice != [] ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, this.state.createPractice.map(function (key, index) {
+        return key != 'id' && key != 'created_at' && key != 'updated_at' && key != 'company_id' && key != 'candidates' && key != 'faculties' && key != 'status' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          key: index
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, key, ":"), key == 'start' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          name: key // value={this.state.profileValue[index]}
+          ,
+          value: _this5.state.key,
+          onChange: _this5.handleChange,
+          placeholder: "dd.mm.yyyy"
+        }) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          name: key // value={this.state.profileValue[index]}
+          ,
+          value: _this5.state.key,
+          onChange: _this5.handleChange //placeholder={key}
+
+        })) : key === 'faculties' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          key: index
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, key, ":"), _this5.state.faculties.map(function (faculty, i) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "form-check",
+            key: i
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+            type: "checkbox",
+            name: faculty.name,
+            className: "form-check-input",
+            onChange: _this5.onClickChange,
+            value: _this5.state.faculty[i]
+          }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+            className: "form-check-label"
+          }, faculty.name));
+        })) : null;
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleSubmit
+      }, "Po\u0161alji"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : null : null, !this.state.hasPractise ? this.state.showPractises ? // this.state.practices.length > 1?
+      this.state.practices != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        id: "myTableId"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "#"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Start"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Status"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.practices.map(function (key, index) {
+        return (//(this.state.userRole == 'Student')?
+          //     // key.faculties.forEach(function(element) {
+          //     //     //if(this.state.user != undefined){
+          //     //         // let faculty = this.state.user.faculty;
+          //     //         // if(element == this.state.user.faculty){
+          //     //              console.log(this.state.user.faculty)
+          //     //         // }
+          //     //     //}
+          //     // }).bind(this)
+          //     //
+          // key.faculties.map((element) => {
+          //this.showStudentPractise(key, index)
+          //         if(element == this.state.user.faculty){
+          //             console.log('key', key);
+          //             // console.log('index',index);
+          //             // console.log('user', this.state.user);
+          //             //<PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
+          //         }
+          //<PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
+          //})
+          //:
+          index != undefined && key.status != 'locked' ? //console.log(key.status)
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PractiseList__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            key: key.id,
+            practice: key,
+            index: index,
+            changeState: _this5.changeState,
+            user: _this5.state.user
+          }) : null
+        );
+      } //console.log(key.id)
+      )))) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "No results") // <button onClick={this.handleCreate}>Kreirajte profil</button>
+      // :<span>No results</span>
+      : null : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Ve\u0107 ste odabrali praksu")));
     }
   }]);
 
@@ -66363,6 +67497,591 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Practice);
+
+/***/ }),
+
+/***/ "./resources/js/components/PractiseList.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/PractiseList.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _ProfileList__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ProfileList */ "./resources/js/components/ProfileList.js");
+/* harmony import */ var _Candidate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Candidate */ "./resources/js/components/Candidate.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+var PractiseList =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(PractiseList, _Component);
+
+  function PractiseList(props) {
+    var _this;
+
+    _classCallCheck(this, PractiseList);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(PractiseList).call(this, props));
+    _this.state = {
+      user: _this.props.user,
+      userRole: localStorage.getItem('role'),
+      id: _this.props.practice.id,
+      name: _this.props.practice.name,
+      //email: this.props.practice.user.email,
+      description: _this.props.practice.description,
+      faculties: _this.props.practice.faculties,
+      start: _this.props.practice.start,
+      status: _this.props.practice.status,
+      candidates: _this.props.practice.candidates,
+      company_id: _this.props.practice.company_id,
+      profile: [],
+      practiceInfo: [],
+      List: [],
+      faculty: [],
+      applied: false,
+      allowed: false,
+      mypractise: false,
+      showRow: true,
+      showInfo: false,
+      showEdit: false,
+      showProfile: false,
+      errorMessage: ''
+    };
+    _this.handleShow = _this.handleShow.bind(_assertThisInitialized(_this));
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleBack = _this.handleBack.bind(_assertThisInitialized(_this));
+    _this.handleUpdate = _this.handleUpdate.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
+    _this.checkFaculty = _this.checkFaculty.bind(_assertThisInitialized(_this));
+    _this.onClickChange = _this.onClickChange.bind(_assertThisInitialized(_this));
+    _this.handleApply = _this.handleApply.bind(_assertThisInitialized(_this));
+    _this.checkApply = _this.checkApply.bind(_assertThisInitialized(_this));
+    _this.handleUnapply = _this.handleUnapply.bind(_assertThisInitialized(_this));
+    _this.checkUserRole = _this.checkUserRole.bind(_assertThisInitialized(_this));
+    _this.hideProfile = _this.hideProfile.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(PractiseList, [{
+    key: "handleShow",
+    value: function handleShow() {
+      var _this2 = this;
+
+      //console.log('show');
+      //console.log(this.state.id);
+      this.setState({
+        showRow: false,
+        showEdit: false
+      });
+      axios.get('/api/practise/' + this.state.id).then(function (response) {
+        //console.log(response.data);
+        _this2.setState({
+          practiceInfo: response.data[0],
+          //userInfo: response.data[0][0],
+          showInfo: true
+        }); //console.log('student',this.state.practiceInfo);
+        // console.log('user',this.state.userInfo);
+
+
+        _this2.setState({
+          id: _this2.state.practiceInfo.id,
+          name: _this2.state.practiceInfo.name,
+          //lastName: this.state.practiceInfo.lastName,
+          description: _this2.state.practiceInfo.description,
+          faculties: _this2.state.practiceInfo.faculties,
+          start: _this2.state.practiceInfo.start,
+          status: _this2.state.practiceInfo.status,
+          company_id: _this2.state.practiceInfo.company_id,
+          candidates: _this2.state.practiceInfo.candidates
+        }); //console.log(this.state.faculties.length());
+        //console.log(this.state.candidates[0].name);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleEdit",
+    value: function handleEdit() {
+      var _this3 = this;
+
+      //console.log('edit');
+      this.setState({
+        showRow: false,
+        showInfo: false
+      });
+      axios.get('/api/practise/' + this.state.id + '/edit').then(function (response) {
+        //console.log(response);
+        _this3.setState({
+          practiceInfo: response.data[0][0],
+          List: response.data[1],
+          showEdit: true
+        }); //console.log(this.state.practiceInfo);
+        //console.log(this.state.facultyList);
+
+
+        _this3.setState({
+          id: _this3.state.practiceInfo.id,
+          name: _this3.state.practiceInfo.name,
+          //lastName: this.state.practiceInfo.lastName,
+          description: _this3.state.practiceInfo.description,
+          faculties: _this3.state.practiceInfo.faculties,
+          start: _this3.state.practiceInfo.start,
+          status: _this3.state.practiceInfo.status,
+          company_id: _this3.state.practiceInfo.company_id,
+          candidates: _this3.state.practiceInfo.candidates
+        });
+
+        var obj = {};
+
+        _this3.state.faculties.map(function (faculty, index) {
+          return obj[faculty] = true;
+        });
+
+        _this3.setState({
+          faculty: obj
+        }); //console.log(this.state.faculty);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleBack",
+    value: function handleBack() {
+      //console.log('back');
+      this.setState({
+        showRow: true,
+        showInfo: false,
+        showEdit: false
+      });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(e) {
+      this.setState(_defineProperty({}, e.target.name, e.target.value));
+    }
+  }, {
+    key: "handleUpdate",
+    value: function handleUpdate() {
+      var _this4 = this;
+
+      //console.log('update');
+      // console.log('list', this.state.List);
+      // console.log('faculties', this.state.faculties);
+      //console.log('faculty', this.state.faculty);
+      var dateReg = /^\d{2}([.])\d{2}\1\d{4}$/;
+      this.setState({
+        errorMessage: ''
+      });
+      var obj = this.state.faculty;
+      var fList = Object.keys(obj).filter(function (key) {
+        return obj[key] === true;
+      });
+
+      if (this.state.name == '' || this.state.description == '' || fList == '' || this.state.start == '' || this.state.status == '') {
+        this.setState({
+          errorMessage: 'popunite sva polja'
+        });
+      } else {
+        if (!this.state.start.match(dateReg)) {
+          this.setState({
+            errorMessage: 'invalid date format'
+          });
+        } else {
+          //console.log(this.state.faculty);
+          // const obj = this.state.faculty;
+          // var fList = Object.keys(obj).filter( function (key) {
+          //     return obj[key]===true;
+          // });
+          //console.log(fList);
+          axios.post('/api/practise/' + this.state.id, {
+            _method: 'PUT',
+            name: this.state.name,
+            company_id: this.state.company_id,
+            //lastName: this.state.lastName,
+            //email: this.state.email,
+            description: this.state.description,
+            faculties: fList,
+            start: this.state.start,
+            status: this.state.status,
+            candidates: this.state.candidates
+          }).then(function (response) {
+            //console.log(response);
+            // this.props.changeState();
+            _this4.handleBack();
+          })["catch"](function (error) {
+            console.log(error);
+          });
+        }
+      }
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete() {
+      var _this5 = this;
+
+      axios["delete"]('/api/practise/' + this.state.id).then(function (response) {
+        //console.log(response);
+        _this5.props.changeState();
+
+        _this5.handleBack();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "checkFaculty",
+    value: function checkFaculty(name) {
+      // let data = false;
+      // this.state.faculties.map((faculty, index) =>
+      //     (name == faculty)? data = true : null
+      // )
+      // return data;
+      //console.log(this.state.faculty);
+      var obj = this.state.faculty;
+
+      if (obj.hasOwnProperty(name)) {
+        return obj[name];
+      } //Object.values(obj)
+
+
+      return false; // var fList = Object.keys(obj).filter( function (key) {
+      //     return obj[key]===true;
+      // });
+    }
+  }, {
+    key: "onClickChange",
+    value: function onClickChange(e) {
+      var val = e.target.checked;
+      var name = e.target.name;
+      var updateFaculty = Object.assign({}, this.state.faculty, _defineProperty({}, name, val));
+      this.setState({
+        faculty: updateFaculty
+      }); //console.log(this.state.faculty);
+    }
+  }, {
+    key: "handleApply",
+    value: function handleApply(e) {
+      var _this6 = this;
+
+      //console.log(this.state.candidates);
+      var array = this.state.candidates;
+      var obj = {
+        id: this.state.user.user.id,
+        name: this.state.user.user.name,
+        email: this.state.user.user.email
+      };
+      array.push(obj); //console.log(array);
+      // let array = this.state.candidates;
+      // array.push(this.state.userName);
+      //console.log(array);
+
+      axios.post('/api/practise/' + this.state.id, {
+        _method: 'PUT',
+        candidates: array
+      }).then(function (response) {
+        //console.log(response);
+        // if(response.data == 'already applied'){
+        //     this.setState({
+        //         errorMessage: response.data
+        //     })
+        // }
+        // else{
+        _this6.setState({
+          applied: true
+        }); //}
+        // this.props.changeState();
+        //this.handleBack();
+
+      })["catch"](function (error) {
+        console.log(error);
+      }); //this.props.changeState();
+      //console.log(this.state.userName)
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.checkUserRole();
+      this.checkApply();
+    }
+  }, {
+    key: "checkApply",
+    value: function checkApply() {
+      var _this7 = this;
+
+      if (this.props.index == undefined) {
+        this.setState({
+          mypractise: true
+        });
+      } else {
+        var user = this.state.user.user; //let i;
+        //console.log('name1',name);
+
+        this.state.candidates.forEach(function (key) {
+          //console.log(key);
+          // console.log('key',key);
+          // console.log('name',name);
+          if (key != null && key.id == user.id) {
+            //console.log(key);
+            _this7.setState({
+              applied: true
+            });
+          }
+        });
+      } //console.log(this.state.user.user);
+
+    }
+  }, {
+    key: "handleUnapply",
+    value: function handleUnapply() {
+      var _this8 = this;
+
+      //console.log('unapply');
+      var array = this.state.candidates;
+      var user = this.state.user.user;
+      var index = array.findIndex(function (x) {
+        return x.id === user.id;
+      }); //console.log(index);
+
+      if (index > -1) {
+        array.splice(index, 1); //console.log(array);
+
+        axios.post('/api/practise/' + this.state.id, {
+          _method: 'PUT',
+          candidates: array
+        }).then(function (response) {
+          console.log(response);
+
+          _this8.setState({
+            applied: false
+          }); // this.props.changeState();
+
+
+          _this8.handleBack();
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+    }
+  }, {
+    key: "checkUserRole",
+    value: function checkUserRole() {
+      var _this9 = this;
+
+      if (this.state.userRole == 'Student') {
+        if (this.props.index == undefined) {
+          //console.log('my practise');
+          this.setState({
+            allowed: true
+          }); // this.state.faculties.forEach((element) => {
+          //     //console.log(element)
+          //     // if(element == this.state.user.faculty && this.state.status == 'free'){
+          //     //     //console.log('free');
+          //     //     this.setState({
+          //     //         allowed: true
+          //     //     })
+          //     // }
+          //})
+        } else {
+          //console.log('practises');
+          this.state.faculties.forEach(function (element) {
+            //console.log(this.state.user.faculty)
+            if (element == _this9.state.user.faculty && _this9.state.status == 'free') {
+              //console.log('free');
+              _this9.setState({
+                allowed: true
+              });
+            }
+          });
+        }
+      } else if (this.state.userRole == 'Fakultet') {
+        this.state.faculties.forEach(function (element) {
+          // console.log(this.props.user.user.name);
+          // console.log(element);
+          if (element == _this9.props.user.user.name) {
+            //console.log('free');
+            _this9.setState({
+              allowed: true
+            });
+          }
+        });
+      } else {
+        this.setState({
+          allowed: true
+        });
+      }
+    }
+  }, {
+    key: "showProfile",
+    value: function showProfile(id) {
+      var _this10 = this;
+
+      //console.log(id);
+      axios.get('/api/profile/' + id).then(function (response) {
+        //console.log(response);
+        _this10.setState({
+          profile: response.data[0],
+          showProfile: true
+        }); //console.log(this.state.profile);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "hideProfile",
+    value: function hideProfile() {
+      //console.log('hide');
+      this.setState({
+        showProfile: false
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this11 = this;
+
+      // if(this.state.userRole == 'Student' && !this.state.allowed){
+      //     return null;
+      // }
+      // else{
+      return this.state.allowed ? this.state.showRow ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.description), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.start), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.status), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleShow
+      }, "Show")), this.state.userRole == 'Tvrtka' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleEdit
+      }, "Edit")) : null, this.state.userRole == 'Tvrtka' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleDelete
+      }, "Delete")) : null, this.state.userRole == 'Student' && !this.state.mypractise ? !this.state.applied ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleApply
+      }, "Apply")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleUnapply
+      }, "Unapply ")) : null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage))) : this.state.showInfo ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "name:"), " ", this.state.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "description:"), " ", this.state.description)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "faculties:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.state.faculties.map(function (faculty, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          key: index
+        }, faculty);
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "start:"), " ", this.state.start)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "status:"), " ", this.state.status)), this.state.userRole != 'Student' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "candidates:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", null, this.state.candidates.map(function (candidate, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+          key: index
+        }, candidate.name);
+      })))) : null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleBack
+      }, "Back"))) : this.state.showEdit && this.state.userRole == 'Tvrtka' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "row"
+      }, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "name: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "name",
+        type: "text",
+        value: this.state.name,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "description: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "description",
+        type: "text",
+        value: this.state.description,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "faculties: "), this.state.List.map(function (faculty, i) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-check",
+          key: i
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "checkbox",
+          name: faculty.name,
+          className: "form-check-input",
+          checked: _this11.checkFaculty(faculty.name),
+          onChange: _this11.onClickChange,
+          value: _this11.state.faculty[i]
+        }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          className: "form-check-label"
+        }, faculty.name));
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "start: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        name: "start",
+        type: "text",
+        value: this.state.start,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "status: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        name: "status",
+        value: "free",
+        checked: this.state.status === 'free',
+        onChange: this.handleChange
+      }), "free", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        name: "status",
+        value: "taken",
+        checked: this.state.status === 'taken',
+        onChange: this.handleChange
+      }), "taken", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "radio",
+        name: "status",
+        value: "finished",
+        checked: this.state.status === 'finished',
+        onChange: this.handleChange
+      }), "finished"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "candidates: "), this.state.candidates.map(function (candidate, index) {
+        return (// (candidate == {})? null
+          // :
+          // <li key={index}>{candidate.name}
+          //     {!this.state.showProfile?
+          //     <button onClick={this.showProfile.bind(this, candidate.id)}>Show profile</button>
+          //     :<div>
+          //         <ProfileList profile={this.state.profile}/>
+          //         <button onClick={this.hideProfile}>Hide profile</button>
+          //     </div>
+          //     }
+          // </li>
+          //console.log(candidate)
+          react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Candidate__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            key: index,
+            candidate: candidate,
+            id: _this11.state.id,
+            handleBack: _this11.handleBack,
+            status: _this11.state.status
+          })
+        );
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleUpdate
+      }, "save"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage))) : null : null; //}
+    }
+  }]);
+
+  return PractiseList;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (PractiseList);
 
 /***/ }),
 
@@ -66842,7 +68561,7 @@ function (_Component) {
       }, "Uredi")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleCreate
       }, "Kreirajte profil") : null, this.state.showCreate ? this.state.createProfile != [] ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", null, this.state.createProfile.map(function (key, index) {
-        return key != 'id' && key != 'created_at' && key != 'updated_at' && key != 'user_id' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        return key != 'id' && key != 'created_at' && key != 'updated_at' && key != 'user_id' && key != 'faculty' && key != 'study' && key != 'course' && key != 'yearOfStudy' && key != 'indexNumber' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           key: index,
           name: key // value={this.state.profileValue[index]}
           ,
@@ -67132,13 +68851,7 @@ function (_Component) {
             ,
             value: this.state.email,
             onChange: this.handleChange
-          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Broj indeksa: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-            name: "indexNumber",
-            type: "text" // value={this.state.profileValue[index]}
-            ,
-            value: this.state.indexNumber,
-            onChange: this.handleChange
-          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta: ", this.state.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Studij: ", this.state.study)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Smjer: ", this.state.course)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Godina studija: ", this.state.yearsOfStudy)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Broj indeksa: ", this.state.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Naziv fakulteta: ", this.state.faculty)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Studij: ", this.state.study)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Smjer: ", this.state.course)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Godina studija: ", this.state.yearsOfStudy)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "OIB: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
             name: "OIB",
             type: "text" // value={this.state.profileValue[index]}
             ,
@@ -67416,6 +69129,468 @@ function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
 /* harmony default export */ __webpack_exports__["default"] = (Register);
+
+/***/ }),
+
+/***/ "./resources/js/components/Report.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Report.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _MyPractise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MyPractise */ "./resources/js/components/MyPractise.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+var Report =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Report, _Component);
+
+  function Report(props) {
+    var _this;
+
+    _classCallCheck(this, Report);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Report).call(this, props));
+    _this.state = {
+      userRole: localStorage.getItem('role'),
+      id: _this.props.practise.id,
+      name: _this.props.practise.name,
+      description: _this.props.practise.description,
+      //comment: this.props.practise.comment,
+      status: _this.props.practise.status,
+      faculties: [],
+      faculty: false,
+      report: [],
+      showReport: false,
+      showPractise: true,
+      href: '',
+      //fileName: '',
+      file: '',
+      grade: '',
+      comment: '',
+      studentName: _this.props.practise.candidates[0].name,
+      graded: false,
+      facultyComment: '',
+      facultyGrade: ''
+    }; //this.reloadPage = this.reloadPage.bind(this);
+
+    _this.showButtonReport = _this.showButtonReport.bind(_assertThisInitialized(_this));
+    _this.handleBack = _this.handleBack.bind(_assertThisInitialized(_this));
+    _this.download = _this.download.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.onChangeHandler = _this.onChangeHandler.bind(_assertThisInitialized(_this));
+    _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
+    _this.checkFaculty = _this.checkFaculty.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Report, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.checkReport();
+    }
+  }, {
+    key: "showButtonReport",
+    value: function showButtonReport() {
+      //console.log('show report');
+      //UHVATI IME FAJLA I POSTAVI GA U BUTTON DA SE MOŽE SKINIT
+      //OMOGUĆI UPLOAD NOVOG (ISPRAVLJENOG) FAJLA POD ISTIM IMENOM KOJE JE I BILO
+      this.setState({
+        showReport: true,
+        showPractise: false
+      });
+    } // isGraded(){
+    //     this.props.noGradedReports.forEach(element => {
+    //         if(element.id == this.state.id){
+    //             if(element.grade != ''){
+    //                 this.setState({
+    //                     graded: true
+    //                 })
+    //             }
+    //         }
+    //     });
+    // }
+
+  }, {
+    key: "checkReport",
+    value: function checkReport() {
+      var _this2 = this;
+
+      //console.log('check report');
+      //this.isGraded();
+      axios.get('/api/reports/' + this.state.id).then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          report: response.data
+        }); //console.log(this.state.report);
+
+
+        if (_this2.state.report.grade != undefined && _this2.state.report.grade != '') {
+          //console.log(this.state.report.student_id);
+          _this2.setState({
+            graded: true
+          });
+
+          _this2.checkFaculty();
+        }
+
+        _this2.setState({
+          grade: _this2.state.report.grade,
+          comment: _this2.state.report.comment,
+          facultyGrade: _this2.state.report.facultyGrade,
+          facultyComment: _this2.state.report.facultyComment
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "checkFaculty",
+    value: function checkFaculty() {
+      var _this3 = this;
+
+      axios.get('/api/students').then(function (response) {
+        //console.log(response);
+        _this3.setState({
+          faculties: response.data
+        }); //console.log(this.state.faculties);
+
+
+        _this3.state.faculties.forEach(function (element) {
+          //console.log(element.user_id);
+          if (element.user_id == _this3.state.report.student_id) {
+            _this3.setState({
+              faculty: true
+            });
+          }
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "handleBack",
+    value: function handleBack() {
+      //console.log('back');
+      this.setState({
+        showReport: false,
+        showPractise: true,
+        grade: '',
+        comment: ''
+      });
+      this.props.reloadPage();
+    }
+  }, {
+    key: "download",
+    value: function download() {
+      //console.log('download');
+      //setTimeout(() => {
+      var response = {
+        file: '/storage/report/' + this.state.report.file
+      }; // server sent the url to the file!
+      // now, let's download:
+      //window.open(response.file);
+      // you could also do:
+      //window.location.href = response.file;
+
+      this.setState({
+        href: response.file
+      }); //}, 100);
+    }
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this4 = this;
+
+      e.preventDefault(); //console.log('submit');
+
+      var formData = new FormData();
+      var file = this.state.file;
+      var fileName = this.state.report.file;
+      var grade = this.state.grade;
+      var comment = this.state.comment;
+      var facultyGrade = this.state.facultyGrade;
+      var facultyComment = this.state.facultyComment;
+      formData.append('file', file);
+      formData.append('_method', 'PUT');
+      formData.append('fileName', fileName);
+      formData.append('grade', grade);
+      formData.append('comment', comment);
+      formData.append('facultyGrade', facultyGrade);
+      formData.append('facultyComment', facultyComment);
+      axios.post('/api/reports/' + this.state.id, formData, {
+        headers: {
+          processData: false,
+          contentType: false
+        }
+      }).then(function (response) {
+        // console.log(response);
+        _this4.setState({
+          report: response.data
+        }); //console.log(this.state.report);
+
+
+        if (_this4.state.report.grade != '') {
+          _this4.setState({
+            graded: true
+          });
+        }
+
+        _this4.handleBack(); //console.log(this.state.report);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "onChangeHandler",
+    value: function onChangeHandler(event) {
+      var file = event.target.files[0];
+      this.setState({
+        file: file
+      });
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState(_defineProperty({}, event.target.name, event.target.value));
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return this.state.userRole == 'Tvrtka' && !this.state.graded ? this.state.showPractise ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.description), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.status), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.studentName), this.state.report.id != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.showButtonReport
+      }, "SHOW REPORT")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "No report")) : this.state.showReport ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: this.state.href,
+        download: true,
+        onClick: this.download
+      }, this.state.report.file)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Grade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        name: "grade",
+        value: this.state.grade,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Comment: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        name: "comment",
+        value: this.state.comment,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Upload practise report:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        name: "file",
+        onChange: this.onChangeHandler,
+        accept: ".doc,.docx"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit"
+      }, "Upload"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleBack
+      }, "Back")))) : null : this.state.userRole == 'Fakultet' && this.state.graded && this.state.faculty ? this.state.showPractise ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.description), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.status), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.studentName), this.state.report.id != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.showButtonReport
+      }, "SHOW REPORT")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "No report")) : this.state.showReport ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: this.state.href,
+        download: true,
+        onClick: this.download
+      }, this.state.report.file)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+        onSubmit: this.handleSubmit,
+        encType: "multipart/form-data"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Company grade: ", this.state.grade)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Company comment: ", this.state.comment)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Grade: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        name: "facultyGrade",
+        value: this.state.facultyGrade,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Comment: "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        name: "facultyComment",
+        value: this.state.facultyComment,
+        onChange: this.handleChange
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, "Upload practise report:"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "file",
+        name: "file",
+        onChange: this.onChangeHandler,
+        accept: ".doc,.docx"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit"
+      }, "Upload"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: this.handleBack
+      }, "Back")))) : null : null;
+    }
+  }]);
+
+  return Report;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (Report);
+
+/***/ }),
+
+/***/ "./resources/js/components/ReportList.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/ReportList.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _MainNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MainNavigation */ "./resources/js/components/MainNavigation.js");
+/* harmony import */ var _MyPractise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./MyPractise */ "./resources/js/components/MyPractise.js");
+/* harmony import */ var _Report__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Report */ "./resources/js/components/Report.js");
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+
+
+var ReportList =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(ReportList, _Component);
+
+  function ReportList(props) {
+    var _this;
+
+    _classCallCheck(this, ReportList);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ReportList).call(this, props));
+    _this.state = {
+      userRole: localStorage.getItem('role'),
+      practises: [],
+      reports: []
+    };
+    _this.reloadPage = _this.reloadPage.bind(_assertThisInitialized(_this));
+    _this.checkTableRow = _this.checkTableRow.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(ReportList, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.reloadPage();
+    }
+  }, {
+    key: "reloadPage",
+    value: function reloadPage() {
+      var _this2 = this;
+
+      axios.get('/api/reports').then(function (response) {
+        //console.log(response);
+        _this2.setState({
+          practises: response.data[0],
+          reports: response.data[1]
+        }); //console.log(this.state.practises);
+        //console.log(this.state.reports);
+        // this.checkTableRow();
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: "checkTableRow",
+    value: function checkTableRow() {
+      if ($("#myTableId > tbody > tr").length < 1) {
+        this.setState({
+          practises: undefined
+        });
+      } //console.log($("#myTableId > tbody > tr").length);
+
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Reports", this.state.userRole != null ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MainNavigation__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        role: this.state.userRole
+      }) : null, this.state.practises != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        id: "myTableId"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "#"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Name"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Description"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Status"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }, "Student"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+        scope: "col"
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, this.state.practises.map(function (practise, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Report__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          key: index,
+          index: index,
+          practise: practise,
+          reloadPage: _this3.reloadPage
+        });
+      }))) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, "No results"));
+    }
+  }]);
+
+  return ReportList;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (ReportList);
 
 /***/ }),
 
@@ -67715,7 +69890,7 @@ function (_Component) {
         onClick: this.handleEdit
       }, "Uredi"))) : this.state.showInfo ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "row"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, this.props.index + 1)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Ime i prezime:"), " ", this.state.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Email: ", this.state.email))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "OIB: ", this.state.OIB))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Br. indeksa: ", this.state.indexNumber))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Fakultet: ", this.state.faculty))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Studij: ", this.state.study))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Smjer: ", this.state.course))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Godina studija: ", this.state.yearsOfStudy))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      }, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Ime i prezime:"), " ", this.state.name)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Email: ", this.state.email))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "OIB: ", this.state.OIB))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Br. indeksa: ", this.state.indexNumber))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Fakultet: ", this.state.faculty))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Studij: ", this.state.study))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Smjer: ", this.state.course))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Godina studija: ", this.state.yearsOfStudy))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         onClick: this.handleBack
       }, "Back"))) : this.state.showEdit ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "row"
@@ -67831,6 +70006,7 @@ function (_Component) {
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     _this.refreshStudents = _this.refreshStudents.bind(_assertThisInitialized(_this));
+    _this.checkTableRow = _this.checkTableRow.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -67931,41 +70107,35 @@ function (_Component) {
 
     }
   }, {
-    key: "componentWillMount",
-    value: function componentWillMount() {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.refreshStudents();
+    }
+  }, {
+    key: "refreshStudents",
+    value: function refreshStudents() {
       var _this3 = this;
 
       axios.get('/api/students').then(function (response) {
         //console.log(response);
         _this3.setState({
-          //users: response.data[0],
-          students: response.data //showProfile: true
+          students: response.data
+        });
 
-        }); //console.log(this.state.students);
-        //console.log(this.state.users[0]);
-        // if(this.state.students != undefined)
-        //     this.setState({
-        //         id: this.state.students.id
-        //     })
-        //console.log(this.state.students);
-
+        _this3.checkTableRow();
       })["catch"](function (error) {
         console.log(error);
       });
     }
   }, {
-    key: "refreshStudents",
-    value: function refreshStudents() {
-      var _this4 = this;
-
-      axios.get('/api/students').then(function (response) {
-        //console.log(response);
-        _this4.setState({
-          students: response.data
+    key: "checkTableRow",
+    value: function checkTableRow() {
+      if ($("#myTableId > tbody > tr").length < 1) {
+        this.setState({
+          students: undefined
         });
-      })["catch"](function (error) {
-        console.log(error);
-      });
+      } //console.log($("#myTableId > tbody > tr").length);
+
     }
   }, {
     key: "render",
@@ -68023,7 +70193,9 @@ function (_Component) {
         onChange: this.handleChange
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit"
-      }, "Registriraj"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+      }, "Registriraj"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.errorMessage)) : this.state.students != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+        id: "myTableId"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "col"
       }, "#"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "col"
@@ -68050,7 +70222,7 @@ function (_Component) {
           })
         );
       } //console.log(key[index])
-      ))));
+      ))) : null);
     }
   }]);
 

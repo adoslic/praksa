@@ -455,7 +455,9 @@ class Profile extends Component {
                     (this.state.createProfile != [] )?
                         <form>
                             {this.state.createProfile.map((key, index) =>
-                                (key != 'id' && key != 'created_at' && key != 'updated_at' && key != 'user_id')?
+                                (key != 'id' && key != 'created_at' && key != 'updated_at' 
+                                && key != 'user_id' && key != 'faculty' && key != 'study' 
+                                && key != 'course' && key != 'yearOfStudy' && key != 'indexNumber')?
                                 
                                     <input 
                                         key={index}

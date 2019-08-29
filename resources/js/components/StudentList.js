@@ -197,7 +197,7 @@ class StudentList extends Component {
 
             :this.state.showInfo?
                 <tr>
-                    <th scope="row"><h1>{this.props.index+1}</h1></th>
+                    <th scope="row">{this.props.index+1}</th>
                     <td>
                         <div>
                             <label><b>Ime i prezime:</b> {this.state.name}</label>
