@@ -77,13 +77,14 @@ class Grades extends Component {
     render() {
         return (
             <div>
-                Grades
+                
                 {(this.state.userRole != null)?
                     <MainNavigation role={this.state.userRole}/>
                 :null
                 }
 
-                {this.state.grades != []?
+                {this.state.grades[0] != undefined?
+                    //console.log('rado')
                     this.state.grades.map((key, index) => 
                     // <div>
                     //     <label>Name: {element.candidates[0].name}</label>

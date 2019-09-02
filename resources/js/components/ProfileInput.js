@@ -148,51 +148,51 @@ class ProfileInput extends Component {
             return (
                 <form onSubmit={this.handleUpdate}>
                     <div>
-                        <label>Naziv firme:</label> 
+                        <label className="col-form-label">Naziv tvrtke:</label>
                         <input 
+                            className="form-control"
                             name='name'
                             type='text'
-                            // value={this.state.profileValue[index]}
                             value={this.state.name}
                             onChange={this.handleChange}/>
                     </div>
                     <div>
-                        <label>Adresa:</label> 
+                        <label className="col-form-label">Adresa:</label>
                         <input 
+                            className="form-control"
                             name='address'
                             type='text'
-                            // value={this.state.profileValue[index]}
                             value={this.state.address}
                             onChange={this.handleChange}/>
                     </div>
                     <div>
-                        <label>Kontakt: </label> 
+                        <label className="col-form-label">Telefon:</label>
                         <input 
+                            className="form-control"
                             name='phone'
                             type='text'
-                            // value={this.state.profileValue[index]}
                             value={this.state.phone}
                             onChange={this.handleChange}/>
                     </div>
                     <div>
-                        <label>Email adresa:</label> 
+                        <label className="col-form-label">Email adresa:</label>
                         <input 
+                            className="form-control"
                             name='email'
                             type='email'
-                            // value={this.state.profileValue[index]}
                             value={this.state.email}
                             onChange={this.handleChange}/>
                     </div>
                     <div>
-                        <label>OIB: </label> 
+                        <label className="col-form-label">OIB:</label>
                         <input 
+                            className="form-control"
                             name='OIB'
                             type='text'
-                            // value={this.state.profileValue[index]}
                             value={this.state.OIB}
                             onChange={this.handleChange}/>
                     </div>
-                    <button type='submit'>Spremi</button>
+                    <button type='submit' className="btn btn-primary">Spremi</button>
                     <div>{this.state.errorMessage}</div>
                 </form>
             );
@@ -201,133 +201,113 @@ class ProfileInput extends Component {
                     
                     <form onSubmit={this.handleUpdate}>
                         <div>
-                            <label>Naziv sveučilišta: </label> 
+                            <label className="col-form-label">Naziv sveučilišta:</label>
                             <input 
+                                className="form-control"
                                 name='university'
                                 type='text'
                                 value={this.state.university}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Naziv fakulteta:</label> 
+                            <label className="col-form-label">Naziv fakulteta:</label> 
                             <input 
+                                className="form-control"
                                 name='name'
                                 type='text'
                                 value={this.state.name}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Adresa:</label> 
+                            <label className="col-form-label">Adresa:</label>
                             <input 
+                                className="form-control"
                                 name='address'
                                 type='text'
                                 value={this.state.address}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Kontakt: </label> 
+                            <label className="col-form-label">Telefon:</label>
                             <input 
+                                className="form-control"
                                 name='phone'
                                 type='text'
                                 value={this.state.phone}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Email adresa:</label> 
+                            <label className="col-form-label">Email adresa:</label>
                             <input 
+                                className="form-control"
                                 name='email'
                                 type='email'
                                 value={this.state.email}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>OIB: </label> 
+                            <label className="col-form-label">OIB:</label>
                             <input 
+                                className="form-control"
                                 name='OIB'
                                 type='text'
                                 value={this.state.OIB}
                                 onChange={this.handleChange}/>
                         </div>
-                        <button type='submit'>Spremi</button>
+                        <button type='submit' className="btn btn-primary">Spremi</button>
                         <div>{this.state.errorMessage}</div>
                     </form>
                 );
             case 'Student': 
                 return (
                     <form onSubmit={this.handleUpdate}>
-                        <div>
-                            <label>Ime studenta</label> 
+                        <div className="row">
+                            <label className="col-form-label ">Ime studenta:</label>
                             <input 
+                                className="form-control"
                                 name='name'
                                 type='text'
-                                // value={this.state.profileValue[index]}
                                 value={this.state.name}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Email adresa:</label> 
+                            <label className="col-form-label">Email adresa:</label>
                             <input 
+                                className="form-control"
                                 name='email'
                                 type='email'
-                                // value={this.state.profileValue[index]}
                                 value={this.state.email}
                                 onChange={this.handleChange}/>
                         </div>
                         <div>
-                            <label>Broj indeksa: {this.state.faculty}</label> 
-                            {/* <input 
-                                name='indexNumber'
-                                type='text'
-                                // value={this.state.profileValue[index]}
-                                value={this.state.indexNumber}
-                                onChange={this.handleChange}/> */}
+                            <label className="col-form-label">Broj indeksa: {this.state.faculty}</label> 
+                            
                         </div>
                         <div>
-                            <label>Naziv fakulteta: {this.state.faculty}</label> 
-                            {/* <input 
-                                name='faculty'
-                                type='text'
-                                // value={this.state.profileValue[index]}
-                                value={this.state.faculty}
-                                onChange={this.handleChange}/> */}
+                        <label className="col-form-label">Naziv fakulteta: {this.state.faculty}</label> 
+                            
                         </div>
                         <div>
-                            <label>Studij: {this.state.study}</label> 
-                            {/* <input 
-                                name='study'
-                                type='text'
-                                // value={this.state.profileValue[index]}
-                                value={this.state.study}
-                                onChange={this.handleChange}/> */}
+                            <label className="col-form-label">Studij: {this.state.study}</label> 
+                            
                         </div>
                         <div>
-                            <label>Smjer: {this.state.course}</label> 
-                            {/* <input 
-                                name='course'
-                                type='text'
-                                // value={this.state.profileValue[index]}
-                                value={this.state.course}
-                                onChange={this.handleChange}/> */}
+                            <label className="col-form-label">Smjer: {this.state.course}</label> 
+                            
                         </div>
                         <div>
-                            <label>Godina studija: {this.state.yearsOfStudy}</label> 
-                            {/* <input 
-                                name='yearsOfStudy'
-                                type='text'
-                                // value={this.state.profileValue[index]}
-                                value={this.state.yearsOfStudy}
-                                onChange={this.handleChange}/> */}
+                            <label className="col-form-label">Godina studija: {this.state.yearsOfStudy}</label> 
+                            
                         </div>
                         <div>
-                            <label>OIB: </label> 
+                            <label className="col-form-label">OIB:</label>
                             <input 
                                 name='OIB'
                                 type='text'
-                                // value={this.state.profileValue[index]}
                                 value={this.state.OIB}
                                 onChange={this.handleChange}/>
                         </div>
-                        <button type='submit'>Spremi</button>
+                        <button type='submit' className="btn btn-primary">Spremi</button>
                         <div>{this.state.errorMessage}</div>
                     </form>
                 ); 

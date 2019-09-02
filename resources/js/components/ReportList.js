@@ -12,10 +12,13 @@ class ReportList extends Component {
         this.state = {
             userRole: localStorage.getItem('role'),
             practises: [],
-            reports: []
+            reports: [],
+            errorMessage: '',
+
         };
         this.reloadPage = this.reloadPage.bind(this);
         this.checkTableRow = this.checkTableRow.bind(this);
+        //this.reloadReports = this.reloadReports.bind(this);
     }
     componentDidMount(){
         this.reloadPage();
@@ -26,58 +29,76 @@ class ReportList extends Component {
                 //console.log(response);
                 this.setState({
                     practises: response.data[0],
-                    reports: response.data[1]
+                    reports: response.data[1],
+                    //noReport: false
                 })
-                //console.log(this.state.practises);
-                //console.log(this.state.reports);
-                // this.checkTableRow();
+
+                //ova provjera je za tvrtke
+                if(this.state.practises[0] == undefined){
+                    this.checkTableRow();
+                }
+                else{
+                    //console.log('nije prazno');
+                }
+                // console.log(this.state.practises[0]);
+                
+                //this.checkTableRow();
             }).catch(error =>{
                 console.log(error);
             })
     }
+    // reloadPage(){
+    //     this.reloadReports();
+    //     this.checkTableRow();
+    // }
     
     checkTableRow(){
+
         if($("#myTableId > tbody > tr").length<1){
             this.setState({
-                practises: undefined
+                errorMessage: 'no results'
             })
         }
-        //console.log($("#myTableId > tbody > tr").length);
+        //console.log('check');
 
     }
     render() {
         return (
-            <div>
-                Reports
+            <div className="container">
+                
                 {(this.state.userRole != null)?
                     <MainNavigation role={this.state.userRole}/>
                 :null
                 }
-                {this.state.practises != undefined?
+                <div>
+                {this.state.errorMessage != ''?
+                    <div>{this.state.errorMessage}</div>
+                :    this.state.practises != undefined?
                     <table id='myTableId'>
-                    <thead>
-                        <tr >
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Student</th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.practises.map((practise, index) =>
-
-                            <Report key={index} index={index} practise={practise} reloadPage={this.reloadPage}/>
-                        
-                        )}
-                    </tbody>
+                        <thead>
+                            <tr >
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Student</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.practises.map((practise, index) =>
+                                
+                                <Report key={index} index={index} practise={practise} reloadPage={this.reloadPage} 
+                                length={this.state.practises.length} check={this.checkTableRow}/>
+                                
+                            )}
+                        </tbody>
                     </table>
                 :<span>No results</span>
                 }
-
+                </div>
             </div>
         );
     }

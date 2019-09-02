@@ -5,9 +5,13 @@ import Navigation from './Navigation';
 class Home extends Component {
     render() {
         return (
-            <div>
-                <Navigation/>
-                <p>Home page. welcome. neka slika/logo?</p>
+            <div className='hole-page'>
+                <div className="container">
+                    <Navigation/>
+                    <div className="logo">
+                        <img src='/images/logo.png'/>
+                    </div>
+                </div>
             </div>
         );
     }

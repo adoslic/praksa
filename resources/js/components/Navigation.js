@@ -8,10 +8,10 @@ class Navigation extends Component {
     }
     render() {
             return(
-                <div>
-                    <NavLink to='/'>Home</NavLink>
-                    <NavLink to='/login'>Login</NavLink>
-                    <NavLink to='/register'>Register</NavLink>
+                <div className="btn-group offset-md-3 col-md-6 offset-md-3" role="group">
+                    <NavLink exact  to='/' className="navbar-brand">Početna stranica</NavLink>
+                    <NavLink to='/login' className="navbar-brand">Prijava</NavLink>
+                    <NavLink to='/register' className="navbar-brand">Registracija</NavLink>
                 </div>
             )
     }

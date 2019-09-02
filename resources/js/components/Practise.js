@@ -225,70 +225,72 @@ class Practice extends Component {
     }
     render() {
         return (
-            <div>
-                Practice
+            <div className="container">
+                
                 {/* dohvati sve prakse i prikaži ih u tablici */}
 
                 {(this.state.userRole != null)?
                     <MainNavigation role={this.state.userRole}/>
                     :null
                 }
-        
+                <div>
                 {(this.state.userRole == 'Tvrtka')?
                     !this.state.showCreate?
-                        <button onClick={this.handleCreate}>Kreiraj praksu</button>
-                    :   <button onClick={this.handleButton}>Nazad</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleCreate}>Kreiraj praksu</button>
+                    :   <button type="button" className="btn btn-primary" onClick={this.handleButton}>Nazad</button>
                 :null
                 }
-                
+                </div>
                 {this.state.showCreate?
                     (this.state.createPractice != [] )?
-                        <form>
-                            {this.state.createPractice.map((key, index) =>
-                                (key != 'id' && key != 'created_at' && key != 'updated_at' && 
-                                key != 'company_id' && key != 'candidates' && key != 'faculties' && key != 'status')?
-                                    
-                                    <div key={index}>
-                                    <label>{key}:</label>
-                                    {(key == 'start')?
-                                        <input 
-                                            name={key}
-                                            // value={this.state.profileValue[index]}
-                                            value={this.state.key}
-                                            onChange={this.handleChange}
-                                            placeholder='dd.mm.yyyy'/>
-                                        :<input 
-                                            name={key}
-                                            // value={this.state.profileValue[index]}
-                                            value={this.state.key}
-                                            onChange={this.handleChange}
-                                            //placeholder={key}
-                                            />
-                                    }
-                                    </div>    
-                                :(key === 'faculties')?
-                                    <div key={index}>
-                                        <label>{key}:</label>
-                                        {this.state.faculties.map((faculty, i) =>
-                                        <div className="form-check" key={i}>
+                        <div className="offset-md-3 col-md-6 offset-md-3">
+                            <form>
+                                {this.state.createPractice.map((key, index) =>
+                                    (key != 'id' && key != 'created_at' && key != 'updated_at' && 
+                                    key != 'company_id' && key != 'candidates' && key != 'faculties' && key != 'status')?
+                                        
+                                        <div key={index}>
+                                        <label className="col-form-label">{key}:</label>
+                                        {(key == 'start')?
                                             <input 
-                                                type="checkbox" 
-                                                name={faculty.name} 
-                                                className="form-check-input"
-                                                onChange={this.onClickChange}
-                                                value={this.state.faculty[i]}/>
-                                            <label className="form-check-label">{faculty.name}</label>
-                                        </div>
-                                        )}  
-                                    </div>  
-                                :null
-                            )}
-                            {/* {console.log(this.state.faculty)} */}
-                            {/* {this.state.showCreate? */}
-                                <button onClick={this.handleSubmit}>Pošalji</button>
-                                <div>{this.state.errorMessage}</div>
-                            {/* :null} */}
-                        </form>
+                                                name={key}
+                                                // value={this.state.profileValue[index]}
+                                                value={this.state.key}
+                                                onChange={this.handleChange}
+                                                placeholder='dd.mm.yyyy'/>
+                                            :<input 
+                                                name={key}
+                                                // value={this.state.profileValue[index]}
+                                                value={this.state.key}
+                                                onChange={this.handleChange}
+                                                //placeholder={key}
+                                                />
+                                        }
+                                        </div>    
+                                    :(key === 'faculties')?
+                                        <div key={index}>
+                                            <label className="col-form-label">{key}:</label>
+                                            {this.state.faculties.map((faculty, i) =>
+                                            <div className="form-check" key={i}>
+                                                <input 
+                                                    type="checkbox" 
+                                                    name={faculty.name} 
+                                                    className="form-check-input"
+                                                    onChange={this.onClickChange}
+                                                    value={this.state.faculty[i]}/>
+                                                <label className="form-check-label">{faculty.name}</label>
+                                            </div>
+                                            )}  
+                                        </div>  
+                                    :null
+                                )}
+                                {/* {console.log(this.state.faculty)} */}
+                                {/* {this.state.showCreate? */}
+                                    <button className="btn btn-primary" onClick={this.handleSubmit}>Pošalji</button>
+                                    <div>{this.state.errorMessage}</div>
+                                {/* :null} */}
+                            </form>
+                        </div>
                     :null
                 :null
                 }
@@ -296,7 +298,7 @@ class Practice extends Component {
                     (this.state.showPractises)?
                         // this.state.practices.length > 1?
                             (this.state.practices !=undefined)?
-                            <div>
+                            <div className="offset-md-3 col-md-6 offset-md-3">
                                 <table id='myTableId'>
                                     <thead>
                                         <tr>
@@ -338,7 +340,7 @@ class Practice extends Component {
                                             //})
                                         
                                         //:
-                                        (index != undefined && key.status != 'locked')?
+                                        (index != undefined && key.status != 'locked' && key.status != 'grade')?
                                         //console.log(key.status)
                                             <PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
                                         :null    
@@ -360,7 +362,7 @@ class Practice extends Component {
                                     :null
                                     } */}
                             </div>
-                            :<span>No results</span>
+                            :<div className="offset-md-3 col-md-6 offset-md-3">No results</div>
                             
                         // <button onClick={this.handleCreate}>Kreirajte profil</button>
                         // :<span>No results</span>

@@ -13,6 +13,7 @@ import Profile from './Profile';
 import MyPractise from './MyPractise';
 import ReportList from './ReportList';
 import Grades from './Grades';
+import 'bootstrap/dist/css/bootstrap.css';
 
 class Index extends Component {
     constructor(props){

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MainNavigation from './MainNavigation';
 import axios from 'axios';
 import ProfileList from './ProfileList';
-import ProfileInput from './ProfileInput'
+import ProfileInput from './ProfileInput';
 
 class Profile extends Component {
     constructor(){
@@ -59,6 +59,9 @@ class Profile extends Component {
                     this.setState({
                         id: this.state.profile.id
                     })
+                else{
+                    this.handleCreate();
+                }
                 //console.log(this.state.profile);
                 //console.log(this.state.userInfo);
             }).catch(error =>{
@@ -78,7 +81,7 @@ class Profile extends Component {
                     this.setState({
                         id: this.state.profile.id
                     })
-                //console.log(this.state.id);
+                //console.log(this.state.profile);
                 //console.log(this.state.userInfo);
             }).catch(error =>{
                 console.log(error);
@@ -429,28 +432,28 @@ class Profile extends Component {
 
     render() {
         return (
-            <div>
-                Profile
+            <div className="container">
                 
-                {(this.state.userRole != null)?
+                
+                {(this.state.userRole != null && this.state.profile != undefined)?
                     <MainNavigation role={this.state.userRole}/>
                     :null
                 }
 
                 {this.state.showProfile?
                     (this.state.profile !=undefined)?
-                    <div>
+                    <div className="offset-md-3 col-md-6 offset-md-3 x">
                         <ProfileList profile={this.state.profile}/>
-                        <button onClick={this.handleEdit}>Uredi</button>
+                        <button className="btn btn-primary offset-md-1" onClick={this.handleEdit}>Uredi</button>
                     </div>
-                    : 
-                    <button onClick={this.handleCreate}>Kreirajte profil</button>
+                    :
+                    // <div>
+                    //     <button className="btn btn-primary" onClick={this.handleCreate}>Kreirajte profil</button>
+                    // </div>
+                    null
                 :null    
                 }
 
-                {/* ovo radi za fakultet
-                napravi za ostale
-                napravi buttone za delete i edit... */}
                 {this.state.showCreate?
                     (this.state.createProfile != [] )?
                         <form>
@@ -458,19 +461,25 @@ class Profile extends Component {
                                 (key != 'id' && key != 'created_at' && key != 'updated_at' 
                                 && key != 'user_id' && key != 'faculty' && key != 'study' 
                                 && key != 'course' && key != 'yearOfStudy' && key != 'indexNumber')?
-                                
+                                <div key={index} className="form-group">
+                                    {/* <label className="col-form-label"> */}
+                                        {key == 'university'? <label className="col-form-label">Sveučilište:</label>
+                                        :key == 'address'? <label className="col-form-label">Adresa:</label>
+                                        :key == 'phone'? <label className="col-form-label">Telefon:</label>
+                                        :key == 'OIB'? <label className="col-form-label">OIB:</label>
+                                        :null}
+                                    {/* </label> */}
                                     <input 
-                                        key={index}
                                         name={key}
-                                        // value={this.state.profileValue[index]}
+                                        className="form-control"
                                         value={this.state.key}
-                                        onChange={this.handleChange}
-                                        placeholder={key}/>
-                                
+                                        onChange={this.handleChange}/>
+                                </div>
                                 :null
                             )}
                             {/* {this.state.showCreate? */}
-                                <button onClick={this.handleSubmit}>Pošalji</button>
+                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Pošalji</button>
+                                
                                 <div>{this.state.errorMessage}</div>
                             {/* :null} */}
                         </form>
@@ -479,7 +488,9 @@ class Profile extends Component {
                 }
 
                 {this.state.showEdit?
-                    <ProfileInput profile={this.state.editProfile} changeState={this.changeState}/>
+                    <div className="offset-md-4 col-md-4 offset-md-4">
+                        <ProfileInput profile={this.state.editProfile} changeState={this.changeState}/>
+                    </div>
                 :null
                 }
                 

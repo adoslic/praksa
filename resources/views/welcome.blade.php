@@ -6,12 +6,14 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Praksa</title>
+        
         <link href="/css/app.css" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div id="example">
             
         </div>
+        
         <script src="/js/app.js"></script>
     </body>
 </html>

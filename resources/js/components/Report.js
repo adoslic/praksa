@@ -68,27 +68,41 @@ class Report extends Component {
     // }
     checkReport(){
         //console.log('check report');
-        //this.isGraded();
+        //console.log('index', this.props.index);
         axios.get('/api/reports/'+this.state.id)
             .then(response =>{
                 //console.log(response);
                 this.setState({
                     report: response.data
                 });
-                //console.log(this.state.report);
-                if(this.state.report.grade != undefined && this.state.report.grade != ''){
-                    //console.log(this.state.report.student_id);
+                if(this.state.report.comment != undefined && this.state.report.comment != ''){
                     this.setState({
-                        graded: true
-                    })
-                    this.checkFaculty();
+                        comment: this.state.report.comment,
+                    });
                 }
-                this.setState({
-                    grade: this.state.report.grade,
-                    comment: this.state.report.comment,
-                    facultyGrade: this.state.report.facultyGrade,
-                    facultyComment: this.state.report.facultyComment,
-                });
+
+                    if(this.state.report.grade != undefined && this.state.report.grade != ''){
+                    //console.log(this.state.report.student_id);
+                        
+                        this.setState({
+                            graded: true
+                        })
+                        this.checkFaculty();
+                        //console.log('index', this.props.index)
+                        
+                        
+                        this.setState({
+                            grade: this.state.report.grade,
+                            comment: this.state.report.comment,
+                            facultyGrade: this.state.report.facultyGrade,
+                            facultyComment: this.state.report.facultyComment,
+                        });
+                    }
+                    //console.log('index', this.props.index);
+                    if(this.props.index == this.props.length-1){
+                        //console.log('zadnji', this.props.length)
+                        //this.props.check();
+                    }
                 
             }).catch(error =>{
                 console.log(error);
@@ -102,10 +116,12 @@ class Report extends Component {
                 this.setState({
                     faculties: response.data
                 }) 
-                //console.log(this.state.faculties);
+                // console.log(this.state.faculties);
+                // console.log(this.state.report.student_id);
                 this.state.faculties.forEach(element => {
                     //console.log(element.user_id);
                     if(element.user_id == this.state.report.student_id){
+                        //console.log(element.user_id);
                         this.setState({
                             faculty: true
                         }) 
@@ -131,7 +147,7 @@ class Report extends Component {
         //console.log('download');
         //setTimeout(() => {
             const response = {
-            file: '/storage/report/'+this.state.report.file,
+                file: '/storage/report/'+this.state.report.file,
             };
             // server sent the url to the file!
             // now, let's download:
@@ -139,7 +155,7 @@ class Report extends Component {
             // you could also do:
              //window.location.href = response.file;
             this.setState({
-                 href: response.file
+                href: response.file
             })
         //}, 100);
     }
@@ -180,6 +196,19 @@ class Report extends Component {
                                 graded: true
                             })
                         }
+                        if(this.state.report.facultyGrade != ''){
+                            axios.post('/api/practise/'+this.state.id,{
+                                    _method : 'PUT',
+                                    status: 'grade',
+                                }).then(response =>{
+                                    //console.log(response.data);
+                                    this.setState({
+                                        faculty: false
+                                    })
+                                }).catch(error =>{
+                                    console.log(error);
+                                })
+                        }
                         this.handleBack();
                         //console.log(this.state.report);
                     }).catch(error =>{
@@ -200,7 +229,8 @@ class Report extends Component {
             this.state.userRole == 'Tvrtka' && !this.state.graded?
                 this.state.showPractise?
                         <tr>
-                            {/* <td>{this.props.index+1}</td> */}
+                            {/* {console.log(this.props.index)} */}
+                            
                             <td></td>
                             <td>{this.state.name}</td>
                             <td>{this.state.description}</td>
@@ -258,6 +288,7 @@ class Report extends Component {
                 this.state.showPractise?
                         <tr>
                             {/* <td>{this.props.index+1}</td> */}
+                            {/* {console.log(this.props.index)} */}
                             <td></td>
                             <td>{this.state.name}</td>
                             <td>{this.state.description}</td>

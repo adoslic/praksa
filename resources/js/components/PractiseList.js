@@ -8,7 +8,7 @@ class PractiseList extends Component {
     constructor(props){
         super(props);
         this.state = {
-            user: this.props.user,
+            user: this.props.user || '',
             userRole: localStorage.getItem('role'),
             id: this.props.practice.id,
             name:  this.props.practice.name,
@@ -48,6 +48,7 @@ class PractiseList extends Component {
         this.handleUnapply = this.handleUnapply.bind(this);
         this.checkUserRole = this.checkUserRole.bind(this);
         this.hideProfile = this.hideProfile.bind(this);
+        this.changeStatus = this.changeStatus.bind(this);
     }
     handleShow(){
         //console.log('show');
@@ -132,6 +133,10 @@ class PractiseList extends Component {
             showInfo: false,
             showEdit: false
         })
+        if(this.props.index != undefined){
+            this.props.changeState();
+        }
+        
     }
     handleChange(e){
         this.setState({ [e.target.name] : e.target.value });
@@ -183,7 +188,10 @@ class PractiseList extends Component {
                     status: this.state.status,
                     candidates: this.state.candidates
                 }).then(response =>{
-                    //console.log(response);
+                    //console.log(response.data.status);
+                    this.setState({
+                        status: response.data.status
+                    })
                     // this.props.changeState();
                     this.handleBack();
                 }).catch(error =>{
@@ -310,7 +318,7 @@ class PractiseList extends Component {
                     _method : 'PUT',
                     candidates: array
                 }).then(response =>{
-                    console.log(response);
+                    //console.log(response);
                     
                     this.setState({
                         applied: false
@@ -360,12 +368,14 @@ class PractiseList extends Component {
             this.state.faculties.forEach((element) => {
                     // console.log(this.props.user.user.name);
                     // console.log(element);
-                    if(element == this.props.user.user.name){
-                        //console.log('free');
-                        this.setState({
-                            allowed: true
-                        })
-                    }
+                    //if(this.state.user != undefined){
+                        if(element == this.props.user.user.name){
+                            //console.log('free');
+                            this.setState({
+                                allowed: true
+                            })
+                        }
+                    //}
             })
         }
         else{
@@ -373,6 +383,7 @@ class PractiseList extends Component {
                 allowed: true
             })
         }
+        
     }
     showProfile(id){
         //console.log(id);
@@ -392,6 +403,11 @@ class PractiseList extends Component {
         //console.log('hide');
         this.setState({
             showProfile: false
+        })
+    }
+    changeStatus(value){
+        this.setState({
+            status: value
         })
     }
     render() {
@@ -615,7 +631,8 @@ class PractiseList extends Component {
                                         //     }
                                         // </li>
                                         //console.log(candidate)
-                                        <Candidate key={index} candidate={candidate} id={this.state.id} handleBack={this.handleBack} status={this.state.status}/>
+                                        <Candidate key={index} candidate={candidate} id={this.state.id} handleBack={this.handleBack} 
+                                        status={this.state.status} changeStatus={this.changeStatus}/>
                                     )}
                             </div>  
                             <button onClick={this.handleUpdate}>save</button>

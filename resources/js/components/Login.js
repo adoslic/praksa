@@ -58,27 +58,37 @@ class Login extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="container">
                 <Navigation/>
-                <form onSubmit={this.handleSubmit}>
-                    
-                    <h3>Log in</h3>
-                    <input 
-                        type="email" 
-                        name="username" 
-                        placeholder="enter your email" 
-                        value={this.state.username}
-                        onChange={this.handleChange}/>
+                <form className="form offset-md-4 col-md-4 offset-md-4" onSubmit={this.handleSubmit}>
+                    <h3>Prijava</h3>
+                    <div className="form-group">
+                        <label className="col-form-label">
+                            Email adresa: 
+                        </label>
+                        <input 
+                            type="email" 
+                            name="username" 
+                            placeholder="Upišite email adresu"
+                            className="form-control"
+                            value={this.state.username}
+                            onChange={this.handleChange}/>
+                        </div>
+                    <div className="form-group">
+                        <label className="col-form-label">
+                            Lozinka: 
+                        </label>
+                        <input 
+                            type="password" 
+                            name="password"
+                            autoComplete="on"
+                            className="form-control"
+                            placeholder="Upišite lozinku"
+                            value={this.state.password}
+                            onChange={this.handleChange}/>
+                    </div>
 
-                    <input 
-                        type="password" 
-                        name="password"
-                        autoComplete="on"
-                        placeholder="enter password" 
-                        value={this.state.password}
-                        onChange={this.handleChange}/>
-
-                    <button type="submit">Login</button>
+                    <button type="submit" className="btn btn-primary">Prijava</button>
 
                     <div>{this.state.errorMessage}</div>
                 </form>

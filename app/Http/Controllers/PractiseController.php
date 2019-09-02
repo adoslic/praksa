@@ -225,6 +225,13 @@ class PractiseController extends Controller
             //     $array = $request->input('candidates');
             // }
             
+            else if($request->input('status')){
+                $practise = Practise::where('id', $id)->first();
+                $practise->status = 'finished';
+                $practise->save();
+                return $practise;
+            }
+
             // foreach ($array as $key) {
             //     if($name == $key){
             //         return 'already applied';
@@ -241,6 +248,13 @@ class PractiseController extends Controller
             $practise = Practise::find($id);
             //$practise->update(['candidates' => $array]);
             $practise->candidates = $request->input('candidates');
+            $practise->save();
+            return $practise;
+        }
+
+        else if($user->role == 'Fakultet'){
+            $practise = Practise::find($id);
+            $practise->status = $request->input('status');
             $practise->save();
             return $practise;
         }

@@ -53,7 +53,8 @@ class Candidate extends Component {
                     _method : 'PUT',
                     candidates: array,
                 }).then(response =>{
-                    console.log(response);
+                    //console.log(response.data.status);
+                    this.props.changeStatus(response.data.status);
                     this.props.handleBack();
                     //this.acceptApplication.bind(this)
                     //this.handleBack();

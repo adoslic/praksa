@@ -81,64 +81,115 @@ class Register extends Component {
     }
     render() {
         return (
-            <div>
+            <div className="container">
                 <Navigation/>
                 
-                <form onSubmit={this.handleSubmit}>
-                    
-                    <h3>Sign in</h3>
-                    <input 
-                        type="name" 
-                        name="name" 
-                        placeholder="enter your name" 
-                        value={this.state.name}
-                        onChange={this.handleChange}/>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="enter your email" 
-                        value={this.state.email}
-                        onChange={this.handleChange}/>
-
-                            <input 
-                                type="radio" 
-                                name="role" 
-                                value="Fakultet" 
-                                checked={this.state.role === 'Fakultet'}
-                                onChange={this.handleChange}/>Fakultet
-                            <input 
-                                type="radio" 
-                                name="role" 
-                                value="Tvrtka" 
-                                checked={this.state.role === 'Tvrtka'}
-                                onChange={this.handleChange}/>Tvrtka
+                    <form className="form offset-md-2 col-md-8 offset-md-2" onSubmit={this.handleSubmit}>
                         
-                    <input 
-                        type="number" 
-                        name="number" 
-                        //placeholder="enter number" 
-                        value={this.state.number}
-                        onChange={this.handleChange}/>
-                        
-                    <input 
-                        type="password" 
-                        name="password"
-                        autoComplete="on"
-                        placeholder="enter password" 
-                        value={this.state.password}
-                        onChange={this.handleChange}/>
-                    <input 
-                        type="password" 
-                        name="password_confirmation"
-                        autoComplete="on"
-                        placeholder="enter password again" 
-                        value={this.state.password_confirmation}
-                        onChange={this.handleChange}/>    
+                        <h3>Registracija</h3>
+                        <div className="row">
+                            <div className="form-group col">
+                            <label className="col-form-label">
+                                Ime: 
+                            </label>
+                                <input 
+                                    type="name" 
+                                    name="name" 
+                                    placeholder="Upišite ime"
+                                    className="form-control"
+                                    value={this.state.name}
+                                    onChange={this.handleChange}/>
+                            </div>
+                            <div className="form-group col">
+                                <label className="col-form-label">
+                                    Email adresa: 
+                                </label>
+                                <input 
+                                    type="email" 
+                                    name="email" 
+                                    placeholder="Upišite email adresu"
+                                    className="form-control"
+                                    value={this.state.email}
+                                    onChange={this.handleChange}/>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-2">
+                                <label className="form-check-label">
+                                    Uloga:
+                                </label>
+                            </div>
+                            <div className="col-md-4">    
+                                <div className="form-group">
+                                    <input 
+                                        type="radio" 
+                                        name="role" 
+                                        value="Fakultet"
+                                        className="form-check-input"
+                                        checked={this.state.role === 'Fakultet'}
+                                        onChange={this.handleChange}/>
+                                        <label className="form-check-label">
+                                            Fakultet
+                                        </label>
+                                </div>
+                                <div className="form-group">
+                                    <input 
+                                        type="radio" 
+                                        name="role" 
+                                        value="Tvrtka"
+                                        className="form-check-input"
+                                        checked={this.state.role === 'Tvrtka'}
+                                        onChange={this.handleChange}/>
+                                    <label className="form-check-label">
+                                        Tvrtka
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="form-group col-md-6">
+                                <label className="form-check-label">
+                                    Broj uloge: 
+                                </label>
+                                <input 
+                                    type="number" 
+                                    name="number" 
+                                    className="form-control"
+                                    value={this.state.number}
+                                    onChange={this.handleChange}/>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="form-group col">
+                                <label className="form-check-label">
+                                    Lozinka: 
+                                </label>
+                                <input 
+                                    type="password" 
+                                    name="password"
+                                    autoComplete="on"
+                                    placeholder="Upišite lozinku"
+                                    className="form-control"
+                                    value={this.state.password}
+                                    onChange={this.handleChange}/>
+                            </div>
+                            <div className="form-group col">
+                                <label className="form-check-label">
+                                    Potvrdite lozinku: 
+                                </label>
+                                <input 
+                                    type="password" 
+                                    name="password_confirmation"
+                                    autoComplete="on"
+                                    placeholder="Potvrdite lozinku"
+                                    className="form-control"
+                                    value={this.state.password_confirmation}
+                                    onChange={this.handleChange}/>
+                            </div>    
+                        </div>
+                        <button type="submit" className="btn btn-primary">Registracija</button>
 
-                    <button type="submit">Register</button>
-
-                    <div>{this.state.errorMessage}</div>
-                </form>
+                        <div>{this.state.errorMessage}</div>
+                    </form>
+                
             </div>
         );
     }

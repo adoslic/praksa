@@ -26,7 +26,7 @@ class ReportController extends Controller
         }
         if($user->role == 'Fakultet'){
             $practises = Practise::with('company')->where('status', 'finished')->get();
-            $reports = Report::with('practise')->where('grade', '<>', '')->get();
+            $reports = Report::with('practise')->where('grade', '<>', '')->where('facultyGrade', '')->get();
         }
         //$reports = Report::with('practise')->where('grade', '<>', '')->get();
         if($user->role == 'Student'){

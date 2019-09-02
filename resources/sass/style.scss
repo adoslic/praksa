@@ -1,0 +1,45 @@
+.hole-page{
+    position:fixed;
+    padding:0;
+    margin:0;
+    
+    top:0;
+    left:0;
+    
+    width: 100%;
+    height: 100%;
+    background:rgba(255,255,255,0.5);
+}
+.active{
+    color: #0058B8;
+    //text-decoration:underline;
+}
+.container{
+    //border: 1px solid red;
+    @media (min-width: 1200px) {
+        .container{
+            max-width: 970px;
+        }
+    }
+}
+.form{
+    //padding: 50px;
+    //border: 1px solid red;
+
+}
+.logo{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+.btn-group {
+    //border: 1px solid red;
+    justify-content: space-around;
+}
+
+
+.x{
+    border: 1px solid black;
+    
+}

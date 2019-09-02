@@ -96,7 +96,7 @@ class MyPractise extends Component {
                 });
                 if(this.state.practice.status == 'locked'){
                     this.setState({
-                    message: 'practise locked'
+                    message: 'praksa zaključena'
                 });
                 }
                 //console.log(this.state.practices);
@@ -245,8 +245,9 @@ class MyPractise extends Component {
                 }).then(response =>{
                     //console.log(response);
                     this.setState({
-                        message: 'practise locked'
+                        message: 'practise locked',
                     })
+                    this.reloadPractise();
                 }).catch(error =>{
                     console.log(error);
                 })
@@ -257,7 +258,15 @@ class MyPractise extends Component {
         axios.post('/api/reports/'+id,{
                     _method : 'PUT',
                     }).then(response =>{
-                        console.log(response);
+                        //console.log(response);
+                        axios.post('/api/practise/'+this.state.practise_id,{
+                            _method : 'PUT',
+                            status: 'finished',
+                            }).then(response =>{
+                                //console.log(response);
+                            }).catch(error =>{
+                                console.log(error);
+                            })
                         this.reloadPractise();
                         // this.setState({
                         //     reports: response.data
@@ -276,14 +285,36 @@ class MyPractise extends Component {
 
             this.state.showPractise?
                 <div>
-                    MyPractise
+                    
                     {(this.state.userRole != null)?
                         <MainNavigation role={this.state.userRole}/>
                     :null
                     }
-                    {this.state.message !=''?
+                    {this.state.practice.status == 'grade'?
+                        <div>
+                            {this.state.reports.comment != ''?
+                                <div>
+                                    <label>Komentar tvrtke: {this.state.reports.comment}</label>
+                                </div>
+                            :null}
+                            {this.state.reports.facultyComment != ''?
+                                <div>
+                                    <label>Komentar fakulteta: {this.state.reports.facultyComment}</label>
+                                </div>
+                            :null}
+                            <label>Ocjena: {this.state.reports.facultyGrade}</label><br/>
+                            <button onClick={this.accept}>Prihvati</button>
+                            <button onClick={this.decline}>Odbij</button>
+                        </div>
+                    :this.state.message !=''?
 
-                        <div>{this.state.message}</div>
+                        <div>{this.state.message}<br/>
+                        {(this.state.reports.facultyGrade != '')?
+                            <label>Ocjena: {this.state.reports.facultyGrade}</label>
+                        :null
+                        }
+                        <br/>
+                        </div>
 
                     :   !this.state.hasPractise?
                             <p>Nemate odabranu praksu</p>
@@ -291,9 +322,9 @@ class MyPractise extends Component {
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Start</th>
+                                    <th scope="col">Ime</th>
+                                    <th scope="col">Opis</th>
+                                    <th scope="col">Početak</th>
                                     <th scope="col">Status</th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
@@ -321,29 +352,29 @@ class MyPractise extends Component {
                                 
                                     {this.state.reports.comment != ''?
                                         <div>
-                                            <label>Company comment: {this.state.reports.comment}</label>
+                                            <label>Komentar tvrtke: {this.state.reports.comment}</label>
                                         </div>
                                     :null}
                                     
                                     {this.state.reports.facultyComment != ''?
                                         <div>
-                                            <label>Faculty comment: {this.state.reports.facultyComment}</label>
+                                            <label>Komentar fakulteta: {this.state.reports.facultyComment}</label>
                                         </div>
                                     :null}
                                     
-                                    {this.state.reports.facultyGrade != ''?
+                                    {/* {this.state.reports.facultyGrade != ''?
                                         <div>
                                             <label>Grade: {this.state.reports.facultyGrade}</label>
                                             <a onClick={this.accept}>Accept</a>
                                             <a onClick={this.decline}>Decline</a>
                                         </div>
-                                    :null}
+                                    :null} */}
                                 </div>
                             :null
                             }
-                            <label>Upload practise report:</label><br />
+                            <label>Odaberite dokument:</label><br />
                             <input type="file" name="file" onChange={this.onChangeHandler} accept=".doc,.docx"/>
-                            <button type="submit">Upload</button>
+                            <button type="submit">Pošalji</button>
                             
                             <div>{this.state.errorMessage}</div>
                         </form>
