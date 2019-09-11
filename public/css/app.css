@@ -10656,7 +10656,7 @@ a.text-dark:focus {
 }
 
 .active {
-  color: #0058B8;
+  font-weight: bold;
 }
 
 @media (min-width: 1200px) {
@@ -10677,6 +10677,26 @@ a.text-dark:focus {
 }
 
 .x {
-  border: 1px solid black;
+  background-color: #0278FF;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.navbar-brand {
+  color: white;
+}
+
+#poc:hover,
+#reg:hover,
+#pri:hover,
+#stu:hover,
+#pra:hover,
+#mpr:hover,
+#izv:hover,
+#ocj:hover,
+#arh:hover,
+#pro:hover,
+#odj:hover {
+  color: white;
 }
 

@@ -8,63 +8,28 @@ class MainNavigation extends Component {
     }
 
     checkRole(){
-        // if(this.props.role === 'Fakultet'){
-        //     return (
-        //         <div>
-        //             <NavLink to='/students'>Studenti</NavLink>
-        //             <NavLink to='/practise'>Prakse</NavLink>
-        //             <NavLink to='/reports' >Izvještaji</NavLink>
-        //             <NavLink to='/grades' >Ocjene</NavLink>
-        //             <NavLink to='/profile' >Profil</NavLink>
-        //             <NavLink to='/logout' >Logout</NavLink>
-
-        //             <h1>Fakultet</h1>
-        //         </div>
-        //     )
-        // }
-        // else if(this.props.role === 'Student'){
-        //     return (
-        //         <div>
-        //             <NavLink to='/practise'>Prakse</NavLink>
-        //             <NavLink to='/mypractise'>Moja praksa</NavLink>
-        //             <NavLink to='/profile' >Profil</NavLink>
-        //             <NavLink to='/logout' >Logout</NavLink>
-
-        //             <h1>firma ili student</h1>
-        //         </div>
-        //     )
-        // }
-        // else{
-        //     return (
-        //         <div>
-        //             <NavLink to='/practise'>Prakse</NavLink>
-        //             <NavLink to='/reports' >Izvještaji</NavLink>
-        //             <NavLink to='/profile' >Profil</NavLink>
-        //             <NavLink to='/logout' >Logout</NavLink>
-
-        //             <h1>firma ili student</h1>
-        //         </div>
-        //     )
-        // }
         return (
-                    <div className="btn-group offset-md-4 col-md-4 offset-md-4" role="group">
+                    <div className="btn-group offset-md-2 col-md-8 offset-md-2 x" role="group">
                         {(this.props.role === 'Fakultet')?
-                            <NavLink to='/students'>Studenti</NavLink>
+                            <NavLink to='/students' className="navbar-brand" id="stu">Studenti</NavLink>
                         :null}
                         {/* {(this.props.role === 'Fakultet' || this.props.role === 'Tvrtka')? */}
-                            <NavLink to='/practise'>Prakse</NavLink>
+                            <NavLink to='/practise' className="navbar-brand" id="pra">Prakse</NavLink>
                         {/* :null} */}
                         {(this.props.role === 'Student')?
-                            <NavLink to='/mypractise'>Moja praksa</NavLink>
+                            <NavLink to='/mypractise' className="navbar-brand" id="mpr">Moja praksa</NavLink>
                         :null}
                         {(this.props.role === 'Fakultet' || this.props.role === 'Tvrtka')?
-                            <NavLink to='/reports' >Izvještaji</NavLink>
+                            <NavLink to='/reports' className="navbar-brand" id="izv">Izvještaji</NavLink>
                         :null}
                         {(this.props.role === 'Fakultet')?
-                            <NavLink to='/grades'>Ocjene</NavLink>
+                            <NavLink to='/grades' className="navbar-brand" id="ocj">Ocjene</NavLink>
                         :null}
-                        <NavLink to='/profile' >Profil</NavLink>
-                        <NavLink to='/logout' >Logout</NavLink>
+                        {(this.props.role === 'Tvrtka')?
+                            <NavLink to='/archives' className="navbar-brand" id="arh">Arhiva</NavLink>
+                        :null}
+                        <NavLink to='/profile' className="navbar-brand" id="pro">Profil</NavLink>
+                        <NavLink to='/logout' className="navbar-brand" id="odj">Odjava</NavLink>
     
                         
                     </div>

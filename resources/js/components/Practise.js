@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import MainNavigation from './MainNavigation';
 import PractiseList from './PractiseList';
-
+import { Button, Table, Input, ListGroup, ListGroupItem, ListGroupItemHeading } from 'reactstrap';
 class Practice extends Component {
     constructor(){
         super();
@@ -12,7 +11,7 @@ class Practice extends Component {
             name: '',
             description: '',
             company_id: '',
-            //faculties: '',
+            duration: '',
             start: '',
             status: 'free',
             candidates: '',
@@ -27,20 +26,20 @@ class Practice extends Component {
             faculties: [],
             user: [],
             hasPractise: false,
+            message: '',
+            allpractises: [],
+            search: '',
+
         }
         this.handleCreate = this.handleCreate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.reloadPractises = this.reloadPractises.bind(this);
         this.handleButton = this.handleButton.bind(this);
-        this.changeState = this.changeState.bind(this);
         this.onClickChange = this.onClickChange.bind(this);
-        this.checkTableRow = this.checkTableRow.bind(this);
-        //this.showStudentPractise = this.showStudentPractise.bind(this);
     }
     componentDidMount(){
         this.reloadPractises();
-        
     }
     handleCreate(){
         this.setState({
@@ -49,13 +48,11 @@ class Practice extends Component {
         })
         axios.get('/api/practise/create')
             .then(response =>{
-                //console.log(response);
                 this.setState({
                     createPractice: response.data[0],
                     faculties: response.data[1],
                     showCreate: true
                 })
-                //console.log(this.state.faculties);
             }).catch(error =>{
                 console.log(error);
             })
@@ -63,16 +60,12 @@ class Practice extends Component {
     handleSubmit(e){
         e.preventDefault();
 
-        var dateReg = /^\d{2}([.])\d{2}\1\d{4}$/;
-
-        // if(this.state.begin.match(dateReg)) console.log('valja');
-        // else console.log('ne valja');
+        //var dateReg = /^\d{2}([.])\d{2}\1\d{4}$/;
+        var dataRege = /^(0?[1-9]|[12][0-9]|3[01])[.](0?[1-9]|1[012])[.]\d{4}$/;
 
         this.setState({
             errorMessage: ''
-        })
-        //console.log('submit');
-        //console.log(this.state.faculty);  
+        })  
 
         const obj = this.state.faculty;
         var facultyList = Object.keys(obj).filter( function (key) {
@@ -80,83 +73,121 @@ class Practice extends Component {
         });
 
         if(this.state.name == '' || this.state.description == '' ||
-            facultyList == '' || this.state.start == '' || this.state.status == ''){
+            facultyList == '' || this.state.start == '' || 
+            this.state.duration == '' || this.state.status == ''){
             this.setState({
-                errorMessage: 'empty field'
+                errorMessage: 'Ispunite sva polja'
             })
-            //console.log(this.state.university);
         }
         else{
-            if(!this.state.start.match(dateReg)){
+            if(!this.state.start.match(dataRege)){
                 this.setState({
-                    errorMessage: 'invalid date format'
+                    errorMessage: 'Neispravan format datuma'
+                })
+            }
+            else if(isNaN(this.state.duration) || this.state.duration.length > 1){
+                this.setState({
+                    errorMessage: 'Neispravano trajanje prakse'
                 })
             }
             else{
-                
-                //console.log(facultyList);
-
-                //console.log(this.state);
                 axios.post('/api/practise',{
                     name: this.state.name,
                     description: this.state.description,
                     faculties: facultyList,
                     start: this.state.start,
+                    duration: this.state.duration,
                     status: this.state.status
                 }).then(response =>{
-                    //console.log(response.data);
                     this.setState({
                         showCreate: false,
                         showPractises: true,
-                        faculty: []
+                        faculty: [],
+                        name: '',
+                        description: '',
+                        faculties: '',
+                        start: '',
+                        duration: '',
+                        status: '',
                     });
                     this.reloadPractises();
-                    //this.props.history.push('/profile');
-                    //console.log(response);
                 }).catch(error =>{
                     console.log(error);
                 })
             }
             
         }
-        //console.log(this.state.faculty);
             
     }
     handleButton(){
         this.setState({
             showCreate: false,
-            showPractises: true
+            showPractises: true,
+            errorMessage: ''
         })
-        //this.reloadPractises();
     }
     reloadPractises(){
         axios.get('/api/practise')
             .then(response =>{
-                //console.log(response.data);
-                // if(response.data[1][0] == undefined){
-                //     this.setState({
-                //         practices: response.data[0],
-                //         user: ''
-                //     })
-                // }
-                // else{
-                    this.setState({
-                        user: response.data[1][0],
-                        practices: response.data[0]
-                        //showProfile: true
-                    })
-
-                //}
                 
-                //console.log(this.state.user);
+                this.setState({
+                    user: response.data[1][0],
+                    practices: response.data[0]
+                    
+                })
+                this.setState({
+                    allpractises: this.state.practices
+                })
+
+                //dohvati samo prakse koju su u tijeku
+                let prakse = [];
+                if(this.state.userRole != 'Student'){
+                    prakse = this.state.practices.filter(function(practice) {
+                        return practice.status !='locked' && practice.status !='grade';
+                    });
+                }
+                else{
+                    prakse = this.state.practices.filter(function(practice) {
+                        return practice.status =='free';
+                    });
+                }
+                this.setState({
+                    practices: prakse
+                })
+
+                
+                //dohvati prakse koje se odnose na taj faks tj studenta
+                
+                if(this.state.userRole != 'Tvrtka'){
+                    let array =[];
+                    let name;
+                    if(this.state.userRole == 'Fakultet'){
+                        name = this.state.user.user.name;
+                    }
+                    else{
+                        name = this.state.user.faculty;
+                    }
+                    
+                    prakse.forEach((element) => {
+                        if(element.faculties.indexOf(name) > -1){
+                            array.push(element);
+                        }
+                    })
+                    this.setState({
+                        practices: array
+                    })
+                    
+                }
+                
+                //PROVJERI IMA LI STUDENT PRAKSU
                 if(this.state.userRole == 'Student'){
-                    this.state.practices.forEach((element) => {
+                    this.state.allpractises.forEach((element) => {
                         if(element.status != 'free'){
                             element.faculties.forEach((key) => {
                                 if(this.state.user.faculty == key){
                                     element.candidates.forEach((candidate) => {
                                         if(this.state.user.user.id == candidate.id){
-                                            //console.log(candidate.name);
+                                            
                                             this.setState({
                                                 hasPractise: true
                                             })
@@ -167,16 +198,17 @@ class Practice extends Component {
                         }
                     })
                 }
-                // if(this.state.userRole == 'Fakultet'){
-
-                // }
-                this.checkTableRow();
-                //console.log(this.state.user);
-                // if(this.state.students != undefined)
-                //     this.setState({
-                //         id: this.state.students.id
-                //     })
-                //console.log(this.state.students);
+                
+                if(this.state.practices[0] != undefined){
+                    this.setState({
+                        message: 'ima rezultata'
+                    })
+                }
+                else{
+                    this.setState({
+                        message: 'nema rezultata'
+                    })
+                }
             }).catch(error =>{
                 console.log(error);
             })
@@ -184,13 +216,7 @@ class Practice extends Component {
     handleChange(event){
         this.setState({ [event.target.name] : event.target.value });
     }
-    changeState () {
-        // this.setState({
-        //     showEdit: false,
-        //     showProfile: true
-        // });
-        this.reloadPractises();
-    };
+
     onClickChange(e){
         const val = e.target.checked;
         const name = e.target.name;
@@ -198,36 +224,15 @@ class Practice extends Component {
         this.setState({
             faculty: updateFaculty
         })
-        
-    }
-    //showStudentPractise(key, index){
-    //     // key.faculties.forEach(function(element) {
-    //     //     if(this.state.user != undefined){
-    //     //         let faculty = this.state.user.faculty;
-    //     //         if(element == this.state.user.faculty){
-    //     //             console.log(this.state.user.faculty)
-    //     //         }
-    //     //     }
-    //     // }).bind(this)
-    //     key.faculties.forEach((element) => {
-    //         console.log(element);
-    //     });
-    //return <PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
-    // }
-    checkTableRow(){
-        if($("#myTableId > tbody > tr").length<1){
-            this.setState({
-                practices: undefined
-            })
-        }
-        //console.log($("#myTableId > tbody > tr").length);
-
     }
     render() {
+        let filteredPractises = this.state.practices.filter(
+            (practice) => {
+                return practice.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1;
+            }
+        );
         return (
             <div className="container">
-                
-                {/* dohvati sve prakse i prikaži ih u tablici */}
 
                 {(this.state.userRole != null)?
                     <MainNavigation role={this.state.userRole}/>
@@ -236,59 +241,79 @@ class Practice extends Component {
                 <div>
                 {(this.state.userRole == 'Tvrtka')?
                     !this.state.showCreate?
-                    <button type="button" className="btn btn-primary" onClick={this.handleCreate}>Kreiraj praksu</button>
-                    :   <button type="button" className="btn btn-primary" onClick={this.handleButton}>Nazad</button>
+                    <Button color="primary" onClick={this.handleCreate}>Kreiraj praksu</Button>
+                    :<Button color="primary" onClick={this.handleButton}>Nazad</Button>
                 :null
                 }
                 </div>
                 {this.state.showCreate?
                     (this.state.createPractice != [] )?
-                        <div className="offset-md-3 col-md-6 offset-md-3">
+                        <div className="offset-md-4 col-md-4 offset-md-4">
                             <form>
                                 {this.state.createPractice.map((key, index) =>
-                                    (key != 'id' && key != 'created_at' && key != 'updated_at' && 
-                                    key != 'company_id' && key != 'candidates' && key != 'faculties' && key != 'status')?
-                                        
-                                        <div key={index}>
-                                        <label className="col-form-label">{key}:</label>
-                                        {(key == 'start')?
+                                    (key == 'name')?
+                                        <div className="form-group" key={index}>
+                                            <label className="col-form-label">Naziv</label>
                                             <input 
-                                                name={key}
-                                                // value={this.state.profileValue[index]}
-                                                value={this.state.key}
-                                                onChange={this.handleChange}
-                                                placeholder='dd.mm.yyyy'/>
-                                            :<input 
-                                                name={key}
-                                                // value={this.state.profileValue[index]}
-                                                value={this.state.key}
-                                                onChange={this.handleChange}
-                                                //placeholder={key}
-                                                />
-                                        }
-                                        </div>    
-                                    :(key === 'faculties')?
-                                        <div key={index}>
-                                            <label className="col-form-label">{key}:</label>
+                                                name='name'
+                                                type='text'
+                                                className="form-control"
+                                                placeholder='Upišite naziv prakse'
+                                                value={this.state.name}
+                                                onChange={this.handleChange}/>
+                                        </div>
+                                    :(key == 'description')?
+                                        <div className="form-group" key={index}>
+                                            <label className="col-form-label">Opis</label>
+                                            <textarea 
+                                                name='description'
+                                                type='text'
+                                                className="form-control"
+                                                placeholder='Upišite opis prakse'
+                                                value={this.state.description}
+                                                onChange={this.handleChange}/>
+                                        </div>
+                                    :(key == 'faculties')?
+                                        <div className="form-group" key={index}>
+                                            <label className="col-form-label">Fakulteti</label>
                                             {this.state.faculties.map((faculty, i) =>
-                                            <div className="form-check" key={i}>
-                                                <input 
-                                                    type="checkbox" 
-                                                    name={faculty.name} 
-                                                    className="form-check-input"
-                                                    onChange={this.onClickChange}
-                                                    value={this.state.faculty[i]}/>
-                                                <label className="form-check-label">{faculty.name}</label>
-                                            </div>
+                                                <div className="form-check" key={i}>
+                                                    <input 
+                                                        type="checkbox" 
+                                                        name={faculty.name} 
+                                                        className="form-check-input"
+                                                        onChange={this.onClickChange}
+                                                        value={this.state.faculty[i]}/>
+                                                    <label className="form-check-label">{faculty.name}</label>
+                                                </div>
                                             )}  
-                                        </div>  
+                                        </div>
+                                    :(key == 'start')?
+                                        <div className="form-group" key={index}>
+                                            <label className="col-form-label">Početak</label>
+                                                <input 
+                                                    name='start'
+                                                    type='text'
+                                                    className="form-control"
+                                                    value={this.state.start}
+                                                    onChange={this.handleChange}
+                                                    placeholder='Upišite datum u formatu dd.mm.yyyy'/>
+                                        </div>
+                                    :(key == 'duration')?
+                                        <div className="form-group" key={index}>
+                                            <label className="col-form-label">Trajanje</label>
+                                                <input 
+                                                    name='duration'
+                                                    type='text'
+                                                    className="form-control"
+                                                    value={this.state.duration}
+                                                    onChange={this.handleChange}
+                                                    placeholder='Upišite trajanje prakse u tjednima'/>
+                                        </div>
                                     :null
                                 )}
-                                {/* {console.log(this.state.faculty)} */}
-                                {/* {this.state.showCreate? */}
-                                    <button className="btn btn-primary" onClick={this.handleSubmit}>Pošalji</button>
-                                    <div>{this.state.errorMessage}</div>
-                                {/* :null} */}
+                                <Button color="primary" onClick={this.handleSubmit}>Pošalji</Button>
+                                <div className="text-danger">{this.state.errorMessage}</div>
                             </form>
                         </div>
                     :null
@@ -296,85 +321,52 @@ class Practice extends Component {
                 }
                 {!this.state.hasPractise?
                     (this.state.showPractises)?
-                        // this.state.practices.length > 1?
-                            (this.state.practices !=undefined)?
-                            <div className="offset-md-3 col-md-6 offset-md-3">
-                                <table id='myTableId'>
+                            (this.state.practices !=undefined && this.state.message == 'ima rezultata')?
+                            <div>
+                                <div className="offset-md-4 col-md-4 offset-md-4">
+                                    <Input
+                                        type="text"
+                                        name="search"
+                                        value={this.state.search}
+                                        onChange={this.handleChange}
+                                        placeholder="Pretraži praksu"/>
+                                </div>
+                                <Table striped hover>
                                     <thead>
                                         <tr>
                                             <th scope="col">#</th>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Description</th>
-                                            {/* <th scope="col">Fakulteti</th> */}
-                                            <th scope="col">Start</th>
+                                            <th scope="col">Naziv</th>
+                                            <th scope="col">Početak</th>
+                                            <th scope="col">Trajanje</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col"></th>
-                                            <th scope="col"></th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
                                     <tbody> 
-                                    {this.state.practices.map((key, index) =>
-                                        
-                                        //(this.state.userRole == 'Student')?
-                                        //     // key.faculties.forEach(function(element) {
-                                        //     //     //if(this.state.user != undefined){
-                                        //     //         // let faculty = this.state.user.faculty;
-                                        //     //         // if(element == this.state.user.faculty){
-                                        //     //              console.log(this.state.user.faculty)
-                                        //     //         // }
-                                        //     //     //}
-                                        //     // }).bind(this)
-                                        //     //
-
-                                            // key.faculties.map((element) => {
-                                                //this.showStudentPractise(key, index)
-                                        //         if(element == this.state.user.faculty){
-                                        //             console.log('key', key);
-                                        //             // console.log('index',index);
-                                        //             // console.log('user', this.state.user);
-                                        //             //<PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
-                                                    
-                                        //         }
-                                        //<PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
-                                            //})
-                                        
-                                        //:
-                                        (index != undefined && key.status != 'locked' && key.status != 'grade')?
-                                        //console.log(key.status)
-                                            <PractiseList key={key.id} practice={key} index={index} changeState={this.changeState} user={this.state.user}/>
-                                        :null    
-                                            //console.log(key.id)
-                                    )}
-                                    {/* {this.state.noResult?
-                                        // <tr>
-                                        //     <td>No results</td>
-                                        // </tr>
-                                        //<tr><td><span>No results</span></td></tr>
-                                    :null} */}
-
+                                        {filteredPractises.map((key, index) =>
+                                            <PractiseList key={key.id} practice={key} index={index} changeState={this.reloadPractises} user={this.state.user}/>
+                                            
+                                        )}
                                     </tbody>
-                                </table>
-                                {/* {($("#myTableId > tbody > tr").length<1)?
-                                        // console.log('no results')
-                                        //CALL FUNCTION
-                                        this.checkTableRow()
-                                    :null
-                                    } */}
+                                </Table>
                             </div>
-                            :<div className="offset-md-3 col-md-6 offset-md-3">No results</div>
-                            
-                        // <button onClick={this.handleCreate}>Kreirajte profil</button>
-                        // :<span>No results</span>
+                            :this.state.message == 'nema rezultata'?
+                            <div className="offset-md-3 col-md-6 offset-md-3">
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <ListGroupItemHeading>Nema dostupnih praksi</ListGroupItemHeading>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </div>
+                            :null
                     :null    
-                :<div>
-                    <h3>Već ste odabrali praksu</h3>
+                :<div className="offset-md-3 col-md-6 offset-md-3">
+                    <ListGroup>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Već ste odabrali prasku</ListGroupItemHeading>
+                        </ListGroupItem>
+                    </ListGroup>
                 </div>
-                }
-                {
-                    // console.log($("#myTableId > tbody > tr").length)
-                    
-                    
                 }
             </div>
         );

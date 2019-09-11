@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import MainNavigation from './MainNavigation';
+import { Button, Label, Form, FormGroup, Col, Input } from 'reactstrap';
 
 class ProfileInput extends Component {
     constructor(props){
@@ -11,11 +10,11 @@ class ProfileInput extends Component {
             id: this.props.profile.id,
             name: this.props.profile.user.name,
             university: this.props.profile.university,
+            courses: this.props.profile.courses,
             address: this.props.profile.address,
             phone: this.props.profile.phone,
             email: this.props.profile.user.email,
             OIB: this.props.profile.OIB,
-            
             
             indexNumber: this.props.profile.indexNumber,
             faculty: this.props.profile.faculty,
@@ -29,11 +28,15 @@ class ProfileInput extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
     }
-
+    componentDidMount(){
+        if(this.state.userRole == 'Fakultet'){
+            this.setState({
+                courses: this.state.courses.join(", ")
+            })
+        }
+    }
     handleChange(event){
         this.setState({ [event.target.name] : event.target.value });
-        //console.log(this.state);
-        //this.setState({value: event.target.value});
     }
     handleUpdate(e){
         e.preventDefault();
@@ -41,31 +44,30 @@ class ProfileInput extends Component {
             errorMessage: ''
         })
         if(this.state.userRole=='Fakultet'){
-            if(this.state.name == '' || this.state.university == '' || this.state.address == '' ||
+            if(this.state.name == '' || this.state.university == '' || 
+                this.state.courses == '' || this.state.address == '' ||
                 this.state.phone == '' || this.state.email == '' || this.state.OIB == ''){
                     this.setState({
-                        errorMessage: 'popunite sva polja'
+                        errorMessage: 'Ispunite sva polja'
                     })
                 }
             else{
-                if(this.state.OIB.length<11){
+                if(this.state.OIB.length != 11){
                     this.setState({
                         errorMessage: 'OIB mora sadržavati 11 znakova'
                     })
                 }
                 else{
-                    //console.log('updated');
-                    //console.log(this.state);
                     axios.post('/api/profile/'+this.state.id,{
                         _method : 'PUT',
                         name: this.state.name,
                         university: this.state.university,
+                        courses: this.state.courses.split(","),
                         address: this.state.address,
                         phone: this.state.phone,
                         email: this.state.email,
                         OIB: this.state.OIB
                     }).then(response =>{
-                        //console.log(response.data);
                         this.props.changeState();
                     }).catch(error =>{
                         console.log(error);
@@ -78,12 +80,11 @@ class ProfileInput extends Component {
             this.state.indexNumber == '' || this.state.faculty == '' || this.state.study == '' ||
             this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == ''){
                 this.setState({
-                    errorMessage: 'popunite sva polja'
-                })
-                
+                    errorMessage: 'Ispunite sva polja'
+                }) 
             }
             else{
-                if(this.state.OIB.length<11){
+                if(this.state.OIB.length != 11){
                     this.setState({
                         errorMessage: 'OIB mora sadržavati 11 znakova'
                     })
@@ -92,7 +93,6 @@ class ProfileInput extends Component {
                     axios.post('/api/profile/'+this.state.id,{
                         _method : 'PUT',
                         name: this.state.name,
-                        //lastName: this.state.lastName,
                         email: this.state.email,
                         indexNumber: this.state.indexNumber,
                         faculty: this.state.faculty,
@@ -101,7 +101,6 @@ class ProfileInput extends Component {
                         yearsOfStudy: this.state.yearsOfStudy,
                         OIB: this.state.OIB
                     }).then(response =>{
-                        //console.log(response);
                         this.props.changeState();
                     }).catch(error =>{
                         console.log(error);
@@ -113,11 +112,11 @@ class ProfileInput extends Component {
             if(this.state.name == '' ||  this.state.address == '' ||
                 this.state.phone == '' || this.state.email == '' || this.state.OIB == ''){
                     this.setState({
-                        errorMessage: 'popunite sva polja'
+                        errorMessage: 'Ispunite sva polja'
                     })
             }
             else{
-                if(this.state.OIB.length<11){
+                if(this.state.OIB.length != 11){
                     this.setState({
                         errorMessage: 'OIB mora sadržavati 11 znakova'
                     })
@@ -131,185 +130,242 @@ class ProfileInput extends Component {
                         email: this.state.email,
                         OIB: this.state.OIB
                     }).then(response =>{
-                        //console.log(response);
                         this.props.changeState();
                     }).catch(error =>{
                         console.log(error);
                     })
                 }
             }
-        }    
-        
+        }
     }
-
     render() {
         switch(this.props.profile.user.role){
             case 'Tvrtka': 
             return (
-                <form onSubmit={this.handleUpdate}>
-                    <div>
-                        <label className="col-form-label">Naziv tvrtke:</label>
-                        <input 
-                            className="form-control"
-                            name='name'
-                            type='text'
-                            value={this.state.name}
-                            onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="col-form-label">Adresa:</label>
-                        <input 
-                            className="form-control"
-                            name='address'
-                            type='text'
-                            value={this.state.address}
-                            onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="col-form-label">Telefon:</label>
-                        <input 
-                            className="form-control"
-                            name='phone'
-                            type='text'
-                            value={this.state.phone}
-                            onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="col-form-label">Email adresa:</label>
-                        <input 
-                            className="form-control"
-                            name='email'
-                            type='email'
-                            value={this.state.email}
-                            onChange={this.handleChange}/>
-                    </div>
-                    <div>
-                        <label className="col-form-label">OIB:</label>
-                        <input 
-                            className="form-control"
-                            name='OIB'
-                            type='text'
-                            value={this.state.OIB}
-                            onChange={this.handleChange}/>
-                    </div>
-                    <button type='submit' className="btn btn-primary">Spremi</button>
-                    <div>{this.state.errorMessage}</div>
-                </form>
+                <Form>
+                    <FormGroup row>
+                        <Label sm={5}>Naziv tvrtke</Label>
+                        <Col sm={7}>
+                            <Input 
+                                type="textarea"
+                                name="name"
+                                value={this.state.name}
+                                onChange={this.handleChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label sm={5}>Adresa</Label>
+                        <Col sm={7}>
+                            <Input 
+                                type="text" 
+                                name="address"
+                                value={this.state.address}
+                                onChange={this.handleChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label sm={5}>Telefon</Label>
+                        <Col sm={7}>
+                            <Input 
+                                type="text" 
+                                name="phone"
+                                value={this.state.phone}
+                                onChange={this.handleChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label sm={5}>Email adresa</Label>
+                        <Col sm={7}>
+                            <Input 
+                                type="text" 
+                                name="email"
+                                value={this.state.email}
+                                onChange={this.handleChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label sm={5}>OIB</Label>
+                        <Col sm={7}>
+                            <Input 
+                                type="text" 
+                                name="OIB"
+                                value={this.state.OIB}
+                                onChange={this.handleChange}/>
+                        </Col>
+                    </FormGroup>
+                    <Button color="primary" onClick={this.handleUpdate}>Spremi</Button>
+                    <div className="text-danger">{this.state.errorMessage}</div>
+                </Form>
             );
             case 'Fakultet': 
                 return (
-                    
-                    <form onSubmit={this.handleUpdate}>
-                        <div>
-                            <label className="col-form-label">Naziv sveučilišta:</label>
-                            <input 
-                                className="form-control"
-                                name='university'
-                                type='text'
-                                value={this.state.university}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Naziv fakulteta:</label> 
-                            <input 
-                                className="form-control"
-                                name='name'
-                                type='text'
-                                value={this.state.name}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Adresa:</label>
-                            <input 
-                                className="form-control"
-                                name='address'
-                                type='text'
-                                value={this.state.address}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Telefon:</label>
-                            <input 
-                                className="form-control"
-                                name='phone'
-                                type='text'
-                                value={this.state.phone}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Email adresa:</label>
-                            <input 
-                                className="form-control"
-                                name='email'
-                                type='email'
-                                value={this.state.email}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">OIB:</label>
-                            <input 
-                                className="form-control"
-                                name='OIB'
-                                type='text'
-                                value={this.state.OIB}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <button type='submit' className="btn btn-primary">Spremi</button>
-                        <div>{this.state.errorMessage}</div>
-                    </form>
+                    <Form>
+                        <FormGroup row>
+                            <Label sm={5}>Naziv sveučilišta</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="textarea"
+                                    name="university"
+                                    value={this.state.university}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Naziv fakulteta</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="textarea"
+                                    name="name"
+                                    value={this.state.name}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Smjerovi fakulteta</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="textarea"
+                                    rows="4"
+                                    name="courses"
+                                    value={this.state.courses}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Adresa</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="address"
+                                    value={this.state.address}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Telefon</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="phone"
+                                    value={this.state.phone}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Email adresa</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="email"
+                                    value={this.state.email}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>OIB</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="OIB"
+                                    value={this.state.OIB}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.handleUpdate}>Spremi</Button>
+                        <div className="text-danger">{this.state.errorMessage}</div>
+                    </Form>
                 );
             case 'Student': 
                 return (
-                    <form onSubmit={this.handleUpdate}>
-                        <div className="row">
-                            <label className="col-form-label ">Ime studenta:</label>
-                            <input 
-                                className="form-control"
-                                name='name'
-                                type='text'
-                                value={this.state.name}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Email adresa:</label>
-                            <input 
-                                className="form-control"
-                                name='email'
-                                type='email'
-                                value={this.state.email}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <div>
-                            <label className="col-form-label">Broj indeksa: {this.state.faculty}</label> 
-                            
-                        </div>
-                        <div>
-                        <label className="col-form-label">Naziv fakulteta: {this.state.faculty}</label> 
-                            
-                        </div>
-                        <div>
-                            <label className="col-form-label">Studij: {this.state.study}</label> 
-                            
-                        </div>
-                        <div>
-                            <label className="col-form-label">Smjer: {this.state.course}</label> 
-                            
-                        </div>
-                        <div>
-                            <label className="col-form-label">Godina studija: {this.state.yearsOfStudy}</label> 
-                            
-                        </div>
-                        <div>
-                            <label className="col-form-label">OIB:</label>
-                            <input 
-                                name='OIB'
-                                type='text'
-                                value={this.state.OIB}
-                                onChange={this.handleChange}/>
-                        </div>
-                        <button type='submit' className="btn btn-primary">Spremi</button>
-                        <div>{this.state.errorMessage}</div>
-                    </form>
+                    <Form>
+                        <FormGroup row>
+                            <Label sm={5}>Ime i prezime</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="name"
+                                    value={this.state.name}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Email adresa</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='email'
+                                    type='email'
+                                    value={this.state.email}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Broj indeksa</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='indexNumber'
+                                    type='text'
+                                    readOnly="readonly"
+                                    value={this.state.indexNumber}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Naziv fakulteta</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='faculty'
+                                    type='text'
+                                    readOnly="readonly"
+                                    value={this.state.faculty}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Studij</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='study'
+                                    type='text'
+                                    readOnly="readonly"
+                                    value={this.state.study}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Smjer</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='course'
+                                    type='text'
+                                    readOnly="readonly"
+                                    value={this.state.course}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>Godina studija</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    name='yearsOfStudy'
+                                    type='text'
+                                    readOnly="readonly"
+                                    value={this.state.yearsOfStudy}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label sm={5}>OIB</Label>
+                            <Col sm={7}>
+                                <Input 
+                                    type="text" 
+                                    name="OIB"
+                                    value={this.state.OIB}
+                                    onChange={this.handleChange}/>
+                            </Col>
+                        </FormGroup>
+                        <Button color="primary" onClick={this.handleUpdate}>Spremi</Button>
+                        <div className="text-danger">{this.state.errorMessage}</div>
+                    </Form>
                 ); 
             default: return null;   
         }

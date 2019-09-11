@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import Home from './Home';
-import Login from './Login';
-import Register from './Register';
-import Navigation from './Navigation';
-import Main from './Main';
-import Logout from './Logout';
-import Students from './Students';
-import Practise from './Practise';
-import Profile from './Profile';
 import MainNavigation from './MainNavigation';
-import PractiseList from './PractiseList';
+import PractiseShow from './PractiseShow';
+import { Button, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, 
+     Form, FormGroup, Input, Table, FormText } from 'reactstrap';
 
 class MyPractise extends Component {
     constructor(props){
@@ -24,15 +15,14 @@ class MyPractise extends Component {
             user: [],
             practices: [],
             practice: [],
-            //report: [],
             showPractise: false,
             hasPractise: false,
             errorMessage: '',
             reports: [],
             href: '',
             practise_id: '',
-            message: ''
-
+            message: '',
+            modalShow: false,
 
         };
         this.checkPractise = this.checkPractise.bind(this);
@@ -44,6 +34,7 @@ class MyPractise extends Component {
         this.reloadPractise = this.reloadPractise.bind(this);
         this.accept = this.accept.bind(this);
         this.decline = this.decline.bind(this);
+        this.toggleShow = this.toggleShow.bind(this);
     }
     componentDidMount(){
         this.reloadPractise();
@@ -52,14 +43,11 @@ class MyPractise extends Component {
     reloadPractise(){
         axios.get('/api/practise/')
             .then(response =>{
-                //console.log(response);
                 this.setState({
                         user: response.data[1][0],
                         practices: response.data[0],
                         showPractise: true
                 });
-                //console.log(this.state.user);
-                //console.log(this.state.practices);
                 this.checkPractise();
                 this.showPractise();
                 this.showReport();
@@ -74,7 +62,6 @@ class MyPractise extends Component {
                     if(this.state.user.faculty == key){
                         element.candidates.forEach((candidate) => {
                             if(this.state.user.user.id == candidate.id){
-                                //console.log(element.id);
                                 this.setState({
                                     hasPractise: true,
                                     id: element.id
@@ -87,41 +74,32 @@ class MyPractise extends Component {
         })
     }
     showPractise(){
-        //console.log('radi');
         axios.get('/api/practise/'+this.state.id)
             .then(response =>{
-                //console.log(response.data);
                 this.setState({
                     practice: response.data[0]
                 });
                 if(this.state.practice.status == 'locked'){
                     this.setState({
-                    message: 'praksa zaključena'
+                    message: 'Praksa zaključena'
                 });
                 }
-                //console.log(this.state.practices);
             }).catch(error =>{
                 console.log(error);
             })
-        //console.log(this.state.report);
     }
     showReport(){
         axios.get('/api/reports')
             .then(response =>{
-                //console.log(response);
                 this.setState({
-                    //practises: response.data[0],
                     reports: response.data[1]
                 })
-                //console.log(this.state.practises);
-                //console.log(this.state.reports);
                 if(this.state.reports != null){
                     this.setState({
-                        file: this.state.reports.file,
+                        //file: this.state.reports.file,
                         practise_id: this.state.reports.practise_id,
                     })
                 }
-                //console.log(this.state.file);
             }).catch(error =>{
                 console.log(error);
             })
@@ -132,85 +110,40 @@ class MyPractise extends Component {
             message: '',
             errorMessage: ''
         })
-        //console.log(this.state.file);
-        // if(this.state.report != ''){
-        //     let ext = this.state.report.name.split('.').pop();
-        //     if(ext == 'doc' || ext == 'docx'){
-        //          //CHECK FILE SIZE this.state.report.size
-                
-        //         axios.post('/api/report',{
-        //                 practise_id: this.state.id,
-        //                 report: this.state.report
-        //             }).then(response =>{
-        //                 console.log(response);
-        //             }).catch(error =>{
-        //                 console.log(error);
-        //             })
-        //     }
-        //     else{
-        //         this.setState({
-        //         errorMessage: 'invalid file format'
-        //         })
-        //     }
-            
-        // }
-        // else{
-        //     this.setState({
-        //         errorMessage: 'you did not select file'
-        //     })
-            
-        // }
-        //let file =  this.state.file;
-        //const formData = {file: this.state.file}
-        //formData.append('file', file);
-        //var options = { content: formData };
         
         if(this.state.file != ''){
-            // if(this.state.reports != undefined){
-            //     var fileName = this.state.reports.file;
-            // }
             var formData  = new FormData();
-            //var file = this.state.file;
-            //var id = this.state.id;
             formData.append('file', this.state.file);
             formData.append('practise_id', this.state.id);
             if(this.state.reports != undefined){
                 formData.append('fileName', this.state.reports.file);
             }
             axios.post('/api/reports',
-                        // {
-                        //     _method : 'PUT',
-                            formData
-                        // }
-                        ,{
+                            formData,
+                        {
                             headers: {
                                 processData: false,
                                 contentType: false
                             }
                         }
                         ).then(response =>{
-                            //console.log(response);
                             this.setState({
                                 reports: response.data
                             })
                             this.reloadPractise();
                             this.setState({
-                                file: this.state.reports.file,
-                                message: 'uspješno slanje dokumenta'
+                                file: '',
+                                errorMessage: 'Uspješno slanje dokumenta'
                             })
-                            //console.log(this.state.report);
                         }).catch(error =>{
                             console.log(error);
                         })
         }
         else{
             this.setState({
-                errorMessage: 'niste odabrali dokument'
+                errorMessage: 'Niste odabrali dokument'
             })
         }
-        // formData.forEach((value, key) => {
-        //     console.log("key %s: value %s", key, value);
-        // }) 
             
     }
     onChangeHandler(event){
@@ -220,32 +153,20 @@ class MyPractise extends Component {
         })
     }
     download(){
-        //console.log('download');
-        //setTimeout(() => {
             const response = {
                 file: '/storage/report/'+this.state.reports.file,
             };
-            // server sent the url to the file!
-            // now, let's download:
-            //window.open(response.file);
-            // you could also do:
-             //window.location.href = response.file;
             this.setState({
                  href: response.file
             })
-        //}, 100);
     }
     accept(){
-        //console.log('accept');
-        //console.log(this.state.reports.facultyGrade);
-        //const facultyGrade = this.state.facultyGrade;
         axios.post('/api/practise/'+this.state.practise_id,{
                     _method : 'PUT',
                     facultyGrade: this.state.reports.facultyGrade,
                 }).then(response =>{
-                    //console.log(response);
                     this.setState({
-                        message: 'practise locked',
+                        message: 'Praksa zaključena',
                     })
                     this.reloadPractise();
                 }).catch(error =>{
@@ -253,138 +174,207 @@ class MyPractise extends Component {
                 })
     }
     decline(){
-        //console.log('decline');
         var id = this.state.id;
         axios.post('/api/reports/'+id,{
                     _method : 'PUT',
                     }).then(response =>{
-                        //console.log(response);
                         axios.post('/api/practise/'+this.state.practise_id,{
                             _method : 'PUT',
                             status: 'finished',
                             }).then(response =>{
-                                //console.log(response);
                             }).catch(error =>{
                                 console.log(error);
                             })
                         this.reloadPractise();
-                        // this.setState({
-                        //     reports: response.data
-                        // })
-                        // this.reloadPractise();
-                        // this.setState({
-                        //     file: this.state.reports.file
-                        // })
-                        //console.log(this.state.report);
                     }).catch(error =>{
                         console.log(error);
                     })
+    }
+    toggleShow() {
+        this.setState(prevState => ({
+            modalShow: !prevState.modalShow
+        }));
     }
     render() {
         return (
 
             this.state.showPractise?
-                <div>
+                <div className="container">
                     
                     {(this.state.userRole != null)?
                         <MainNavigation role={this.state.userRole}/>
                     :null
                     }
                     {this.state.practice.status == 'grade'?
-                        <div>
+                        <ListGroup className="offset-md-3 col-md-6 offset-md-3">
+                        {/* <div> */}
+                            
                             {this.state.reports.comment != ''?
-                                <div>
-                                    <label>Komentar tvrtke: {this.state.reports.comment}</label>
-                                </div>
+                            <ListGroupItem>
+                                <ListGroupItemHeading>Komentar tvrtke</ListGroupItemHeading>
+                                <ListGroupItemText>
+                                    {this.state.reports.comment}
+                                </ListGroupItemText>
+                                    {/* // <label>Komentar tvrtke: {this.state.reports.comment}</label>
+                                // </div> */}
+                            </ListGroupItem>    
                             :null}
+                            
                             {this.state.reports.facultyComment != ''?
-                                <div>
-                                    <label>Komentar fakulteta: {this.state.reports.facultyComment}</label>
-                                </div>
+                                <ListGroupItem>
+                                    <ListGroupItemHeading>Komentar fakulteta</ListGroupItemHeading>
+                                    <ListGroupItemText>
+                                        {this.state.reports.facultyComment}
+                                    </ListGroupItemText>
+                                    {/* // <label>Komentar tvrtke: {this.state.reports.comment}</label>
+                                // </div> */}
+                                </ListGroupItem>    
+                                // <div>
+                                //     <label>Komentar fakulteta: {this.state.reports.facultyComment}</label>
+                                // </div>
                             :null}
-                            <label>Ocjena: {this.state.reports.facultyGrade}</label><br/>
-                            <button onClick={this.accept}>Prihvati</button>
-                            <button onClick={this.decline}>Odbij</button>
-                        </div>
+                            <ListGroupItem>
+                                <ListGroupItemHeading>Ocjena {this.state.reports.facultyGrade}</ListGroupItemHeading>
+                                <ListGroupItemText>
+                                    <Button color="primary" onClick={this.accept}>Prihvati</Button>{' '}
+                                    <Button color="secondary" onClick={this.decline}>Odbij</Button>
+                                </ListGroupItemText>
+                            </ListGroupItem>    
+                            {/* <label>Ocjena: {this.state.reports.facultyGrade}</label><br/> */}
+                            
+                        {/* </div> */}
+                        </ListGroup>
                     :this.state.message !=''?
+                        <ListGroup className="offset-md-3 col-md-6 offset-md-3">
+                            <ListGroupItem>
 
-                        <div>{this.state.message}<br/>
-                        {(this.state.reports.facultyGrade != '')?
-                            <label>Ocjena: {this.state.reports.facultyGrade}</label>
-                        :null
-                        }
-                        <br/>
-                        </div>
+                                <ListGroupItemHeading>{this.state.message}</ListGroupItemHeading>
+                                {/* <div>{this.state.message}<br/> */}
+                                {(this.state.reports.facultyGrade != '')?
+                                    <ListGroupItemText>
+                                        {/* <label>Ocjena: {this.state.reports.facultyGrade}</label> */}
+                                        Ocjena: {this.state.reports.facultyGrade}
+                                    </ListGroupItemText>
+                                :null
+                                }
+                                {/* <br/> */}
+                                {/* </div> */}
+                            </ListGroupItem>
+                        </ListGroup>
 
                     :   !this.state.hasPractise?
-                            <p>Nemate odabranu praksu</p>
-                        :<table>
+                            <div className="offset-md-4 col-md-4 offset-md-4">
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <ListGroupItemHeading>Nemate odabranu praksu</ListGroupItemHeading>
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </div>
+                        :<Table striped hover className="offset-md-2 col-md-8 offset-md-2">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Ime</th>
-                                    <th scope="col">Opis</th>
+                                    <th scope="col">Naziv</th>
                                     <th scope="col">Početak</th>
+                                    <th scope="col">Trajanje</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col"></th>
-                                    <th scope="col"></th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(this.state.practice.id != undefined)?
-                                    //console.log(this.state.practice)
-                                    <PractiseList practice={this.state.practice} user={this.state.user}/>
-                                :null
-                                }
+                                <tr>
+                                    <td>1</td>
+                                    <td>{this.state.practice.name}</td>
+                                    <td>{this.state.practice.start}</td>
+                                    <td>{this.state.practice.duration}</td>
+                                    <td>
+                                    {(this.state.practice.status == 'free')?'Slobodno'
+                                        :(this.state.practice.status == 'taken')?'Zauzeto'
+                                        :(this.state.practice.status == 'finished')?'Odrađeno'
+                                        :(this.state.practice.status == 'grade')?'Ocjenjeno'
+                                        :(this.state.practice.status == 'locked')?'Zaključana'
+                                    :null}
+                                    </td>
+
+                                    <td><Button color="primary" onClick={this.toggleShow}>Detaljnije</Button>{' '}</td>
+                                </tr>
                             </tbody>
-                        </table>
+                            
+                        </Table>
                         }
+                    
                     {(this.state.practice.status == 'finished')?
-                        <form onSubmit={this.handleSubmit} encType='multipart/form-data'>
+                    <div className="offset-md-3 col-md-6 offset-md-3">
+                        <Form onSubmit={this.handleSubmit} encType='multipart/form-data'>
+                            <ListGroup>
                             {this.state.reports != null?
                                 <div>
                                     {this.state.reports.file != undefined?
-                                        <a href={this.state.href} download onClick={this.download}>{this.state.reports.file}</a>
+                                        <ListGroupItem>
+                                            <ListGroupItemHeading>Izvještaj dostupan na linku</ListGroupItemHeading>
+                                            {/* <label>Izvještaj dostupan na linku: </label> */}
+                                            <ListGroupItemText>
+                                                <a href={this.state.href} download onClick={this.download}>{' '}{this.state.reports.file}</a>
+                                            </ListGroupItemText>
+                                        </ListGroupItem>
                                     :null
                                     }
                                     
                                 
                                     {this.state.reports.comment != ''?
-                                        <div>
-                                            <label>Komentar tvrtke: {this.state.reports.comment}</label>
-                                        </div>
+                                        <ListGroupItem>
+                                            <ListGroupItemHeading>Komentar tvrtke</ListGroupItemHeading>
+                                            {/* <label>Izvještaj dostupan na linku: </label> */}
+                                            <ListGroupItemText>
+                                                {this.state.reports.comment}
+                                            </ListGroupItemText>
+                                        </ListGroupItem>
+                                        // <div>
+                                        //     <Label>Komentar tvrtke: {this.state.reports.comment}</Label>
+                                        // </div>
                                     :null}
                                     
                                     {this.state.reports.facultyComment != ''?
-                                        <div>
-                                            <label>Komentar fakulteta: {this.state.reports.facultyComment}</label>
-                                        </div>
+                                        <ListGroupItem>
+                                            <ListGroupItemHeading>Komentar fakulteta</ListGroupItemHeading>
+                                            {/* <label>Izvještaj dostupan na linku: </label> */}
+                                            <ListGroupItemText>
+                                                {this.state.reports.facultyComment}
+                                            </ListGroupItemText>
+                                        </ListGroupItem>
+                                        // <div>
+                                        //     <Label>Komentar fakulteta: {this.state.reports.facultyComment}</Label>
+                                        // </div>
                                     :null}
-                                    
-                                    {/* {this.state.reports.facultyGrade != ''?
-                                        <div>
-                                            <label>Grade: {this.state.reports.facultyGrade}</label>
-                                            <a onClick={this.accept}>Accept</a>
-                                            <a onClick={this.decline}>Decline</a>
-                                        </div>
-                                    :null} */}
                                 </div>
                             :null
                             }
-                            <label>Odaberite dokument:</label><br />
-                            <input type="file" name="file" onChange={this.onChangeHandler} accept=".doc,.docx"/>
-                            <button type="submit">Pošalji</button>
+                            <FormGroup>
+                                <ListGroupItem>
+                                    <ListGroupItemHeading>Odaberite izvještaj</ListGroupItemHeading>
+                                    {/* <Label>Odaberite izvještaj</Label> */}
+                                    <ListGroupItemText>
+                                        <Input type="file" name="file" onChange={this.onChangeHandler} accept=".doc,.docx"/>
+                                        <FormText color="muted">
+                                            Dozvoljeno je slanje samo doc i docx dokumenata.
+                                        </FormText>
+                                    </ListGroupItemText>
+                                </ListGroupItem>
+                                <Button type="submit" color="primary">Pošalji</Button>
+                            </FormGroup>
+                            {this.state.errorMessage == 'Uspješno slanje dokumenta'?
+                            <div className="text-success">{this.state.errorMessage}</div>
+                            :<div className="text-danger">{this.state.errorMessage}</div>}
                             
-                            <div>{this.state.errorMessage}</div>
-                        </form>
-
+                            </ListGroup>
+                        </Form>
+                    </div>
                     : null
                     }
-                    {/* {this.state.report.file != undefined?
-                        <button onClick={this.download}>Download file</button>
-                    :null
-                    } */}
+                    {this.state.modalShow?
+                        <PractiseShow practice={this.state.practice} toggle={this.toggleShow} 
+                        user={this.state.user}/>
+                    :null}
                 </div>
             :null
         );

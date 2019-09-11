@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { Button } from 'reactstrap';
 import Navigation from './Navigation';
 
 class Register extends Component {
@@ -20,14 +20,13 @@ class Register extends Component {
     }
     handleSubmit(e){
         e.preventDefault();
-        //console.log(this.state);
         this.setState({
             errorMessage: ''
         })
         if(this.state.name == '' || this.state.email == '' || this.state.password == '' ||
             this.state.password_confirmation == '' || this.state.number == ''){
                 this.setState({
-                    errorMessage: 'popunite sva polja'
+                    errorMessage: 'Ispunite sva polja'
                 })
         }
         else{
@@ -35,7 +34,7 @@ class Register extends Component {
 
                 if((this.state.role == 'Tvrtka' && this.state.number == 2) ||
                     (this.state.role == 'Fakultet' && this.state.number == 1)){
-                        //console.log('Good number');
+                        
                     axios.post('/api/register',{
                         name: this.state.name,
                         email: this.state.email,
@@ -43,30 +42,29 @@ class Register extends Component {
                         password: this.state.password,
                         password_confirmation: this.state.password_confirmation
                     }).then(response =>{
-                        //console.log(response);
+                        
                         this.setState({
                             errorMessage: ''
                         })
                         this.props.history.push('/login');
-                        //console.log(response);
+                        
                     }).catch(error =>{
                         
-                        //console.log(error.message);
                         this.setState({
-                            errorMessage: 'postoji korisnik s tom email adresom'
+                            errorMessage: 'Postoji korisnik s tom email adresom'
                         })
                     })
                 }
                 else{
-                    //console.log('Wrong number');
+                    
                     this.setState({
-                        errorMessage: 'pogrešan broj unesen'
+                        errorMessage: 'Pogrešan broj unesen'
                     })
                 }
             }
             else{
                 this.setState({
-                    errorMessage: 'lozinka mora sadržavati barem 8 znakova te podudrati se'
+                    errorMessage: 'Lozinka mora sadržavati barem 8 znakova te podudrati se'
                 })
             }
 
@@ -74,10 +72,6 @@ class Register extends Component {
     }
     handleChange(e){
         this.setState({ [e.target.name]: e.target.value });
-        //console.log(this.state);
-        // this.setState({
-        //     errorMessage: ''
-        // })
     }
     render() {
         return (
@@ -185,9 +179,9 @@ class Register extends Component {
                                     onChange={this.handleChange}/>
                             </div>    
                         </div>
-                        <button type="submit" className="btn btn-primary">Registracija</button>
+                        <Button type="submit" color="primary">Registracija</Button>
 
-                        <div>{this.state.errorMessage}</div>
+                        <div className="text-danger">{this.state.errorMessage}</div>
                     </form>
                 
             </div>

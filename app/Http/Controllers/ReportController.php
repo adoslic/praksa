@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Report;
 use App\Practise;
+use App\Company;
 
 class ReportController extends Controller
 {
@@ -16,19 +17,17 @@ class ReportController extends Controller
     public function index()
     {
         $user = auth()->user(); 
-        // if($user->role == 'Student'){
-        //     $report = Report::where('student_id', $user->id)->get();
-        //     return $report;
-        // }
-        $reports = [];
+        
         if($user->role == 'Tvrtka'){
-            $practises = Practise::with('company')->where('company_id', $user->id)->where('status', 'finished')->get();
+            $company = Company::with('user')->where('user_id', $user->id)->get();
+            $practises = Practise::with('company')->where('company_id', $company[0]->id)->where('status', 'finished')->get();
+            $reports = Report::all();
         }
         if($user->role == 'Fakultet'){
             $practises = Practise::with('company')->where('status', 'finished')->get();
             $reports = Report::with('practise')->where('grade', '<>', '')->where('facultyGrade', '')->get();
         }
-        //$reports = Report::with('practise')->where('grade', '<>', '')->get();
+        
         if($user->role == 'Student'){
             $practises = [];
             $reports = Report::with('practise')->where('student_id', $user->id)->first();
@@ -55,57 +54,35 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        //return 'ok';
-        // $user = auth()->user();
-        // //$student_id = $user->id;
-        // $userName = $user->name;
-        // //makni razmak iz imena da bi napravio ime fajla
-        // $userName = preg_replace('/\s/', '', $userName);
-        // //file extension
-        // $extension = $request->file('file')->getClientOriginalExtension();
-        // return $extension;
-        // $fileNameToStore = $userName.'_'.time().','.$extension;
         
-        // $report = new Report;
-        // $report->practise_id = $request->input('practise_id');
-        // $report->student_id = $user->id;
-        // $report->grade = '';
-        // $report->comment = '';
-        
-        // return $report;
-        // return $request;
 
         if($request->hasFile('file')) {
             
-                //return 'OK';
-                
                 $user = auth()->user();
-                //return $request->fileName;
                 if($request->fileName){
                     $fileNameToStore = $request->fileName;
-                    //return 'name exist';
+                    
                 }
                 else{
-                    //return 'name does not exist';
+                    
                     $userName = $user->name;
-                    //return $userName;
+                    
                     //makni razmak iz imena da bi napravio ime fajla
                     $userName = preg_replace('/\s/', '', $userName);
-                    //return $userName;
+                    
                     //file extension
                     $extension = $request->file('file')->getClientOriginalExtension();
-                    //return $extension;
+                    
                     $fileNameToStore = $userName.'_'.time().'.'.$extension;
-                    //return 'name does not exist';
-                    //return $fileNameToStore;
+                    
                 }
                 
                 $path = $request->file('file')->storeAs('public/report', $fileNameToStore);
 
                 $report = Report::where('student_id', $user->id)->first();
-                //return $report;
+                
                 if($report == []){
-                    //return 'empty';
+                    
                     $report = new Report;
                     $report->practise_id = $request->practise_id;
                     $report->student_id = $user->id;
@@ -114,14 +91,14 @@ class ReportController extends Controller
                     $report->facultyGrade = '';
                     $report->facultyComment = '';
                 }
-                //return 'no empty';
+                
                     $report->file = $fileNameToStore;
                     $report->save();
                     return $report;
             
         }
         
-        //dd(request()->all());
+        
         return 'No File';
     }
 
@@ -158,33 +135,40 @@ class ReportController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //return $request;
         $user = auth()->user();
 
         if($user->role == 'Tvrtka'){
             if($request->hasFile('file')) {
-                //if($request->file('file')) {
+                
                     $fileNameToStore = $request->fileName;
                     $path = $request->file('file')->storeAs('public/report', $fileNameToStore);
-                //}
+                
             }
             //ako neće uploadat file
             
             $report = Report::where('practise_id', $id)->first();
-            if($request->grade){
+            if($request->grade != null){
                 $report->grade = $request->grade;
             }
-            if($request->comment){
+            else{
+                $report->grade = '';
+            }
+            if($request->comment != null){
                 $report->comment = $request->comment;
+            }
+            else{
+                $report->comment = '';
             }
             $report->save();
             return $report;
         }
         else if($user->role == 'Fakultet'){
             if($request->hasFile('file')) {
-                //if($request->file('file')) {
+                
                     $fileNameToStore = $request->fileName;
                     $path = $request->file('file')->storeAs('public/report', $fileNameToStore);
-                //}
+                
             }
             //ako neće uploadat file
             
@@ -203,13 +187,12 @@ class ReportController extends Controller
             return $report;
         } 
         else if($user->role == 'Student'){
-            //dd(request()->all());
-            //return $id;
+           
             $report = Report::where('practise_id', $id)->first();
             $report->grade = '';
-            //$report->comment = '';
+            
             $report->facultyGrade = '';
-            //$report->facultyComment = '';
+            
             $report->save();
             return $report;
         }

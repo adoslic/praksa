@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import MainNavigation from './MainNavigation';
-
+import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
 class ProfileList extends Component {
     constructor(props){
         super(props);
@@ -11,113 +9,98 @@ class ProfileList extends Component {
         switch(this.props.profile.user.role){
             case 'Tvrtka': 
             return (
-                <table className="offset-md-1 col-md-10 offset-md-1">
-                    <thead></thead>
-                    <tbody>
-                        <tr>
-                            <td><label className="col-form-label">Naziv tvrtke:</label></td>
-                            <td>{this.props.profile.user.name}</td>
-                        </tr>
-                        <tr>
-                            <td><label className="col-form-label">Adresa:</label></td>
-                            <td>{this.props.profile.address}</td>
-                        </tr>
-                        <tr>
-                            <td><label className="col-form-label">Telefon:</label></td>
-                            <td>{this.props.profile.phone}</td>
-                        </tr>
-                        <tr>
-                            <td><label className="col-form-label">Email adresa:</label></td>
-                            <td>{this.props.profile.user.email}</td>
-                        </tr>
-                        <tr>
-                            <td><label className="col-form-label">OIB:</label></td>
-                            <td>{this.props.profile.OIB}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <ListGroup>
+                    <ListGroupItem>
+                        <ListGroupItemHeading>Naziv tvrtke</ListGroupItemHeading>
+                        <ListGroupItemText>{this.props.profile.user.name}</ListGroupItemText>
+                    </ListGroupItem>
+                    <ListGroupItem>
+                        <ListGroupItemHeading>Adresa</ListGroupItemHeading>
+                        <ListGroupItemText>{this.props.profile.address}</ListGroupItemText>
+                    </ListGroupItem>
+                    <ListGroupItem>
+                        <ListGroupItemHeading>Telefon</ListGroupItemHeading>
+                        <ListGroupItemText>{this.props.profile.phone}</ListGroupItemText>
+                    </ListGroupItem>
+                    <ListGroupItem>
+                        <ListGroupItemHeading>Email adresa</ListGroupItemHeading>
+                        <ListGroupItemText>{this.props.profile.user.email}</ListGroupItemText>
+                    </ListGroupItem>
+                    <ListGroupItem>
+                        <ListGroupItemHeading>OIB</ListGroupItemHeading>
+                        <ListGroupItemText>{this.props.profile.OIB}</ListGroupItemText>
+                    </ListGroupItem>
+                </ListGroup>
             );
             case 'Fakultet': 
                 return (
-                    <table className="offset-md-1 col-md-10 offset-md-1">
-                        <thead></thead>
-                        <tbody>
-                            <tr>
-                                <td><label className="col-form-label">Naziv fakulteta:</label> </td>
-                                <td>{this.props.profile.user.name}</td>
-
-                                {/* SKONTAJ DA NAPRAVIŠ LJEPŠI PRIKAZ  */}
-                                {/* <td>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <label className="col-form-label">Naziv fakulteta: {this.props.profile.user.name}</label>
-                                            {/* <div>{this.props.profile.user.name}</div> }
-                                        </div>
-                                    </div>
-                                </td> */}
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Naziv sveučilišta:</label></td>
-                                <td>{this.props.profile.university}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Adresa:</label></td>
-                                <td>{this.props.profile.address}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Telefon:</label></td>
-                                <td>{this.props.profile.phone}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Email adresa:</label></td>
-                                <td>{this.props.profile.user.email}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">OIB:</label></td>
-                                <td>{this.props.profile.OIB}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <ListGroup>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Naziv sveučilišta</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.university}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Naziv fakulteta</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.user.name}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Smjerovi fakulteta</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.courses.join(", ")}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Adresa</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.address}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Telefon</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.phone}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Email adresa</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.user.email}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>OIB</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.OIB}</ListGroupItemText>
+                        </ListGroupItem>
+                    </ListGroup>
                 );
             case 'Student': 
                 return (
-                    <table className="offset-md-1 col-md-10 offset-md-1">
-                        <thead></thead>
-                        <tbody>
-                            <tr>
-                                <td><label className="col-form-label">Ime studenta:</label></td>
-                                <td>{this.props.profile.user.name}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Email adresa:</label></td>
-                                <td>{this.props.profile.user.email}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Broj indeksa:</label></td>
-                                <td>{this.props.profile.indexNumber}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Naziv fakulteta:</label></td>
-                                <td>{this.props.profile.faculty}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Studij:</label></td>
-                                <td>{this.props.profile.study}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Smjer:</label></td>
-                                <td>{this.props.profile.course}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">Godina studija:</label></td>
-                                <td>{this.props.profile.yearsOfStudy}</td>
-                            </tr>
-                            <tr>
-                                <td><label className="col-form-label">OIB:</label></td>
-                                <td>{this.props.profile.OIB}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                     <ListGroup>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Ime i prezime</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.user.name}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Email adresa</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.user.email}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Broj indeksa</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.indexNumber}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Naziv fakulteta</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.faculty}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Studij</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.study}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Smjer</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.course}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Godina studija</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.yearsOfStudy}</ListGroupItemText>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>OIB</ListGroupItemHeading>
+                            <ListGroupItemText>{this.props.profile.OIB}</ListGroupItemText>
+                        </ListGroupItem>
+                    </ListGroup>
                 ); 
             default: return null;   
         }

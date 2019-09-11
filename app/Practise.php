@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Practise extends Model
 {
     protected $fillable = [
-        'name', 'description', 'company_id', 'faculties', 'start', 'status', 'candidates'
+        'name', 'description', 'company_id', 'faculties', 'start','duration', 'status', 'candidates'
     ];
 
     protected $casts = [

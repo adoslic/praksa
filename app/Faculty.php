@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Faculty extends Model
 {
     protected $fillable = [
-        'name', 'university', 'address', 'phone', 'email', 'OIB', 'user_id'
+        'name', 'university', 'courses', 'address', 'phone', 'email', 'OIB', 'user_id'
+    ];
+    protected $casts = [
+        'courses' => 'array',
     ];
 
     public function user(){

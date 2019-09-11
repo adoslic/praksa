@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-
+import { ListGroup, ListGroupItem, ListGroupItemHeading } from 'reactstrap';
 class Grade extends Component {
     constructor(props){
         super(props);
@@ -14,37 +12,27 @@ class Grade extends Component {
     }
     componentDidMount(){
         this.reloadPractise();
-        //console.log(this.props.grade.id);
     }
     reloadPractise(){
         axios.get('/api/reports/'+this.props.grade.id)
             .then(response =>{
-                //console.log(response);
                 this.setState({
                     report: response.data
                 }) 
-                //console.log(this.state.faculties);
-                // this.state.faculties.forEach(element => {
-                //     //console.log(element.user_id);
-                //     if(element.user_id == this.state.report.student_id){
-                //         this.setState({
-                //             faculty: true
-                //         }) 
-                //     }
-                // });
             }).catch(error =>{
                 console.log(error);
             })
-        //console.log('radi');
         
         
     }
     render() {
         return (
-            <div>
-                <label>Name: {this.props.grade.candidates[0].name}</label>
-                <label>Grade: {this.state.report.facultyGrade}</label>
-            </div>
+            <ListGroup>
+                <ListGroupItem>
+                <ListGroupItemHeading>{this.props.grade.candidates[0].name}{': '}{this.state.report.facultyGrade}</ListGroupItemHeading>
+                    
+                </ListGroupItem>
+            </ListGroup>
 
         );
     }

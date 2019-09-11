@@ -23,15 +23,16 @@ class PractiseController extends Controller
         $user = auth()->user();
 
         if($user->role == 'Tvrtka'){
-            $practises = Practise::with('company')->where('company_id', $user->id)->where('status', '!=' , 'locked')->get();
             $student = Company::with('user')->where('user_id', $user->id)->get();
+            $practises = Practise::with('company.user')->where('company_id', $student[0]->id)->get();
+            //$student = Company::with('user')->where('user_id', $user->id)->get();
         }
         else if($user->role == 'Student'){
-            $practises = Practise::with('company')->get();
+            $practises = Practise::with('company.user')->get();
             $student = Student::with('user')->where('user_id', $user->id)->get();
         }
         else if($user->role == 'Fakultet'){
-            $practises = Practise::with('company')->get();
+            $practises = Practise::with('company.user')->get();
             $student = Faculty::with('user')->where('user_id', $user->id)->get();
         }
         
@@ -61,22 +62,25 @@ class PractiseController extends Controller
     {
         $company = auth()->user();
         
+        $companyColumn = Company::where('user_id', $company->id)->first();
+        
         $practise = new Practise;
 
         //ovdje dodaj koja polja treba ispunit za praksu
         $practise->name = $request->input('name');
         $practise->description = $request->input('description');
-        $practise->faculties = $request->input('faculties');        //ovo će ić posebno 
+        $practise->faculties = $request->input('faculties');
         $practise->start = $request->input('start');
+        $practise->duration = $request->input('duration');
         $practise->status = $request->input('status');
-        $practise->company_id = $company->id;
+        $practise->company_id = $companyColumn->id;
         $practise->candidates = [];
         
         if($practise->save()){
             return $practise;
         }
         
-        //return $request->input('faculties');
+        
     }
 
     /**
@@ -87,13 +91,8 @@ class PractiseController extends Controller
      */
     public function show($id)
     {
-        //$practise = Practise::with('company')->where('id', $id)->get();
-        //$practise = Practise::with('company')->find($id);
-        //$practise = Practise::find($id)->company()->get();
-        //$practise = Practise::where('id',$id)->get();
         
-        //$practise = Practise::find($id)->company->phone;
-        $practise = Practise::with('company')->where('id', $id)->get();
+        $practise = Practise::with('company.user')->where('id', $id)->get();
         
         return $practise;
         //return 5;
@@ -124,63 +123,32 @@ class PractiseController extends Controller
         $user = auth()->user();
 
         if($user->role == 'Tvrtka'){
-            //$practise = Practise::findOrFail($id);
-            //dd(request()->all());
+            
             if($request->input('name') == null){
-                //return $request->input('candidates');
+                
                 $array = [];
                 $candidate = $request->input('candidates');
-                //$candid = $candidate[0];
-                //return $candidate[0]['id'];
                 //DOHVATI SVE PRAKSE NA KOJIMA JE STUDENT BIO PRIJAVLJEN TE GA IZBRIŠI 
                 //I POSTAVI NA SAMO JEDNU (ONU NA KOJU JE ODOBREN)
                 $practises = Practise::where('status', 'free')->get();
                     foreach ($practises as $pr) {
                         foreach($pr->candidates as $cand) {
                             if($cand['id'] == $candidate[0]['id']){
-                                //array_push($array, $pr['id']);
-                                //dd($pr);
+                                
                                 $c = Practise::where('id',$pr['id'])->first();
-                                //return $c;
+                                
                                 $array = $c->candidates;
-                                //return $array;
+                                
                                 $found_key = array_search($cand['id'], array_column($array, 'id'));
-                                //return $found_key;
+                                
                                 array_splice($array, $found_key,1);
-                                //return $array;
+                                
                                 $c->candidates = $array;
                                 $c->save();
-                                //return $c;
-                                // $key = array_search('green', $array);
-                                // $c->candidates
                             }
-                            //return $array;
                         }
-                        //array_push($array, '/');
                     }
                 
-                //$ca = Practise::find()
-                //return $found_key;
-                
-                
-                //return $practises;
-                //$candidate = User::where('id', $request->input('id'))->first();
-                //return $candidate;
-                // $obj = (object)array(
-                //     'id' => $candidate->id,
-                //     'name' => $candidate->name,
-                //     'email' => $candidate->email,
-                // );
-                // //return response()->json($obj);
-                // $array = [];
-                // array_push($array, $obj);
-                
-
-                //$candidate = Practise::where('id', $id)->update(array('status' => 'taken'));
-                //$candidate = Practise::where('id', $id)->update(array('candidates' => $request->input('candidates')));
-                //$practise = Practise::find($id);
-                //$practise->update(['candidates' => $array]);
-                //return $request->input('candidates');
                 $practise = Practise::findOrFail($id);
                 $practise->status = 'taken';
                 $practise->candidates = $request->input('candidates');
@@ -191,8 +159,9 @@ class PractiseController extends Controller
                 $practise = Practise::findOrFail($id);
                 $practise->name = $request->input('name');
                 $practise->description = $request->input('description');
-                $practise->faculties = $request->input('faculties');        //ovo će ić posebno 
+                $practise->faculties = $request->input('faculties'); 
                 $practise->start = $request->input('start');
+                $practise->duration = $request->input('duration');
                 $practise->status = $request->input('status');
                 $practise->company_id = $request->input('company_id');
 
@@ -218,13 +187,6 @@ class PractiseController extends Controller
                 return $practise;
             }
 
-            //$name = $user->name;
-            // $practise = Practise::where('id', $id);
-            // $array = [];
-            // if($request->input('candidates') !=null){
-            //     $array = $request->input('candidates');
-            // }
-            
             else if($request->input('status')){
                 $practise = Practise::where('id', $id)->first();
                 $practise->status = 'finished';
@@ -232,21 +194,8 @@ class PractiseController extends Controller
                 return $practise;
             }
 
-            // foreach ($array as $key) {
-            //     if($name == $key){
-            //         return 'already applied';
-            //     }
-            // }
-            //if($name == $array[i]) return 'već ste prijavljeni'
-            
-            //array_push($array, $name);
-            //$candidates = Practise::where('id', $id)->update(array('candidates' => $array));
-            //$candidates = Practise::where('id', $id)->setAttribute('candidates', $array);
-            //return $candidates;   
-
             //prijavljivanje/odjavljivanje na praksu
             $practise = Practise::find($id);
-            //$practise->update(['candidates' => $array]);
             $practise->candidates = $request->input('candidates');
             $practise->save();
             return $practise;
@@ -259,18 +208,6 @@ class PractiseController extends Controller
             return $practise;
         }
 
-        
-        
-
-        //$Id = auth()->user()->id;
-        
-
-        //$user = User::where('id', $user_id)->update(array('name' => $request->input('name')));
-
-        //$user = User::where('id', $Id)->update(array('email' => $request->input('email')));
-
-        
-        //return $request->input('faculties');
     }
 
     /**

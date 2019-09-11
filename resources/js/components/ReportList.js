@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import MainNavigation from './MainNavigation';
-import MyPractise from './MyPractise';
 import Report from './Report';
-
+import { ListGroup, ListGroupItem, ListGroupItemHeading,  Table} from 'reactstrap';
 
 class ReportList extends Component {
     constructor(props){
@@ -12,55 +10,74 @@ class ReportList extends Component {
         this.state = {
             userRole: localStorage.getItem('role'),
             practises: [],
+            practise: [],
             reports: [],
+            report: [],
             errorMessage: '',
-
+            graded: '',
+            students: [],
         };
         this.reloadPage = this.reloadPage.bind(this);
-        this.checkTableRow = this.checkTableRow.bind(this);
-        //this.reloadReports = this.reloadReports.bind(this);
+        this.checkFaculty = this.checkFaculty.bind(this);
     }
     componentDidMount(){
+        this.checkFaculty();
         this.reloadPage();
     }
     reloadPage(){
         axios.get('/api/reports')
             .then(response =>{
-                //console.log(response);
                 this.setState({
                     practises: response.data[0],
                     reports: response.data[1],
-                    //noReport: false
                 })
-
                 //ova provjera je za tvrtke
                 if(this.state.practises[0] == undefined){
-                    this.checkTableRow();
+                    this.setState({
+                        errorMessage: 'nema dostupnih izvještaja'
+                    })
                 }
                 else{
-                    //console.log('nije prazno');
+                    let arrayPractises = [];
+                    let arrayReports = [];
+                    this.state.practises.forEach(practise => {
+                        this.state.reports.forEach(report => {
+                            if(this.state.userRole == 'Tvrtka'){
+                                if(practise.candidates[0].id == report.student_id && report.grade == ''){
+                                    arrayPractises.push(practise);
+                                    arrayReports.push(report);
+                                }
+                            }
+                            else if(this.state.userRole == 'Fakultet'){
+                                this.state.students.forEach(student => {
+                                    if(practise.candidates[0].id == report.student_id && 
+                                        report.grade != '' && student.user_id == report.student_id){
+                                        arrayPractises.push(practise);
+                                        arrayReports.push(report);
+                                    }
+                                }); 
+                            }
+                        });
+                    });
+                    this.setState({
+                        practise: arrayPractises,
+                        report: arrayReports,
+                    })
                 }
-                // console.log(this.state.practises[0]);
                 
-                //this.checkTableRow();
             }).catch(error =>{
                 console.log(error);
             })
     }
-    // reloadPage(){
-    //     this.reloadReports();
-    //     this.checkTableRow();
-    // }
-    
-    checkTableRow(){
-
-        if($("#myTableId > tbody > tr").length<1){
-            this.setState({
-                errorMessage: 'no results'
-            })
-        }
-        //console.log('check');
-
+    checkFaculty(){
+        axios.get('/api/students')
+            .then(response =>{
+                this.setState({
+                    students: response.data
+                })  
+            }).catch(error =>{
+                console.log(error);
+            }) 
     }
     render() {
         return (
@@ -71,32 +88,33 @@ class ReportList extends Component {
                 :null
                 }
                 <div>
-                {this.state.errorMessage != ''?
-                    <div>{this.state.errorMessage}</div>
-                :    this.state.practises != undefined?
-                    <table id='myTableId'>
+                {   
+                this.state.practise[0] != undefined?
+                    <Table striped hover className="offset-md-2 col-md-8 offset-md-2">
                         <thead>
                             <tr >
                                 <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Description</th>
+                                <th scope="col">Naziv</th>
+                                <th scope="col">Početak</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Student</th>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.practises.map((practise, index) =>
-                                
-                                <Report key={index} index={index} practise={practise} reloadPage={this.reloadPage} 
-                                length={this.state.practises.length} check={this.checkTableRow}/>
-                                
+                            {this.state.practise.map((practise, index) =>
+                                    <Report key={index} index={index} practise={practise} 
+                                    reloadPage={this.reloadPage} report={this.state.report[index]}/>
                             )}
                         </tbody>
-                    </table>
-                :<span>No results</span>
+                    </Table>
+                :<div className="offset-md-3 col-md-6 offset-md-3">
+                    <ListGroup>
+                        <ListGroupItem>
+                            <ListGroupItemHeading>Nema dostupnih izvještaja</ListGroupItemHeading>
+                        </ListGroupItem>
+                    </ListGroup>
+                </div>
                 }
                 </div>
             </div>

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import history from '../history';
 import Navigation from './Navigation';
+import { Button } from 'reactstrap';
 
 class Login extends Component {
     constructor(props){
@@ -22,10 +21,14 @@ class Login extends Component {
         this.setState({
             errorMessage: ''
         })
-        //console.log(this.state);
         if(this.state.username == '' || this.state.password == '' ){
             this.setState({
-                errorMessage: 'popunite sva polja'
+                errorMessage: 'Ispunite sva polja'
+            })
+        }
+        else if(this.state.password.length < 8){
+            this.setState({
+                errorMessage: 'Lozinka mora biti barem 8 znakova duga'
             })
         }
         else{
@@ -41,20 +44,17 @@ class Login extends Component {
                         errorMessage: ''
                     })
                     this.props.history.push('/main');
-                    //console.log(response);
                 }).catch(error =>{
                     console.log(error);
                     this.setState({
-                        errorMessage: 'neispravni podaci'
+                        errorMessage: 'Neispravni podaci'
                     })
                 })
             
-        }    
-        //this.props.history.push('/main');
+        }
     }
     handleChange(e){
         this.setState({ [e.target.name]: e.target.value });
-        //console.log(this.state);
     }
     render() {
         return (
@@ -88,9 +88,8 @@ class Login extends Component {
                             onChange={this.handleChange}/>
                     </div>
 
-                    <button type="submit" className="btn btn-primary">Prijava</button>
-
-                    <div>{this.state.errorMessage}</div>
+                    <Button type="submit" color="primary">Prijava</Button>
+                    <div className="text-danger">{this.state.errorMessage}</div>
                 </form>
             </div>
         );

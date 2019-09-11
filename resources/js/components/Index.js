@@ -14,6 +14,7 @@ import MyPractise from './MyPractise';
 import ReportList from './ReportList';
 import Grades from './Grades';
 import 'bootstrap/dist/css/bootstrap.css';
+import Archives from './Archives';
 
 class Index extends Component {
     constructor(props){
@@ -45,7 +46,7 @@ class Index extends Component {
                 <Route path='/profile' component={Profile}/>
                 <Route path='/reports' component={ReportList}/>
                 <Route path='/grades' component={Grades}/>
-                
+                <Route path='/archives' component={Archives}/>
             </Router>
         );
     }

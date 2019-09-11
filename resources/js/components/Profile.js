@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import MainNavigation from './MainNavigation';
 import axios from 'axios';
 import ProfileList from './ProfileList';
 import ProfileInput from './ProfileInput';
-
+import { Button } from 'reactstrap';
 class Profile extends Component {
     constructor(){
         super();
@@ -24,12 +23,12 @@ class Profile extends Component {
             id: '',
             name: '',
             university: '',
+            courses: '',
             address: '',
             phone: '',
             email: '',
             OIB: '',
             
-            //lastName: '',
             indexNumber: '',
             faculty: '',
             study: '',
@@ -42,79 +41,48 @@ class Profile extends Component {
         this.handleCreate = this.handleCreate.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
         this.reloadProfile = this.reloadProfile.bind(this);
         this.changeState = this.changeState.bind(this);
     }
     componentDidMount(){
-        axios.get('/api/profile')
-            .then(response =>{
-                //console.log(response.data);
-                this.setState({
-                    profile: response.data[0],
-                    //userInfo: response.data[1],
-                    showProfile: true
-                })
-                if(this.state.profile != undefined)
-                    this.setState({
-                        id: this.state.profile.id
-                    })
-                else{
-                    this.handleCreate();
-                }
-                //console.log(this.state.profile);
-                //console.log(this.state.userInfo);
-            }).catch(error =>{
-                console.log(error);
-            })
+        this.reloadProfile();
     }
     reloadProfile(){
         axios.get('/api/profile')
             .then(response =>{
-                //console.log(response);
                 this.setState({
                     profile: response.data[0],
-                    //userInfo: response.data[1],
                     showProfile: true
                 })
-                if(this.state.profile != undefined)
+                if(this.state.profile != undefined){
                     this.setState({
                         id: this.state.profile.id
                     })
-                //console.log(this.state.profile);
-                //console.log(this.state.userInfo);
+                }
+                else{
+                    this.handleCreate();
+                }
             }).catch(error =>{
                 console.log(error);
             })
     }
     handleEdit(){
-        //console.log('edit');
         this.setState({
             showCreate: false,
             showProfile: false
         })
         axios.get('/api/profile/'+this.state.id+'/edit')
             .then(response =>{
-                //console.log(response.data);
                 this.setState({
-                    //userEdit: response.data[0],
                     editProfile: response.data[0],
-                    
                     showEdit: true,
-                    //id: editProfile.id,
                 })
-                // this.setState({
-                //     name: this.state.userEdit.name,
-                //     email: this.state.userEdit.email,
-                // })
-                //console.log(this.state.editProfile);
-                //console.log(this.state.userEdit);
-                
                 if(this.state.userRole == 'Fakultet'){
                         this.setState({
                             id: this.state.editProfile.id,
                             name: this.state.editProfile.user.name,
                             university: this.state.editProfile.university,
+                            courses: this.state.editProfile.courses.join(),
                             address: this.state.editProfile.address,
                             phone: this.state.editProfile.phone,
                             email: this.state.editProfile.user.email,
@@ -125,7 +93,6 @@ class Profile extends Component {
                         this.setState({
                             id: this.state.editProfile.id,
                             name: this.state.editProfile.user.name,
-                            //lastName: this.state.editProfile.lastName,
                             email: this.state.editProfile.user.email,
                             indexNumber: this.state.editProfile.indexNumber,
                             faculty: this.state.editProfile.faculty,
@@ -145,15 +112,10 @@ class Profile extends Component {
                             OIB: this.state.editProfile.OIB
                         })
                 }
-                
-               
             }).catch(error =>{
                 console.log(error);
             })
-
-
     }
-
     handleCreate(){
         this.setState({
             showProfile: false,
@@ -161,12 +123,10 @@ class Profile extends Component {
         })
         axios.get('/api/profile/create')
             .then(response =>{
-                //console.log(response);
                 this.setState({
                     createProfile: response.data,
                     showCreate: true
                 })
-                //console.log(this.state.createProfile);
             }).catch(error =>{
                 console.log(error);
             })
@@ -176,40 +136,34 @@ class Profile extends Component {
         this.setState({
             errorMessage: ''
         })
-        //console.log('submit');
             if(this.state.userRole=='Fakultet'){
                 if(this.state.university == '' || this.state.address == '' ||
+                    this.state.courses == '' ||
                     this.state.phone == '' || this.state.OIB == ''){
                     this.setState({
-                        errorMessage: 'popunite sva polja'
+                        errorMessage: 'Ispunite sva polja'
                     })
-                    //console.log(this.state.university);
                 }
                 else{
-                    if(this.state.OIB.length<11){
+                    if(this.state.OIB.length != 11){
                         this.setState({
                             errorMessage: 'OIB mora sadržavati 11 znakova'
                         })
                     }
                     else{
-                        //console.log(this.state);
                         axios.post('/api/profile',{
-                            
-                            //name: this.state.name,
                             university: this.state.university,
                             address: this.state.address,
+                            courses: this.state.courses.split(","),
                             phone: this.state.phone,
-                            //email: this.state.email,
                             OIB: this.state.OIB
                         }).then(response =>{
-                            //console.log(response.data);
                             this.setState({
                                 showCreate: false,
                                 showProfile: true
                             });
                             this.reloadProfile();
-                            //this.props.history.push('/profile');
-                            //console.log(response);
+                            
                         }).catch(error =>{
                             console.log(error);
                         })
@@ -221,20 +175,18 @@ class Profile extends Component {
                 this.state.faculty == '' || this.state.study == '' ||
                 this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == ''){
                     this.setState({
-                        errorMessage: 'popunite sva polja'
+                        errorMessage: 'Ispunite sva polja'
                     })
                 }
                 else{
-                    if(this.state.OIB.length<11){
+                    if(this.state.OIB.length != 11){
                         this.setState({
                             errorMessage: 'OIB mora sadržavati 11 znakova'
                         })
                     }
                     else{
                         axios.post('/api/profile',{
-                            //name: this.state.name,
-                            //lastName: this.state.lastName,
-                            //email: this.state.email,
+                            
                             indexNumber: this.state.indexNumber,
                             faculty: this.state.faculty,
                             study: this.state.study,
@@ -242,14 +194,12 @@ class Profile extends Component {
                             yearsOfStudy: this.state.yearsOfStudy,
                             OIB: this.state.OIB
                         }).then(response =>{
-                            //console.log(response);
                             this.setState({
                                 showCreate: false,
                                 showProfile: true
                             });
                             this.reloadProfile();
-                            //this.props.history.push('/profile');
-                            //console.log(response);
+                            
                         }).catch(error =>{
                             console.log(error);
                         })
@@ -259,162 +209,32 @@ class Profile extends Component {
             else if(this.state.userRole == 'Tvrtka'){
                 if(this.state.address == '' || this.state.phone == '' || this.state.OIB == ''){
                     this.setState({
-                        errorMessage: 'popunite sva polja'
+                        errorMessage: 'Ispunite sva polja'
                     })
                 }
                 else{
-                    if(this.state.OIB.length<11){
+                    if(this.state.OIB.length != 11){
                         this.setState({
                             errorMessage: 'OIB mora sadržavati 11 znakova'
                         })
                     }
                     else{
                         axios.post('/api/profile',{
-                            
-                            //name: this.state.name,
                             address: this.state.address,
                             phone: this.state.phone,
-                            //email: this.state.email,
                             OIB: this.state.OIB
                         }).then(response =>{
-                            //console.log(response);
                             this.setState({
                                 showCreate: false,
                                 showProfile: true
                             });
                             this.reloadProfile();
-                            //this.props.history.push('/profile');
-                            //console.log(response);
                         }).catch(error =>{
                             console.log(error);
                         })
                     }
                 }
             }
-        
-    }
-
-    handleUpdate(e){
-        e.preventDefault();
-        this.setState({
-            errorMessage: ''
-        })
-        if(this.state.userRole=='Fakultet'){
-            if(this.state.name == '' || this.state.university == '' || this.state.address == '' ||
-                this.state.phone == '' || this.state.email == '' || this.state.OIB == ''){
-                    this.setState({
-                        errorMessage: 'popunite sva polja'
-                    })
-                }
-            else{
-                if(this.state.OIB.length<11){
-                    this.setState({
-                        errorMessage: 'OIB mora sadržavati 11 znakova'
-                    })
-                }
-                else{
-                    //console.log('updated');
-                    //console.log(this.state);
-                    axios.post('/api/profile/'+this.state.id,{
-                        _method : 'PUT',
-                        name: this.state.name,
-                        university: this.state.university,
-                        address: this.state.address,
-                        phone: this.state.phone,
-                        email: this.state.email,
-                        OIB: this.state.OIB
-                    }).then(response =>{
-                        //console.log(response);
-                        this.setState({
-                            showEdit: false,
-                            showProfile: true
-                        });
-                        this.reloadProfile();
-                    }).catch(error =>{
-                        console.log(error);
-                    })
-                }
-            }
-        }    
-        else if(this.state.userRole == 'Student'){
-            if(this.state.name == '' || this.state.email == '' ||
-            this.state.indexNumber == '' || this.state.faculty == '' || this.state.study == '' ||
-            this.state.course == '' || this.state.yearsOfStudy == '' || this.state.OIB == ''){
-                this.setState({
-                    errorMessage: 'popunite sva polja'
-                })
-                
-            }
-            else{
-                if(this.state.OIB.length<11){
-                    this.setState({
-                        errorMessage: 'OIB mora sadržavati 11 znakova'
-                    })
-                }
-                else{   
-                    axios.post('/api/profile/'+this.state.id,{
-                        _method : 'PUT',
-                        name: this.state.name,
-                        //lastName: this.state.lastName,
-                        email: this.state.email,
-                        indexNumber: this.state.indexNumber,
-                        faculty: this.state.faculty,
-                        study: this.state.study,
-                        course: this.state.course,
-                        yearsOfStudy: this.state.yearsOfStudy,
-                        OIB: this.state.OIB
-                    }).then(response =>{
-                        //console.log(response);
-                        this.setState({
-                            showEdit: false,
-                            showProfile: true
-                        });
-                        this.reloadProfile();
-                        //this.props.history.push('/profile');
-                        //console.log(response);
-                    }).catch(error =>{
-                        console.log(error);
-                    })
-                }
-            }
-        }
-        else if(this.state.userRole == 'Tvrtka'){
-            if(this.state.name == '' ||  this.state.address == '' ||
-                this.state.phone == '' || this.state.email == '' || this.state.OIB == ''){
-                    this.setState({
-                        errorMessage: 'popunite sva polja'
-                    })
-            }
-            else{
-                if(this.state.OIB.length<11){
-                    this.setState({
-                        errorMessage: 'OIB mora sadržavati 11 znakova'
-                    })
-                }
-                else{
-                    axios.post('/api/profile/'+this.state.id,{
-                        _method : 'PUT',
-                        name: this.state.name,
-                        address: this.state.address,
-                        phone: this.state.phone,
-                        email: this.state.email,
-                        OIB: this.state.OIB
-                    }).then(response =>{
-                        //console.log(response);
-                        this.setState({
-                            showEdit: false,
-                            showProfile: true
-                        });
-                        this.reloadProfile();
-                        //this.props.history.push('/profile');
-                        //console.log(response);
-                    }).catch(error =>{
-                        console.log(error);
-                    })
-                }
-            }
-        }    
-        
     }
     changeState () {
         this.setState({
@@ -426,49 +246,41 @@ class Profile extends Component {
 
     handleChange(event){
         this.setState({ [event.target.name] : event.target.value });
-        //console.log(this.state);
-        //this.setState({value: event.target.value});
     }
 
     render() {
         return (
             <div className="container">
-                
-                
+
                 {(this.state.userRole != null && this.state.profile != undefined)?
                     <MainNavigation role={this.state.userRole}/>
                     :null
                 }
-
+                
                 {this.state.showProfile?
                     (this.state.profile !=undefined)?
-                    <div className="offset-md-3 col-md-6 offset-md-3 x">
+                    <div className="offset-md-4 col-md-4 offset-md-4">
                         <ProfileList profile={this.state.profile}/>
-                        <button className="btn btn-primary offset-md-1" onClick={this.handleEdit}>Uredi</button>
+                        <Button color="primary" className="offset-md-1" onClick={this.handleEdit}>Uredi</Button>
                     </div>
-                    :
-                    // <div>
-                    //     <button className="btn btn-primary" onClick={this.handleCreate}>Kreirajte profil</button>
-                    // </div>
-                    null
+                    :null
                 :null    
                 }
 
                 {this.state.showCreate?
                     (this.state.createProfile != [] )?
-                        <form>
+                        <form className="offset-md-4 col-md-4 offset-md-4">
                             {this.state.createProfile.map((key, index) =>
                                 (key != 'id' && key != 'created_at' && key != 'updated_at' 
                                 && key != 'user_id' && key != 'faculty' && key != 'study' 
                                 && key != 'course' && key != 'yearOfStudy' && key != 'indexNumber')?
                                 <div key={index} className="form-group">
-                                    {/* <label className="col-form-label"> */}
                                         {key == 'university'? <label className="col-form-label">Sveučilište:</label>
+                                        :key == 'courses'? <label className="col-form-label">Smjerovi fakulteta:</label>
                                         :key == 'address'? <label className="col-form-label">Adresa:</label>
                                         :key == 'phone'? <label className="col-form-label">Telefon:</label>
                                         :key == 'OIB'? <label className="col-form-label">OIB:</label>
                                         :null}
-                                    {/* </label> */}
                                     <input 
                                         name={key}
                                         className="form-control"
@@ -477,25 +289,20 @@ class Profile extends Component {
                                 </div>
                                 :null
                             )}
-                            {/* {this.state.showCreate? */}
-                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Pošalji</button>
+                            <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>Pošalji</button>
                                 
-                                <div>{this.state.errorMessage}</div>
-                            {/* :null} */}
+                            <div className="text-danger">{this.state.errorMessage}</div>
+                            
                         </form>
                     :null
                 :null
                 }
-
                 {this.state.showEdit?
-                    <div className="offset-md-4 col-md-4 offset-md-4">
+                    <div className="offset-md-3 col-md-6 offset-md-3">
                         <ProfileInput profile={this.state.editProfile} changeState={this.changeState}/>
                     </div>
                 :null
                 }
-                
-                
-
             </div>
         );
     }

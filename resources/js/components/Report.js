@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import MainNavigation from './MainNavigation';
-import MyPractise from './MyPractise';
-
+import { Button, Label, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, 
+    Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Col, Input } from 'reactstrap';
 
 class Report extends Component {
     constructor(props){
@@ -13,15 +11,15 @@ class Report extends Component {
             id: this.props.practise.id,
             name: this.props.practise.name,
             description: this.props.practise.description,
-            //comment: this.props.practise.comment,
+            duration: this.props.practise.duration,
             status: this.props.practise.status,
+            start: this.props.practise.start,
             faculties: [],
             faculty: false,
-            report: [],
+            report: this.props.report,
             showReport: false,
             showPractise: true,
             href: '',
-            //fileName: '',
             file: '',
             grade: '',
             comment: '',
@@ -29,112 +27,55 @@ class Report extends Component {
             graded: false,
             facultyComment: '',
             facultyGrade: '',
-            
+            modalShow: false,
+
 
         };
-        //this.reloadPage = this.reloadPage.bind(this);
         this.showButtonReport = this.showButtonReport.bind(this);
         this.handleBack = this.handleBack.bind(this);
         this.download = this.download.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.checkFaculty = this.checkFaculty.bind(this);
+        this.toggleShow = this.toggleShow.bind(this);
     }
     
     componentDidMount(){
+
         this.checkReport();
     }
     showButtonReport(){
-        //console.log('show report');
-        //UHVATI IME FAJLA I POSTAVI GA U BUTTON DA SE MOŽE SKINIT
-        //OMOGUĆI UPLOAD NOVOG (ISPRAVLJENOG) FAJLA POD ISTIM IMENOM KOJE JE I BILO
-        
         this.setState({
             showReport: true,
             showPractise: false,
         })
     }
-    // isGraded(){
-    //     this.props.noGradedReports.forEach(element => {
-    //         if(element.id == this.state.id){
-    //             if(element.grade != ''){
-    //                 this.setState({
-    //                     graded: true
-    //                 })
-    //             }
-    //         }
-    //     });
-    // }
     checkReport(){
-        //console.log('check report');
-        //console.log('index', this.props.index);
-        axios.get('/api/reports/'+this.state.id)
-            .then(response =>{
-                //console.log(response);
-                this.setState({
-                    report: response.data
-                });
-                if(this.state.report.comment != undefined && this.state.report.comment != ''){
-                    this.setState({
-                        comment: this.state.report.comment,
-                    });
-                }
+        if(this.state.report.comment != undefined && this.state.report.comment != ''){
+            this.setState({
+                comment: this.state.report.comment,
+            });
+        }
 
-                    if(this.state.report.grade != undefined && this.state.report.grade != ''){
-                    //console.log(this.state.report.student_id);
-                        
-                        this.setState({
-                            graded: true
-                        })
-                        this.checkFaculty();
-                        //console.log('index', this.props.index)
-                        
-                        
-                        this.setState({
-                            grade: this.state.report.grade,
-                            comment: this.state.report.comment,
-                            facultyGrade: this.state.report.facultyGrade,
-                            facultyComment: this.state.report.facultyComment,
-                        });
-                    }
-                    //console.log('index', this.props.index);
-                    if(this.props.index == this.props.length-1){
-                        //console.log('zadnji', this.props.length)
-                        //this.props.check();
-                    }
-                
-            }).catch(error =>{
-                console.log(error);
-            })
+        if(this.state.report.grade != undefined && this.state.report.grade != ''){
+            this.setState({
+                grade: this.state.report.grade,
+            });
+        }
+        if(this.state.report.facultyComment != undefined && this.state.report.facultyComment != ''){
+            this.setState({
+                facultyComment: this.state.report.facultyComment,
+            });
+        }
+        if(this.state.report.facultyGrade != undefined && this.state.report.facultyGrade != ''){
+            this.setState({
+                facultyGrade: this.state.report.facultyGrade,
+            });
+        }
         
-    }
-    checkFaculty(){
-        axios.get('/api/students')
-            .then(response =>{
-                //console.log(response);
-                this.setState({
-                    faculties: response.data
-                }) 
-                // console.log(this.state.faculties);
-                // console.log(this.state.report.student_id);
-                this.state.faculties.forEach(element => {
-                    //console.log(element.user_id);
-                    if(element.user_id == this.state.report.student_id){
-                        //console.log(element.user_id);
-                        this.setState({
-                            faculty: true
-                        }) 
-                    }
-                });
-            }).catch(error =>{
-                console.log(error);
-            })
-
         
     }
     handleBack(){
-        //console.log('back');
         this.setState({
             showReport: false,
             showPractise: true,
@@ -144,24 +85,15 @@ class Report extends Component {
         this.props.reloadPage();
     }
     download(){
-        //console.log('download');
-        //setTimeout(() => {
-            const response = {
-                file: '/storage/report/'+this.state.report.file,
-            };
-            // server sent the url to the file!
-            // now, let's download:
-            //window.open(response.file);
-            // you could also do:
-             //window.location.href = response.file;
-            this.setState({
-                href: response.file
-            })
-        //}, 100);
+        const response = {
+            file: '/storage/report/'+this.state.report.file,
+        };
+        this.setState({
+            href: response.file
+        })
     }
     handleSubmit(e){
         e.preventDefault();
-        //console.log('submit');
         var formData  = new FormData();
         var file = this.state.file;
         var fileName = this.state.report.file;
@@ -176,7 +108,6 @@ class Report extends Component {
         formData.append('comment', comment);
         formData.append('facultyGrade', facultyGrade);
         formData.append('facultyComment', facultyComment);
-
         axios.post('/api/reports/'+this.state.id,
                     formData,{
                     headers: {
@@ -185,11 +116,9 @@ class Report extends Component {
                         }
                     }
                     ).then(response =>{
-                        // console.log(response);
                         this.setState({
                             report: response.data
                         })
-                        //console.log(this.state.report);
                         
                         if(this.state.report.grade != ''){
                             this.setState({
@@ -201,7 +130,6 @@ class Report extends Component {
                                     _method : 'PUT',
                                     status: 'grade',
                                 }).then(response =>{
-                                    //console.log(response.data);
                                     this.setState({
                                         faculty: false
                                     })
@@ -210,7 +138,7 @@ class Report extends Component {
                                 })
                         }
                         this.handleBack();
-                        //console.log(this.state.report);
+                        this.toggleShow();
                     }).catch(error =>{
                         console.log(error);
                     })
@@ -224,127 +152,143 @@ class Report extends Component {
     handleChange(event){
         this.setState({ [event.target.name] : event.target.value });
     }
+    toggleShow() {
+
+        if(!this.state.modalShow){
+            axios.get('/api/reports/'+this.state.id)
+            .then(response =>{
+                this.setState({
+                    file: response.data.file,
+                    grade: response.data.grade,
+                    comment: response.data.comment,
+                    facultyComment: response.data.facultyComment,
+                    facultyGrade: response.data.facultyGrade,
+                })
+            }).catch(error =>{
+                console.log(error);
+            })
+        }
+        
+        this.setState(prevState => ({
+            modalShow: !prevState.modalShow
+        }));
+    }
     render() {
         return (
-            this.state.userRole == 'Tvrtka' && !this.state.graded?
-                this.state.showPractise?
                         <tr>
-                            {/* {console.log(this.props.index)} */}
-                            
-                            <td></td>
+                            <td>{this.props.index+1}</td>
                             <td>{this.state.name}</td>
-                            <td>{this.state.description}</td>
+                            <td>{this.state.start}</td>
                             <td>{this.state.status}</td>
                             <td>{this.state.studentName}</td>
-                            {/* ISPIS FAJLA (IZVJEŠTAJA) 
-                                AK IMA IZVJEŠTAJ ONDA OMOGUĆI SHOW REPORT
-                                KOD SHOW REPORTA OMOGUĆI DOWNLOAD BUTTON I UPLOAD NOVOG FAJLA KOJI ĆE OVERRAJDAT STARI
-                            */}
-                                {this.state.report.id != undefined?
-                                    <td><button onClick={this.showButtonReport}>SHOW REPORT</button></td>
-                                :<td>No report</td>
-                                }
-                        </tr>   
-                :this.state.showReport?
-                    <tr>   
-                        <td>
-                            {/* <div>{this.props.index+1}</div> */}
-                            {/* <div>practise name:{this.state.name}</div> */}
-                            <div>
-                                {/* <button onClick={this.download}>Download report</button> */}
-                                <a href={this.state.href} download onClick={this.download}>{this.state.report.file}</a>
-                            </div>
-                            <div>
-                                <form onSubmit={this.handleSubmit} encType='multipart/form-data'>
-                                        <div>
-                                            <label>Grade: </label>
-                                            <input 
-                                                type='text' 
-                                                name='grade' 
-                                                value={this.state.grade}
-                                                onChange={this.handleChange}/>
-                                        </div>
-                                        <div>
-                                            <label>Comment: </label>
-                                            <input 
-                                                type='text' 
-                                                name='comment' 
-                                                value={this.state.comment}
-                                                onChange={this.handleChange}/>
-                                        </div>
-                                        <div>
-                                            <label>Upload practise report:</label><br />
-                                            <input type="file" name="file" onChange={this.onChangeHandler} accept=".doc,.docx"/><br />
-                                        </div>
-                                        <button type="submit">Upload</button>
-                                        <div>{this.state.errorMessage}</div>
-                                </form>
-                                <button onClick={this.handleBack}>Back</button>
-                            </div>
-                        </td>
-                    </tr>
-                :null
-            :this.state.userRole == 'Fakultet' && this.state.graded && this.state.faculty?   
-                this.state.showPractise?
-                        <tr>
-                            {/* <td>{this.props.index+1}</td> */}
-                            {/* {console.log(this.props.index)} */}
-                            <td></td>
-                            <td>{this.state.name}</td>
-                            <td>{this.state.description}</td>
-                            <td>{this.state.status}</td>
-                            <td>{this.state.studentName}</td>
-                            {/* ISPIS FAJLA (IZVJEŠTAJA) 
-                                AK IMA IZVJEŠTAJ ONDA OMOGUĆI SHOW REPORT
-                                KOD SHOW REPORTA OMOGUĆI DOWNLOAD BUTTON I UPLOAD NOVOG FAJLA KOJI ĆE OVERRAJDAT STARI
-                            */}
-                                {this.state.report.id != undefined?
-                                    <td><button onClick={this.showButtonReport}>SHOW REPORT</button></td>
-                                :<td>No report</td>
-                                }
-                        </tr>   
-                :this.state.showReport?
-                    <tr>   
-                        <td>
-                            {/* <div>{this.props.index+1}</div> */}
-                            {/* <div>practise name:{this.state.name}</div> */}
-                            <div>
-                                {/* <button onClick={this.download}>Download report</button> */}
-                                <a href={this.state.href} download onClick={this.download}>{this.state.report.file}</a>
-                            </div>
-                            <div>
-                                <form onSubmit={this.handleSubmit} encType='multipart/form-data'>
-                                        <div><label>Company grade: {this.state.grade}</label></div>
-                                        <div><label>Company comment: {this.state.comment}</label></div>
-                                        <div>
-                                            <label>Grade: </label>
-                                            <input 
-                                                type='text' 
-                                                name='facultyGrade' 
-                                                value={this.state.facultyGrade}
-                                                onChange={this.handleChange}/>
-                                        </div>
-                                        <div>
-                                            <label>Comment: </label>
-                                            <input 
-                                                type='text' 
-                                                name='facultyComment' 
-                                                value={this.state.facultyComment}
-                                                onChange={this.handleChange}/>
-                                        </div>
-                                        <div>
-                                            <label>Upload practise report:</label><br />
-                                            <input type="file" name="file" onChange={this.onChangeHandler} accept=".doc,.docx"/><br />
-                                        </div>
-                                        <button type="submit">Upload</button>
-                                        <div>{this.state.errorMessage}</div>
-                                </form>
-                                <button onClick={this.handleBack}>Back</button>
-                            </div>
-                        </td>
-                    </tr>
-                :null
-            :null
+                            {this.state.report.id != undefined?
+                                <td><Button color="primary" onClick={this.toggleShow}>Prikaži izvještaj</Button></td>
+                                :<td>Nema izvještaja</td>
+                            }
+                        
+                        <Modal isOpen={this.state.modalShow} toggle={this.toggleShow}>
+                            <ModalHeader toggle={this.toggleShow}>{this.state.name}</ModalHeader>
+                            {this.state.userRole == 'Tvrtka'?
+                            <ModalBody>
+                                <Form>
+                                    <ListGroup>
+                                    <ListGroupItem>
+                                            <ListGroupItemHeading>Izvještaj dostupan na linku</ListGroupItemHeading>
+                                            {/* <label>Izvještaj dostupan na linku: </label> */}
+                                            <ListGroupItemText>
+                                                <a href={this.state.href} download onClick={this.download}>{' '}{this.state.report.file}</a>
+                                            </ListGroupItemText>
+                                        </ListGroupItem>
+                                    </ListGroup>
+                                    <FormGroup row>
+                                        <Label sm={2}>Ocjena tvrtke</Label>
+                                        <Col sm={10}>
+                                            <Input 
+                                            type="textarea"
+                                            name="grade"
+                                            value={this.state.grade}
+                                            onChange={this.handleChange}/>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Label sm={2}>Komentar tvrtke</Label>
+                                        <Col sm={10}>
+                                            <Input 
+                                            type="textarea"
+                                            name="comment"
+                                            value={this.state.comment}
+                                            onChange={this.handleChange}/>
+                                        </Col>
+                                    </FormGroup>
+                                    {this.state.facultyComment != ''?
+                                    <FormGroup>
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <ListGroupItemHeading>Komentar fakulteta</ListGroupItemHeading>
+                                                <ListGroupItemText>{this.state.facultyComment}</ListGroupItemText>
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    </FormGroup>
+                                    :null}
+                                </Form>
+                                
+                            </ModalBody>
+                            :<ModalBody>
+                                <Form>
+                                    <ListGroup>
+                                    <ListGroupItem>
+                                            <ListGroupItemHeading>Izvještaj dostupan na linku</ListGroupItemHeading>
+                                            
+                                            <ListGroupItemText>
+                                                <a href={this.state.href} download onClick={this.download}>{' '}{this.state.report.file}</a>
+                                            </ListGroupItemText>
+                                        </ListGroupItem>
+                                    </ListGroup>
+                                    {this.state.comment != ''?
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <ListGroupItemHeading>Komentar tvrtke</ListGroupItemHeading>
+                                                <ListGroupItemText>{this.state.comment}</ListGroupItemText>
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    :null}
+                                    {this.state.grade != ''?
+                                        <ListGroup>
+                                            <ListGroupItem>
+                                                <ListGroupItemHeading>Ocjena tvrtke</ListGroupItemHeading>
+                                                <ListGroupItemText>{this.state.grade}</ListGroupItemText>
+                                            </ListGroupItem>
+                                        </ListGroup>
+                                    :null}
+                                    <FormGroup row>
+                                        <Label sm={2}>Komentar fakulteta</Label>
+                                        <Col sm={10}>
+                                            <Input 
+                                            type="textarea" 
+                                            name="facultyComment"
+                                            value={this.state.facultyComment}
+                                            onChange={this.handleChange}/>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Label sm={2}>Ocjena fakulteta</Label>
+                                        <Col sm={10}>
+                                            <Input 
+                                            type="textarea" 
+                                            name="facultyGrade"
+                                            value={this.state.facultyGrade}
+                                            onChange={this.handleChange}/>
+                                        </Col>
+                                    </FormGroup>
+                                </Form>    
+                            </ModalBody>
+                            }
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.handleSubmit}>Pošalji</Button>{' '}
+                                <Button color="secondary" onClick={this.toggleShow}>Nazad</Button>
+                            </ModalFooter>
+                        </Modal>
+                        </tr>
         );
     }
 }

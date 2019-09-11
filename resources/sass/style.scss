@@ -11,8 +11,7 @@
     background:rgba(255,255,255,0.5);
 }
 .active{
-    color: #0058B8;
-    //text-decoration:underline;
+    font-weight: bold;
 }
 .container{
     //border: 1px solid red;
@@ -22,11 +21,6 @@
         }
     }
 }
-.form{
-    //padding: 50px;
-    //border: 1px solid red;
-
-}
 .logo{
     display: block;
     margin-left: auto;
@@ -34,12 +28,21 @@
     width: 50%;
 }
 .btn-group {
-    //border: 1px solid red;
     justify-content: space-around;
 }
 
 
 .x{
-    border: 1px solid black;
+    background-color: #0278FF;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+.navbar-brand{
+    color: white;
     
+}
+#poc, #reg, #pri, #stu, #pra, #mpr, #izv, #ocj, #arh, #pro, #odj{
+    &:hover{
+        color: white;
+    }
 }
