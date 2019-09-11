@@ -82751,7 +82751,7 @@ function (_Component) {
           grade: key
         });
       })) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "offset-md-3 col-md-6 offset-md-3"
+        className: "offset-md-4 col-md-4 offset-md-4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItem"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItemHeading"], null, "Nema dostupnih studenata")))));
     }
   }]);
@@ -84241,9 +84241,9 @@ function (_Component) {
           user: _this5.state.user
         });
       })))) : this.state.message == 'nema rezultata' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "offset-md-3 col-md-6 offset-md-3"
+        className: "offset-md-4 col-md-4 offset-md-4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItem"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItemHeading"], null, "Nema dostupnih praksi")))) : null : null : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "offset-md-3 col-md-6 offset-md-3"
+        className: "offset-md-4 col-md-4 offset-md-4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItem"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItemHeading"], null, "Ve\u0107 ste odabrali prasku")))));
     }
   }]);
@@ -86553,7 +86553,7 @@ function (_Component) {
           report: _this4.state.report[index]
         });
       }))) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "offset-md-3 col-md-6 offset-md-3"
+        className: "offset-md-4 col-md-4 offset-md-4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroup"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItem"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_3__["ListGroupItemHeading"], null, "Nema dostupnih izvje\u0161taja"))))));
     }
   }]);

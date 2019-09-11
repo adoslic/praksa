@@ -351,7 +351,7 @@ class Practice extends Component {
                                 </Table>
                             </div>
                             :this.state.message == 'nema rezultata'?
-                            <div className="offset-md-3 col-md-6 offset-md-3">
+                            <div className="offset-md-4 col-md-4 offset-md-4">
                                 <ListGroup>
                                     <ListGroupItem>
                                         <ListGroupItemHeading>Nema dostupnih praksi</ListGroupItemHeading>
@@ -360,7 +360,7 @@ class Practice extends Component {
                             </div>
                             :null
                     :null    
-                :<div className="offset-md-3 col-md-6 offset-md-3">
+                :<div className="offset-md-4 col-md-4 offset-md-4">
                     <ListGroup>
                         <ListGroupItem>
                             <ListGroupItemHeading>Već ste odabrali prasku</ListGroupItemHeading>
