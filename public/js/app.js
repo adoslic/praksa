@@ -84690,13 +84690,17 @@ function (_Component) {
       }, "Uredi") : null, ' ', this.state.userRole == 'Tvrtka' && this.state.status != 'locked' ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
         color: "primary",
         onClick: this.toggleDelete
-      }, "Obri\u0161i") : null), this.state.userRole == 'Student' && !this.state.mypractise ? !this.state.applied ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      }, "Obri\u0161i") : null, this.state.userRole == 'Student' && !this.state.mypractise ? !this.state.applied ? // <td>
+      react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
         color: "primary",
         onClick: this.handleApply
-      }, "Prijava")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      }, "Prijava") // </td>
+      // :<td>
+      : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
         color: "secondary",
         onClick: this.handleUnapply
-      }, "Odjava")) : null, this.state.modalShow ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PractiseShow__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      }, "Odjava") // </td>
+      : null), this.state.modalShow ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_PractiseShow__WEBPACK_IMPORTED_MODULE_3__["default"], {
         practice: this.props.practice,
         toggle: this.toggleShow,
         user: this.state.user,
@@ -86313,7 +86317,7 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.start), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.status), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.studentName), this.state.report.id != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.props.index + 1), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.name), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.start), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.status == 'free' ? 'Slobodno' : this.state.status == 'taken' ? 'Zauzeto' : this.state.status == 'finished' ? 'Odrađeno' : this.state.status == 'grade' ? 'Ocjenjeno' : this.state.status == 'locked' ? 'Zaključana' : null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, this.state.studentName), this.state.report.id != undefined ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
         color: "primary",
         onClick: this.toggleShow
       }, "Prika\u017Ei izvje\u0161taj")) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "Nema izvje\u0161taja"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_1__["Modal"], {

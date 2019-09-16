@@ -338,17 +338,18 @@ class PractiseList extends Component {
                                     <Button color="primary" onClick={this.toggleDelete}>Obriši</Button>
                                 :null
                                 }
-                            </td>
+                            
                             {(this.state.userRole == 'Student' && !this.state.mypractise)?
                                 (!this.state.applied)?
-                                <td>
+                                // <td>
                                     <Button color="primary" onClick={this.handleApply}>Prijava</Button>
-                                </td>
-                                :<td>
-                                    <Button color="secondary" onClick={this.handleUnapply}>Odjava</Button>
-                                </td>
+                                // </td>
+                                // :<td>
+                                    :<Button color="secondary" onClick={this.handleUnapply}>Odjava</Button>
+                                // </td>
                             :null
                             }
+                            </td>
                             {/* <td><div>{this.state.errorMessage}</div></td> */}
                             {this.state.modalShow?
                                 <PractiseShow practice={this.props.practice} toggle={this.toggleShow} 

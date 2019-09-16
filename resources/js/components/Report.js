@@ -179,7 +179,14 @@ class Report extends Component {
                             <td>{this.props.index+1}</td>
                             <td>{this.state.name}</td>
                             <td>{this.state.start}</td>
-                            <td>{this.state.status}</td>
+                            <td>{(this.state.status == 'free')?'Slobodno'
+                                :(this.state.status == 'taken')?'Zauzeto'
+                                :(this.state.status == 'finished')?'Odrađeno'
+                                :(this.state.status == 'grade')?'Ocjenjeno'
+                                :(this.state.status == 'locked')?'Zaključana'
+                            :null
+                            }
+                            </td>
                             <td>{this.state.studentName}</td>
                             {this.state.report.id != undefined?
                                 <td><Button color="primary" onClick={this.toggleShow}>Prikaži izvještaj</Button></td>
